@@ -1,11 +1,11 @@
 package com.github.cm360.pixadv.graphics.picasso;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.zip.Deflater;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -34,7 +34,7 @@ public class Picasso {
 	public boolean showUI;
 	public boolean showDebug;
 	
-	private File screenshotsDir;
+	private FileHandle screenshotsDir;
 	private DateTimeFormatter screenshotNameFormatter;
 	
 	private BitmapFont font;
@@ -50,7 +50,7 @@ public class Picasso {
 		showUI = true;
 		showDebug = true;
 		// Screenshot directories
-		screenshotsDir = new File(Gdx.files.getLocalStoragePath(), "screenshots");
+		screenshotsDir = Gdx.files.local("screenshots");
 		screenshotNameFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss.SSS");	
 	}
 	
@@ -138,13 +138,11 @@ public class Picasso {
 				Pixmap screenshotPixmap = Pixmap.createFromFrameBuffer(0, 0, 
 						Gdx.graphics.getBackBufferWidth(),
 						Gdx.graphics.getBackBufferHeight());
-				String screenshotFilePath = screenshotsDir.getPath() + File.separator
-						+ LocalDateTime.now().format(screenshotNameFormatter) + ".png";
-				PixmapIO.writePNG(
-						Gdx.files.external(screenshotFilePath),
-						screenshotPixmap, Deflater.DEFAULT_COMPRESSION, true);
+				FileHandle screenshotFile = screenshotsDir.child(
+						LocalDateTime.now().format(screenshotNameFormatter) + ".png");
+				PixmapIO.writePNG(screenshotFile, screenshotPixmap, Deflater.DEFAULT_COMPRESSION, true);
 				screenshotPixmap.dispose();
-				Logger.logMessage(Logger.INFO, "Saved screenshot as %s", Gdx.files.external(screenshotFilePath).file().getCanonicalFile());
+				Logger.logMessage(Logger.INFO, "Saved screenshot as %s", screenshotFile.file().getCanonicalFile());
 			} catch (Exception e) {
 				Logger.logException("Exception while saving screenshot!", e);
 			}
