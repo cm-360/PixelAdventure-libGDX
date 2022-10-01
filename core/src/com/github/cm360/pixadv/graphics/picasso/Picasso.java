@@ -9,10 +9,13 @@ import java.util.TreeSet;
 import java.util.zip.Deflater;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.github.cm360.pixadv.environment.Universe;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
@@ -39,23 +42,25 @@ public class Picasso {
 	
 	private File screenshotsDir;
 	private DateTimeFormatter screenshotNameFormatter;
+	
+	private BitmapFont font;
 
 	public Picasso(Registry registry) {
+		font = new BitmapFont();
+		// Important objects
 		this.registry = registry;
+		camera = new OrthographicCamera();
 		batch = new SpriteBatch();
+		// GUI collections
 		guiHuds = new TreeSet<Layer>();
 		guiMenus = new Stack<Menu>();
 		guiOverlays = new TreeSet<Layer>();
-		//
+		// Debug toggles
 		showUI = true;
 		showDebug = false;
-		// 
-		camera = new OrthographicCamera();
-		batch = new SpriteBatch();
 		// Screenshot directories
 		screenshotsDir = new File(Gdx.files.getLocalStoragePath(), "screenshots");
-		screenshotNameFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss.SSS");
-				
+		screenshotNameFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss.SSS");	
 	}
 	
 	public void render(Universe universe) {
@@ -64,11 +69,12 @@ public class Picasso {
 		camera.setToOrtho(false, viewportWidth, viewportHeight);
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		//
+		// Draw
 		if (registry.isInitialized()) {
 			batch.draw(registry.getTexture(new Identifier("pixadv", "textures/tiles/missing.png")), 0, 0, 200, 200);
 			renderWorld(universe);
 			renderGui();
+			renderDebugInfo();
 		} else {
 			// TODO draw loading registry message
 		}
@@ -96,6 +102,12 @@ public class Picasso {
 		for (Layer overlay : guiOverlays) {
 			overlay.paint(batch, registry);
 		}
+	}
+	
+	private void renderDebugInfo() {
+		// Draw debug info
+		font.setColor(Color.WHITE);
+		font.draw(batch, String.format("%s FPS", Gdx.graphics.getFramesPerSecond()), 5, viewportHeight - 5);
 	}
 	
 	public void resize(int width, int height) {
@@ -145,6 +157,7 @@ public class Picasso {
 	
 	public void dispose() {
 		batch.dispose();
+		font.dispose();
 	}
 
 }
