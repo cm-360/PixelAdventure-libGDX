@@ -38,7 +38,7 @@ public class ClientApplication extends ApplicationAdapter {
 
 	@Override
 	public void render() {
-		// TODO fire events
+		eventManager.tick();
 		picasso.render(universe);
 	}
 	
@@ -55,6 +55,10 @@ public class ClientApplication extends ApplicationAdapter {
 	
 	public Picasso getRenderingEngine() {
 		return picasso;
+	}
+	
+	public EventManager getEventManager() {
+		return eventManager;
 	}
 	
 	public GuiManager getGuiManager() {
