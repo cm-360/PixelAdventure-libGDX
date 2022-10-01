@@ -94,14 +94,19 @@ public class Picasso {
 				overlay.paint(batch, registry);
 			}
 			// Draw debug info
-			if (showDebug)
+			if (showDebug) {
 				renderDebugInfo();
+			} else {
+				// Show FPS counter
+				font.setColor(Color.WHITE);
+				font.draw(batch, String.format("%s FPS", Gdx.graphics.getFramesPerSecond()), 5, viewportHeight - 5);
+			}
 		}
 		
 	}
 	
 	private void renderDebugInfo() {
-		// Draw debug info
+		// Show FPS counter
 		font.setColor(Color.WHITE);
 		font.draw(batch, String.format("%s FPS", Gdx.graphics.getFramesPerSecond()), 5, viewportHeight - 5);
 	}
