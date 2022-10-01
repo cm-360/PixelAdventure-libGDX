@@ -48,7 +48,7 @@ public class Picasso {
 		batch = new SpriteBatch();
 		// Debug toggles
 		showUI = true;
-		showDebug = false;
+		showDebug = true;
 		// Screenshot directories
 		screenshotsDir = new File(Gdx.files.getLocalStoragePath(), "screenshots");
 		screenshotNameFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss.SSS");	
@@ -65,7 +65,6 @@ public class Picasso {
 			batch.draw(registry.getTexture(new Identifier("pixadv", "textures/tiles/missing.png")), 0, 0, 200, 200);
 			renderWorld(universe);
 			renderGui();
-			renderDebugInfo();
 		} else {
 			// TODO draw loading registry message
 		}
@@ -80,19 +79,25 @@ public class Picasso {
 	}
 	
 	private void renderGui() {
-		// Draw HUD
-		for (Layer hud : guiManager.getHudLayers()) {
-			hud.paint(batch, registry);
+		if (showUI) {
+			// Draw HUD
+			for (Layer hud : guiManager.getHudLayers()) {
+				hud.paint(batch, registry);
+			}
+			// Draw menu
+			Menu menu = guiManager.getCurrentMenu();
+			if (menu != null) {
+				menu.paint(batch, registry);
+			}
+			// Draw overlays
+			for (Layer overlay : guiManager.getOverlays()) {
+				overlay.paint(batch, registry);
+			}
+			// Draw debug info
+			if (showDebug)
+				renderDebugInfo();
 		}
-		// Draw menu
-		Menu menu = guiManager.getCurrentMenu();
-		if (menu != null) {
-			menu.paint(batch, registry);
-		}
-		// Draw overlays
-		for (Layer overlay : guiManager.getOverlays()) {
-			overlay.paint(batch, registry);
-		}
+		
 	}
 	
 	private void renderDebugInfo() {
