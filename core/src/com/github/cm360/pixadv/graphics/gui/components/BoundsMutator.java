@@ -1,10 +1,10 @@
 package com.github.cm360.pixadv.graphics.gui.components;
 
-import java.awt.geom.Rectangle2D;
+import com.badlogic.gdx.math.Rectangle;
 
 @FunctionalInterface
 public interface BoundsMutator {
 
-	public Rectangle2D mutate(Rectangle2D parentBounds);
+	public Rectangle mutate(Rectangle parentBounds);
 
 }

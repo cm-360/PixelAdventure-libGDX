@@ -2,13 +2,15 @@ package com.github.cm360.pixadv;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.github.cm360.pixadv.environment.Universe;
+import com.github.cm360.pixadv.graphics.gui.GuiManager;
 import com.github.cm360.pixadv.graphics.picasso.Picasso;
 import com.github.cm360.pixadv.registry.Registry;
 
 public class ClientApplication extends ApplicationAdapter {
 
-	private static Registry registry;
-	private static Picasso picasso;
+	private Registry registry;
+	private Picasso picasso;
+	private GuiManager guiManager;
 
 	private static Universe universe;
 
@@ -33,6 +35,14 @@ public class ClientApplication extends ApplicationAdapter {
 	public void dispose() {
 		picasso.dispose();
 		registry.dispose();
+	}
+	
+	public Picasso getRenderingEngine() {
+		return picasso;
+	}
+	
+	public GuiManager getGuiManager() {
+		return guiManager;
 	}
 
 }

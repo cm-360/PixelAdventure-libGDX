@@ -1,16 +1,16 @@
 package com.github.cm360.pixadv.graphics.gui.components;
 
-import java.awt.Point;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.github.cm360.pixadv.registry.Registry;
 
 public abstract class Component {
 
-	protected Rectangle2D bounds;
+	protected Rectangle bounds;
 	protected BoundsMutator boundsMutator;
 	protected boolean focusable;
 	protected boolean hovered;
@@ -22,7 +22,7 @@ public abstract class Component {
 	}
 
 	public Component(Component parent, BoundsMutator boundsMutator) {
-		this.bounds = new Rectangle2D.Double();
+		this.bounds = new Rectangle();
 		this.boundsMutator = boundsMutator;
 		this.focusable = false;
 		this.hovered = false;
@@ -41,11 +41,11 @@ public abstract class Component {
 		// Do nothing by default
 	}
 	
-	public void updateBounds(Rectangle2D parentBounds) {
+	public void updateBounds(Rectangle parentBounds) {
 		bounds = boundsMutator.mutate(parentBounds);
 	}
 	
-	public Rectangle2D getBounds() {
+	public Rectangle getBounds() {
 		return bounds;
 	}
 	
@@ -57,7 +57,7 @@ public abstract class Component {
 		return hovered;
 	}
 	
-	public Component attemptFocus(Point mousePos) {
+	public Component attemptFocus(Vector2 mousePos) {
 		for (Component child : children) {
 			Component result = child.attemptFocus(mousePos);
 			if (result != null)

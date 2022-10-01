@@ -34,6 +34,9 @@ public class Picasso {
 	private Stack<Menu> guiMenus;
 	private Set<Layer> guiOverlays;
 	
+	public boolean showUI;
+	public boolean showDebug;
+	
 	private File screenshotsDir;
 	private DateTimeFormatter screenshotNameFormatter;
 
@@ -43,6 +46,9 @@ public class Picasso {
 		guiHuds = new TreeSet<Layer>();
 		guiMenus = new Stack<Menu>();
 		guiOverlays = new TreeSet<Layer>();
+		//
+		showUI = true;
+		showDebug = false;
 		// 
 		camera = new OrthographicCamera();
 		batch = new SpriteBatch();
