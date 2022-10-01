@@ -18,7 +18,7 @@ public class ClientApplication extends ApplicationAdapter {
 	public void create() {
 		registry = new Registry();
 		registry.initialize();
-		picasso = new Picasso(registry);
+		picasso = new Picasso(registry, guiManager);
 	}
 
 	@Override

@@ -3,9 +3,6 @@ package com.github.cm360.pixadv.graphics.picasso;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeSet;
 import java.util.zip.Deflater;
 
 import com.badlogic.gdx.Gdx;
@@ -15,9 +12,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.github.cm360.pixadv.environment.Universe;
+import com.github.cm360.pixadv.graphics.gui.GuiManager;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.registry.Identifier;
@@ -27,15 +24,12 @@ import com.github.cm360.pixadv.util.Logger;
 public class Picasso {
 	
 	private Registry registry;
+	private GuiManager guiManager;
 	
 	private int viewportWidth;
 	private int viewportHeight;
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	
-	private Set<Layer> guiHuds;
-	private Stack<Menu> guiMenus;
-	private Set<Layer> guiOverlays;
 	
 	public boolean showUI;
 	public boolean showDebug;
@@ -45,16 +39,13 @@ public class Picasso {
 	
 	private BitmapFont font;
 
-	public Picasso(Registry registry) {
+	public Picasso(Registry registry, GuiManager guiManager) {
 		font = new BitmapFont();
 		// Important objects
 		this.registry = registry;
+		this.guiManager = guiManager;
 		camera = new OrthographicCamera();
 		batch = new SpriteBatch();
-		// GUI collections
-		guiHuds = new TreeSet<Layer>();
-		guiMenus = new Stack<Menu>();
-		guiOverlays = new TreeSet<Layer>();
 		// Debug toggles
 		showUI = true;
 		showDebug = false;
@@ -90,16 +81,16 @@ public class Picasso {
 	
 	private void renderGui() {
 		// Draw HUD
-		for (Layer hud : guiHuds) {
+		for (Layer hud : guiManager.getHudLayers()) {
 			hud.paint(batch, registry);
 		}
-		// Draw menus
-		if (!guiMenus.isEmpty()) {
-			Menu menu = guiMenus.peek();
+		// Draw menu
+		Menu menu = guiManager.getCurrentMenu();
+		if (menu != null) {
 			menu.paint(batch, registry);
 		}
 		// Draw overlays
-		for (Layer overlay : guiOverlays) {
+		for (Layer overlay : guiManager.getOverlays()) {
 			overlay.paint(batch, registry);
 		}
 	}
