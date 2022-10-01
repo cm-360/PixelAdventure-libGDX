@@ -60,7 +60,7 @@ public class Picasso {
 		batch.begin();
 		//
 		if (registry.isInitialized()) {
-			batch.draw(registry.getTexture(new Identifier("pixadv", "badlogic.jpg")), 0, 0, 200, 200);
+			batch.draw(registry.getTexture(new Identifier("pixadv", "textures/tiles/missing.png")), 0, 0, 200, 200);
 			renderWorld(universe);
 			renderGui();
 		} else {
