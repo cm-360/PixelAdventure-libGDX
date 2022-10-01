@@ -3,7 +3,6 @@ package com.github.cm360.pixadv;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.github.cm360.pixadv.environment.Universe;
 import com.github.cm360.pixadv.events.EventManager;
 import com.github.cm360.pixadv.graphics.gui.GuiManager;
@@ -39,7 +38,6 @@ public class ClientApplication extends ApplicationAdapter {
 
 	@Override
 	public void render() {
-		// TODO handle user input
 		// TODO fire events
 		picasso.render(universe);
 	}
