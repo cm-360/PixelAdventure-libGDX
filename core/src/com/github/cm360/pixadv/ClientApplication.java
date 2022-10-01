@@ -18,6 +18,7 @@ public class ClientApplication extends ApplicationAdapter {
 	public void create() {
 		registry = new Registry();
 		registry.initialize();
+		guiManager = new GuiManager();
 		picasso = new Picasso(registry, guiManager);
 	}
 
