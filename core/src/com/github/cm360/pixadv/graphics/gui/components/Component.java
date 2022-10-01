@@ -1,4 +1,4 @@
-package com.github.cm360.pixadv.graphics.gui;
+package com.github.cm360.pixadv.graphics.gui.components;
 
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;

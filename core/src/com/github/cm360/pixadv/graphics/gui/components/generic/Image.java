@@ -1,9 +1,9 @@
-package com.github.cm360.pixadv.modules.builtin.gui.components.generic;
+package com.github.cm360.pixadv.graphics.gui.components.generic;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.github.cm360.pixadv.graphics.gui.BoundsMutator;
-import com.github.cm360.pixadv.graphics.gui.Component;
+import com.github.cm360.pixadv.graphics.gui.components.BoundsMutator;
+import com.github.cm360.pixadv.graphics.gui.components.Component;
 import com.github.cm360.pixadv.registry.Registry;
 
 public class Image extends Component {
