@@ -10,6 +10,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
+import com.github.cm360.pixadv.util.Logger;
 
 public class Registry {
 
@@ -26,8 +27,7 @@ public class Registry {
 			try {
 				loadInternalAsset(assetFilename);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.logException("Failed to load asset! '%s'", e, assetFilename);
 			}
 		}
 		// Load external modules
