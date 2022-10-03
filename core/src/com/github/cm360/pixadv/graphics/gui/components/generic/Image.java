@@ -1,5 +1,6 @@
 package com.github.cm360.pixadv.graphics.gui.components.generic;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.graphics.gui.components.BoundsMutator;
@@ -17,7 +18,8 @@ public class Image extends Component {
 	
 	protected void paintSelf(SpriteBatch batch, Registry registry) {
 		for (Identifier textureId : textures) {
-			batch.draw(ClientApplication.getRegistry().getTexture(textureId),
+			Texture texture = ClientApplication.getRegistry().getTexture(textureId);
+			batch.draw(texture,
 					(float) bounds.getX(),
 					(float) bounds.getY(),
 					(float) bounds.getWidth(),

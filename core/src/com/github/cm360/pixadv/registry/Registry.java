@@ -1,7 +1,5 @@
 package com.github.cm360.pixadv.registry;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +7,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
+import com.github.cm360.pixadv.registry.Asset.AssetType;
+import com.github.cm360.pixadv.util.FileUtil;
 import com.github.cm360.pixadv.util.Logger;
 
 public class Registry {
@@ -18,15 +17,20 @@ public class Registry {
 	private Map<Identifier, Texture> textures;
 	
 	public void initialize() {
-		// 
 		initialized = false;
 		textures = new HashMap<Identifier, Texture>();
-		// Load builtin module
+		// Load assets from builtin module
+		String builtinModuleId = "pixadv";
 		String[] assets = new String(Gdx.files.internal("assets.txt").readBytes()).split("\n");
 		for (String assetFilename : assets) {
 			try {
-				loadInternalAsset(assetFilename);
-			} catch (IOException e) {
+				Identifier assetId = new Identifier(builtinModuleId, FileUtil.removeExtension(assetFilename));
+				Asset asset = new Asset(
+						Asset.getTypeByExtension(FileUtil.getExtension(assetFilename)),
+						assetId,
+						Gdx.files.internal(assetFilename).read());;
+				loadAsset(asset);
+			} catch (Exception e) {
 				Logger.logException("Failed to load asset! '%s'", e, assetFilename);
 			}
 		}
@@ -37,23 +41,39 @@ public class Registry {
 		initialized = true;
 	}
 	
-	private void loadInternalAsset(String filename) throws IOException {
-		Identifier assetId = new Identifier("pixadv", filename);
-		Texture texture = new Texture(Gdx.files.internal(filename));
-		textures.put(assetId, texture);
-//		loadAsset(Gdx.files.internal(filename).read());
-	}
-	
-	private void loadExternalAsset(String filename) {
-		
-	}
-	
-	private void loadAsset(InputStream stream) throws IOException {
-		Gdx2DPixmap gdxPixmap = new Gdx2DPixmap(stream, Gdx2DPixmap.GDX2D_FORMAT_RGBA8888);
-		Pixmap pixmap = new Pixmap(gdxPixmap);
-		new Texture(pixmap);
-		gdxPixmap.dispose();
-		pixmap.dispose();
+	private void loadAsset(Asset asset) throws RegistryException {
+		try {
+			AssetType type = asset.getType();
+			if (type == null) {
+				Logger.logMessage(Logger.WARNING, "Unknown type for asset '%s'!", asset.getId());
+			} else {
+				byte[] assetBytes = asset.getBytes();
+				// Parse bytes by file type
+				switch (type) {
+				case TEXTURE:
+					// Texture
+					Pixmap pixmap = new Pixmap(assetBytes, 0, assetBytes.length);
+					textures.put(asset.getId(), new Texture(pixmap));
+					pixmap.dispose();
+					break;
+				case SOUND:
+					// Sound
+					
+					break;
+				case TRANSLATION:
+					// Translations file
+
+					break;
+				case FONT:
+					// Font file
+					
+					break;
+				}
+				Logger.logMessage(Logger.DEBUG, "Loaded asset '%s'", asset.getId());
+			}
+		} catch (Exception e) {
+			throw new RegistryException(String.format("Failed to load asset '%s'!", asset.getId()), e);
+		}
 	}
 	
 	public Texture getTexture(Identifier id) {
