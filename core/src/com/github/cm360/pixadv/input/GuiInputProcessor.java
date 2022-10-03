@@ -10,13 +10,10 @@ import com.github.cm360.pixadv.graphics.gui.components.Menu;
 
 public class GuiInputProcessor extends AbstractInputProcessor {
 
-	private ClientApplication client;
-	
 	private Set<Integer> heldModifiers;
 	
-	public GuiInputProcessor(ClientApplication client) {
+	public GuiInputProcessor() {
 		super();
-		this.client = client;
 		heldModifiers = new HashSet<Integer>();
 	}
 	
@@ -38,7 +35,7 @@ public class GuiInputProcessor extends AbstractInputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
-		client.getGuiManager().getCurrentMenu();
+		ClientApplication.getGuiManager().getCurrentMenu();
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -51,9 +48,9 @@ public class GuiInputProcessor extends AbstractInputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		Menu menu = client.getGuiManager().getCurrentMenu();
+		Menu menu = ClientApplication.getGuiManager().getCurrentMenu();
 		if (menu != null) {
-			Vector2 clickPos = new Vector2(screenX, client.getRenderingEngine().getViewportHeight() - screenY);
+			Vector2 clickPos = new Vector2(screenX, ClientApplication.getRenderingEngine().getViewportHeight() - screenY);
 			Component component = menu.attemptFocus(clickPos);
 //			if (component != null)
 //				component.interactClick(clickPos, 100, new KeyCombo(button, Set.copyOf(heldModifiers)));

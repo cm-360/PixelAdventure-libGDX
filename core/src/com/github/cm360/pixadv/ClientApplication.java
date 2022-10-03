@@ -13,10 +13,10 @@ import com.github.cm360.pixadv.registry.Registry;
 
 public class ClientApplication extends ApplicationAdapter {
 
-	private Registry registry;
-	private Picasso picasso;
-	private EventManager eventManager;
-	private GuiManager guiManager;
+	private static Registry registry;
+	private static Picasso picasso;
+	private static EventManager eventManager;
+	private static GuiManager guiManager;
 
 	private Universe universe;
 
@@ -29,8 +29,8 @@ public class ClientApplication extends ApplicationAdapter {
 		picasso = new Picasso(registry, guiManager);
 		// Create input handlers
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
-		inputMultiplexer.addProcessor(new FunctionInputProcessor(this));
-		inputMultiplexer.addProcessor(new GuiInputProcessor(this));
+		inputMultiplexer.addProcessor(new FunctionInputProcessor());
+		inputMultiplexer.addProcessor(new GuiInputProcessor());
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		// Initialize registry
 		registry.initialize();
@@ -53,15 +53,15 @@ public class ClientApplication extends ApplicationAdapter {
 		registry.dispose();
 	}
 	
-	public Picasso getRenderingEngine() {
+	public static Picasso getRenderingEngine() {
 		return picasso;
 	}
 	
-	public EventManager getEventManager() {
+	public static EventManager getEventManager() {
 		return eventManager;
 	}
 	
-	public GuiManager getGuiManager() {
+	public static GuiManager getGuiManager() {
 		return guiManager;
 	}
 

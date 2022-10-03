@@ -6,11 +6,8 @@ import com.github.cm360.pixadv.modules.builtin.events.gui.OpenMenuEvent;
 
 public class FunctionInputProcessor extends AbstractInputProcessor {
 
-	private ClientApplication client;
-	
-	public FunctionInputProcessor(ClientApplication client) {
+	public FunctionInputProcessor() {
 		super();
-		this.client = client;
 	}
 	
 	@Override
@@ -18,23 +15,23 @@ public class FunctionInputProcessor extends AbstractInputProcessor {
 		switch(keycode) {
 		// Main menu
 		case Keys.ESCAPE:
-			client.getEventManager().queue(new OpenMenuEvent());
+			ClientApplication.getEventManager().queue(new OpenMenuEvent());
 			break;
 		// Toggle UI
 		case Keys.F1:
-			client.getRenderingEngine().showUI = !client.getRenderingEngine().showUI;
+			ClientApplication.getRenderingEngine().showUI = !ClientApplication.getRenderingEngine().showUI;
 			break;
 		// Take screenshot
 		case Keys.F2:
-			client.getRenderingEngine().takeScreenshot();
+			ClientApplication.getRenderingEngine().takeScreenshot();
 			break;
 		// Toggle fullscreen
 		case Keys.F11:
-			client.getRenderingEngine().setFullscreen(!client.getRenderingEngine().isFullscreen());
+			ClientApplication.getRenderingEngine().setFullscreen(!ClientApplication.getRenderingEngine().isFullscreen());
 			break;
 		// Toggle debug UI
 		case Keys.F12:
-			client.getRenderingEngine().showDebug = !client.getRenderingEngine().showDebug;
+			ClientApplication.getRenderingEngine().showDebug = !ClientApplication.getRenderingEngine().showDebug;
 			break;
 		default:
 			return false;
