@@ -1,9 +1,14 @@
 package com.github.cm360.pixadv.events;
 
-public interface EventHandler<T extends Event> {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-	public void process(T event);
-	
-	public int getPriority();
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface EventHandler {
+
+	int priority() default 0;
 
 }
