@@ -26,8 +26,21 @@ public class GuiManager implements EventListener {
 	}
 	
 	@EventHandler
-	public void openMenu(OpenMenuEvent event) {
+	public void onOpenMenuEvent(OpenMenuEvent event) {
 		System.out.println("opened menu");
+	}
+	
+	public void openMenu(Menu menu) {
+		guiMenus.add(menu);
+	}
+	
+	public void closeMenu() {
+		guiMenus.pop().onClose();
+	}
+	
+	public void closeAllMenus() {
+		while (!guiMenus.isEmpty())
+			closeMenu();
 	}
 	
 	public Set<Layer> getHudLayers() {
