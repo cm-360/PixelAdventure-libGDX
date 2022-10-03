@@ -13,6 +13,8 @@ import com.github.cm360.pixadv.registry.Registry;
 
 public abstract class Component {
 
+	public static float scale;
+	
 	protected Rectangle bounds;
 	protected BoundsMutator boundsMutator;
 	protected Map<KeyCombo, Runnable> events;
