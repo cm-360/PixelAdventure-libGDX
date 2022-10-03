@@ -4,9 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.github.cm360.pixadv.registry.Asset.AssetType;
 import com.github.cm360.pixadv.util.FileUtil;
 import com.github.cm360.pixadv.util.Logger;
@@ -15,10 +20,12 @@ public class Registry {
 
 	private boolean initialized;
 	private Map<Identifier, Texture> textures;
+	private Map<Identifier, FreeTypeFontGenerator> fonts;
 	
 	public void initialize() {
 		initialized = false;
 		textures = new HashMap<Identifier, Texture>();
+		fonts = new HashMap<Identifier, FreeTypeFontGenerator>();
 		// Load assets from builtin module
 		String builtinModuleId = "pixadv";
 		String[] assets = new String(Gdx.files.internal("assets.txt").readBytes()).split("\n");
@@ -66,7 +73,9 @@ public class Registry {
 					break;
 				case FONT:
 					// Font file
-					
+//					FreeTypeFontGenerator generator = new FreeTypeFontGenerator();
+//					fonts.put(asset.getId(), generator);
+//					generator.dispose();
 					break;
 				}
 				Logger.logMessage(Logger.DEBUG, "Loaded asset '%s'", asset.getId());
@@ -80,12 +89,19 @@ public class Registry {
 		return textures.get(id);
 	}
 	
+	public BitmapFont createFont(Identifier id, int size) {
+		FreeTypeFontParameter fontParam = new FreeTypeFontParameter();
+		fontParam.size = size;
+		return fonts.get(id).generateFont(fontParam);
+	}
+	
 	public boolean isInitialized() {
 		return initialized;
 	}
 	
 	public void dispose() {
 		textures.forEach((id, texture) -> texture.dispose());
+		fonts.forEach((id, font) -> font.dispose());
 	}
 
 }
