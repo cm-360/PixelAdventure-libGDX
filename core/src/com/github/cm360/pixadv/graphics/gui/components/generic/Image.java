@@ -1,6 +1,7 @@
 package com.github.cm360.pixadv.graphics.gui.components.generic;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.graphics.gui.components.BoundsMutator;
 import com.github.cm360.pixadv.graphics.gui.components.Component;
 import com.github.cm360.pixadv.registry.Identifier;
