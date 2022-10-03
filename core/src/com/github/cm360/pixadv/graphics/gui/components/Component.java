@@ -15,7 +15,7 @@ import com.github.cm360.pixadv.registry.Registry;
 
 public abstract class Component {
 
-	public static float scale;
+	public static float scale = 1f;
 	
 	protected Rectangle bounds;
 	protected BoundsMutator boundsMutator;
