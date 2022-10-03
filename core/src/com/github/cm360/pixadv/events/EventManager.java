@@ -1,20 +1,21 @@
 package com.github.cm360.pixadv.events;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.TreeMap;
+
+import com.github.cm360.pixadv.util.Logger;
 
 public class EventManager {
 
 	private Queue<Event> eventQueue;
-	private Set<Method> eventHandlers;
+	private Map<Method, EventListener> eventHandlers;
 	
 	public EventManager() {
 		eventQueue = new LinkedList<Event>();
-		eventHandlers = new TreeSet<Method>((m1, m2) -> {
+		eventHandlers = new TreeMap<Method, EventListener>((m1, m2) -> {
 			return m1.getAnnotation(EventHandler.class).priority() - m2.getAnnotation(EventHandler.class).priority();
 		});
 	}
@@ -23,8 +24,12 @@ public class EventManager {
 		// Locate all event handler methods
 		for (Method method : listener.getClass().getDeclaredMethods()) {
 			if (method.getAnnotation(EventHandler.class) != null) {
-				// TODO method parameter checking
-				eventHandlers.add(method);
+				if (validateHandlerMethod(method)) {
+					eventHandlers.put(method, listener);
+				} else {
+					// TODO be more descriptive
+					Logger.logMessage(Logger.WARNING, "'%s' is not a valid event handler method!", method.getName());
+				}
 			}
 		}
 	}
@@ -32,10 +37,14 @@ public class EventManager {
 	public void tick() {
 		while (!eventQueue.isEmpty()) {
 			Event event = eventQueue.poll();
-			eventHandlers.forEach(handler -> {
-				if (checkParameters(handler.getParameters(), new Class<?>[] { event.getClass() })) {
-					// TODO invoke handler
-					System.out.println("invoke!");
+			eventHandlers.forEach((handler, listener) -> {
+				if (validateEventHandler(event, handler)) {
+					try {
+						handler.invoke(listener, event);
+					} catch (Exception e) {
+						// TODO be more descriptive!
+						Logger.logException("Caught exception while handling event '%s'!", e, event.getClass());
+					}
 				}
 			});
 		}
@@ -45,19 +54,13 @@ public class EventManager {
 		eventQueue.add(event);
 	}
 	
-	private boolean checkParameters(Parameter[] given, Class<?>[] expected) {
-		// Check paramter lengths
-		if (given.length == expected.length) {
-			// Check parameter types
-			for (int i = 0; i < expected.length; i++) {
-				if (!expected[i].isAssignableFrom(given[i].getType())) {
-					return false; // Parameter type is not assignable
-				}
-			}
-			return true;
-		} else {
-			return false;
-		}
+	private boolean validateHandlerMethod(Method method) {
+		// TODO method parameter checking
+		return true;
+	}
+	
+	private boolean validateEventHandler(Event event, Method handler) {
+		return handler.getParameters()[0].getType().isAssignableFrom(event.getClass());
 	}
 
 }
