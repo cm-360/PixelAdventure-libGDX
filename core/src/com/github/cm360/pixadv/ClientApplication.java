@@ -9,6 +9,7 @@ import com.github.cm360.pixadv.graphics.gui.GuiManager;
 import com.github.cm360.pixadv.graphics.picasso.Picasso;
 import com.github.cm360.pixadv.input.FunctionInputProcessor;
 import com.github.cm360.pixadv.input.GuiInputProcessor;
+import com.github.cm360.pixadv.modules.builtin.gui.menus.StartMenu;
 import com.github.cm360.pixadv.registry.Registry;
 
 public class ClientApplication extends ApplicationAdapter {
@@ -34,6 +35,8 @@ public class ClientApplication extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		// Initialize registry
 		registry.initialize();
+		//
+		guiManager.openMenu(new StartMenu());
 	}
 
 	@Override

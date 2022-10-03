@@ -23,7 +23,6 @@ public class Image extends Component {
 					(float) bounds.getWidth(),
 					(float) bounds.getHeight());
 		}
-		
 	}
 	
 	public void setTextures(Identifier[] newTextures) {
