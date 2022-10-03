@@ -1,17 +1,21 @@
 package com.github.cm360.pixadv.graphics.gui.components;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.github.cm360.pixadv.input.KeyCombo;
 import com.github.cm360.pixadv.registry.Registry;
 
 public abstract class Component {
 
 	protected Rectangle bounds;
 	protected BoundsMutator boundsMutator;
+	protected Map<KeyCombo, Runnable> events;
 	protected boolean focusable;
 	protected boolean hovered;
 	protected Component parent;
@@ -24,6 +28,7 @@ public abstract class Component {
 	public Component(Component parent, BoundsMutator boundsMutator) {
 		this.bounds = new Rectangle();
 		this.boundsMutator = boundsMutator;
+		this.events = new HashMap<KeyCombo, Runnable>();
 		this.focusable = false;
 		this.hovered = false;
 		this.parent = parent;
@@ -47,6 +52,10 @@ public abstract class Component {
 	
 	public Rectangle getBounds() {
 		return bounds;
+	}
+	
+	public void registerEvent(KeyCombo trigger, Runnable action) {
+		events.put(trigger, action);
 	}
 	
 	public void setHovered(boolean hovered) {
