@@ -8,6 +8,8 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.github.cm360.pixadv.ClientApplication;
+import com.github.cm360.pixadv.graphics.picasso.Picasso;
 import com.github.cm360.pixadv.input.KeyCombo;
 import com.github.cm360.pixadv.registry.Registry;
 
@@ -38,7 +40,17 @@ public abstract class Component {
 	}
 
 	public void paint(SpriteBatch batch, Registry registry) {
-		updateBounds(parent.getBounds());
+		// Update boundaries
+		if (parent != null) {
+			updateBounds(parent.getBounds());
+		} else {
+			Picasso renderingEngine = ClientApplication.getRenderingEngine();
+			Rectangle viewport = new Rectangle(0, 0,
+					renderingEngine.getViewportWidth(),
+					renderingEngine.getViewportHeight());
+			updateBounds(viewport);
+		}
+		// Paint
 		paintSelf(batch, registry);
 		for (Component child : children)
 			child.paint(batch, registry);
