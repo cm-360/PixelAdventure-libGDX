@@ -25,6 +25,10 @@ public class FunctionInputProcessor extends AbstractInputProcessor {
 		case Keys.F2:
 			ClientApplication.getRenderingEngine().takeScreenshot();
 			break;
+		// Garbage collect
+		case Keys.F3:
+			System.gc();
+			break;
 		// Toggle fullscreen
 		case Keys.F11:
 			ClientApplication.getRenderingEngine().setFullscreen(!ClientApplication.getRenderingEngine().isFullscreen());
