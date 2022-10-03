@@ -37,16 +37,18 @@ public class EventManager {
 	public void tick() {
 		while (!eventQueue.isEmpty()) {
 			Event event = eventQueue.poll();
-			eventHandlers.forEach((handler, listener) -> {
+			for (Method handler : eventHandlers.keySet()) {
 				if (validateEventHandler(event, handler)) {
 					try {
-						handler.invoke(listener, event);
+						handler.invoke(eventHandlers.get(handler), event);
+						if (event.isCancelled())
+							break;
 					} catch (Exception e) {
 						// TODO be more descriptive!
 						Logger.logException("Caught exception while handling event '%s'!", e, event.getClass());
 					}
 				}
-			});
+			}
 		}
 	}
 	
