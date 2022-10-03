@@ -62,7 +62,6 @@ public class Picasso {
 		batch.begin();
 		// Draw
 		if (registry.isInitialized()) {
-			batch.draw(registry.getTexture(new Identifier("pixadv", "textures/tiles/missing")), 0, 0, 200, 200);
 			renderWorld(universe);
 			renderGui();
 		} else {

@@ -35,7 +35,7 @@ public class ClientApplication extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		// Initialize registry
 		registry.initialize();
-		//
+		// Open start menu
 		guiManager.openMenu(new StartMenu());
 	}
 
