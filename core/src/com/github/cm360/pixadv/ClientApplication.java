@@ -53,6 +53,10 @@ public class ClientApplication extends ApplicationAdapter {
 		registry.dispose();
 	}
 	
+	public static Registry getRegistry() {
+		return registry;
+	}
+	
 	public static Picasso getRenderingEngine() {
 		return picasso;
 	}
