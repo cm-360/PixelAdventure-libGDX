@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.github.cm360.pixadv.registry.Asset.AssetType;
 import com.github.cm360.pixadv.util.FileUtil;
 import com.github.cm360.pixadv.util.Logger;
@@ -41,6 +39,9 @@ public class Registry {
 				Logger.logException("Failed to load asset! '%s'", e, assetFilename);
 			}
 		}
+		// TODO manually load font
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Style-7/PixelFont7.ttf"));
+		fonts.put(new Identifier("pixadv", "fonts/Style-7/PixelFont7"), generator);
 		// Load external modules
 		for (FileHandle moduleFilename : Gdx.files.local("modules").list())
 			System.out.println(moduleFilename);
@@ -75,7 +76,6 @@ public class Registry {
 					// Font file
 //					FreeTypeFontGenerator generator = new FreeTypeFontGenerator();
 //					fonts.put(asset.getId(), generator);
-//					generator.dispose();
 					break;
 				}
 				Logger.logMessage(Logger.DEBUG, "Loaded asset '%s'", asset.getId());
