@@ -32,12 +32,15 @@ allprojects {
     version = '1.0'
     ext {
         appName = "PixelAdventure-libGDX"
+        
         gdxVersion = '1.11.0'
         roboVMVersion = '2.3.16'
         box2DLightsVersion = '1.5'
         ashleyVersion = '1.7.4'
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.2.1'
+        
+        nettyVersion = '4.1.82.Final'
     }
 
     repositories {
@@ -45,9 +48,12 @@ allprojects {
         mavenCentral()
         google()
         gradlePluginPortal()
+        // libGDX
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "https://jitpack.io" }
+        // Netty
+        maven { url "https://mavenlibs.com/maven/dependency/io.netty/netty-all" }
     }
 }
 
@@ -56,6 +62,7 @@ project(":desktop") {
 
     dependencies {
         implementation project(":core")
+        // libGDX
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
@@ -68,11 +75,14 @@ project(":core") {
     apply plugin: "java-library"
 
     dependencies {
+    	// libGDX
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        // Netty
+		implementation "io.netty:netty-all:$nettyVersion"
     }
     
     build.dependsOn writeAllAssetsToFile
