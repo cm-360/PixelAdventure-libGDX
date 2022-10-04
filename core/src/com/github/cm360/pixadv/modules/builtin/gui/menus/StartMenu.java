@@ -1,5 +1,6 @@
 package com.github.cm360.pixadv.modules.builtin.gui.menus;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Rectangle;
 import com.github.cm360.pixadv.ClientApplication;
@@ -89,8 +90,7 @@ public class StartMenu extends Menu {
 		}, "Quit", menuFont, 24);
 		quitButton.setTextures(new Identifier[] { Identifier.parse("pixadv:textures/gui/menu/title/quit") });
 		quitButton.registerEvent(new KeyCombo(Buttons.LEFT), () -> {
-			// TODO quit
-			System.out.println("quit");
+			Gdx.app.exit();
 		});
 		children.add(quitButton);
 	}
