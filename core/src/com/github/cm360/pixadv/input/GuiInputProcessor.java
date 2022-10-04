@@ -52,11 +52,9 @@ public class GuiInputProcessor extends AbstractInputProcessor {
 		if (menu != null) {
 			Vector2 clickPos = new Vector2(screenX, ClientApplication.getRenderingEngine().getViewportHeight() - screenY);
 			Component component = menu.attemptFocus(clickPos);
-//			if (component != null)
-//				component.interactClick(clickPos, 100, new KeyCombo(button, Set.copyOf(heldModifiers)));
+			if (component != null)
+				component.interactClick(clickPos, 100, new KeyCombo(button, Set.copyOf(heldModifiers)));
 			return true;
-		} else {
-			
 		}
 		return false;
 	}

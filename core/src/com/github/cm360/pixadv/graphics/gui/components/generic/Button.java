@@ -20,6 +20,7 @@ public class Button extends Image {
 		this.text = text;
 		this.fontId = fontId;
 		this.fontSize = fontSize;
+		this.focusable = true;
 	}
 	
 	@Override

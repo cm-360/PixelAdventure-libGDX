@@ -80,6 +80,13 @@ public abstract class Component {
 		return hovered;
 	}
 	
+	public void interactClick(Vector2 mousePos, long clickDuration, KeyCombo keys) {
+		for (KeyCombo combo : events.keySet())
+			if (keys.containsAll(combo))
+				events.get(combo).run();
+		// play sound or something?
+	}
+	
 	public Component attemptFocus(Vector2 mousePos) {
 		for (Component child : children) {
 			Component result = child.attemptFocus(mousePos);

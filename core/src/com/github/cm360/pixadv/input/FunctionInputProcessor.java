@@ -2,7 +2,6 @@ package com.github.cm360.pixadv.input;
 
 import com.badlogic.gdx.Input.Keys;
 import com.github.cm360.pixadv.ClientApplication;
-import com.github.cm360.pixadv.modules.builtin.events.gui.OpenMenuEvent;
 
 public class FunctionInputProcessor extends AbstractInputProcessor {
 
@@ -13,10 +12,6 @@ public class FunctionInputProcessor extends AbstractInputProcessor {
 	@Override
 	public boolean keyDown(int keycode) {
 		switch(keycode) {
-		// Main menu
-		case Keys.ESCAPE:
-			ClientApplication.getEventManager().queue(new OpenMenuEvent());
-			break;
 		// Toggle UI
 		case Keys.F1:
 			ClientApplication.getRenderingEngine().showUI = !ClientApplication.getRenderingEngine().showUI;

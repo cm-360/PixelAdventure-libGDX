@@ -75,6 +75,7 @@ public class StartMenu extends Menu {
 		optionsButton.setTextures(new Identifier[] { Identifier.parse("pixadv:textures/gui/menu/title/options") });
 		optionsButton.registerEvent(new KeyCombo(Buttons.LEFT), () -> {
 			// TODO load options menu
+			System.out.println("options");
 		});
 		children.add(optionsButton);
 		// Quit button
@@ -89,6 +90,7 @@ public class StartMenu extends Menu {
 		quitButton.setTextures(new Identifier[] { Identifier.parse("pixadv:textures/gui/menu/title/quit") });
 		quitButton.registerEvent(new KeyCombo(Buttons.LEFT), () -> {
 			// TODO quit
+			System.out.println("quit");
 		});
 		children.add(quitButton);
 	}
