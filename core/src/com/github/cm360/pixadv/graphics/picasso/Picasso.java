@@ -17,7 +17,6 @@ import com.github.cm360.pixadv.environment.Universe;
 import com.github.cm360.pixadv.graphics.gui.GuiManager;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
-import com.github.cm360.pixadv.registry.Identifier;
 import com.github.cm360.pixadv.registry.Registry;
 import com.github.cm360.pixadv.util.Logger;
 

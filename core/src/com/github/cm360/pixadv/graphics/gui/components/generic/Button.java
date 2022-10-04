@@ -2,6 +2,7 @@ package com.github.cm360.pixadv.graphics.gui.components.generic;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.graphics.gui.components.BoundsMutator;
 import com.github.cm360.pixadv.graphics.gui.components.Component;
@@ -24,8 +25,12 @@ public class Button extends Image {
 	@Override
 	protected void paintSelf(SpriteBatch batch, Registry registry) {
 		super.paintSelf(batch, registry);
-		BitmapFont font = ClientApplication.getRegistry().createFont(fontId, fontSize);
-		font.draw(batch, text, bounds.x, bounds.y + bounds.height);
+		BitmapFont font = ClientApplication.getRegistry().getFont(fontId, fontSize);
+		font.draw(batch, text,
+				bounds.x,
+				bounds.y + (bounds.height * 0.75f),
+				0, text.length(),
+				bounds.width, Align.center, false);
 	}
 	
 	public String getText() {

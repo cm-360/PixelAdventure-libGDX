@@ -15,7 +15,6 @@ public class StartMenu extends Menu {
 		super();
 		// Main font
 		Identifier menuFont = new Identifier("pixadv", "fonts/Style-7/PixelFont7");
-//		Identifier menuFont = ClientApplication.getRenderingEngine().getDefaultFont(); //.deriveFont(24f);
 		// Logo
 		Image logoImage = new Image(this, parentBounds -> {
 			return new Rectangle(

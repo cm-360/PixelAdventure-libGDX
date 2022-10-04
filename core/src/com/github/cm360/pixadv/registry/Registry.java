@@ -18,12 +18,14 @@ public class Registry {
 
 	private boolean initialized;
 	private Map<Identifier, Texture> textures;
-	private Map<Identifier, FreeTypeFontGenerator> fonts;
+	private Map<Identifier, FreeTypeFontGenerator> fontGenerators;
+	private Map<String, BitmapFont> fontCache;
 	
 	public void initialize() {
 		initialized = false;
 		textures = new HashMap<Identifier, Texture>();
-		fonts = new HashMap<Identifier, FreeTypeFontGenerator>();
+		fontGenerators = new HashMap<Identifier, FreeTypeFontGenerator>();
+		fontCache = new HashMap<String, BitmapFont>();
 		// Load assets from builtin module
 		String builtinModuleId = "pixadv";
 		String[] assets = new String(Gdx.files.internal("assets.txt").readBytes()).split("\n");
@@ -40,8 +42,8 @@ public class Registry {
 			}
 		}
 		// TODO manually load font
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Style-7/PixelFont7.ttf"));
-		fonts.put(new Identifier("pixadv", "fonts/Style-7/PixelFont7"), generator);
+		FreeTypeFontGenerator fontGen = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Style-7/PixelFont7.ttf"));
+		fontGenerators.put(new Identifier("pixadv", "fonts/Style-7/PixelFont7"), fontGen);
 		// Load external modules
 		for (FileHandle moduleFilename : Gdx.files.local("modules").list())
 			System.out.println(moduleFilename);
@@ -89,10 +91,17 @@ public class Registry {
 		return textures.get(id);
 	}
 	
-	public BitmapFont createFont(Identifier id, int size) {
-		FreeTypeFontParameter fontParam = new FreeTypeFontParameter();
-		fontParam.size = size;
-		return fonts.get(id).generateFont(fontParam);
+	public BitmapFont getFont(Identifier id, int size) {
+		String cacheId = String.format("%s#%d", id.toString(), size);
+		BitmapFont font = fontCache.get(cacheId);
+		if (font == null) {
+			// Generate new font object and add to cache
+			FreeTypeFontParameter fontParam = new FreeTypeFontParameter();
+			fontParam.size = size;
+			font = fontGenerators.get(id).generateFont(fontParam);
+			fontCache.put(cacheId, font);
+		}
+		return font;
 	}
 	
 	public boolean isInitialized() {
@@ -101,7 +110,8 @@ public class Registry {
 	
 	public void dispose() {
 		textures.forEach((id, texture) -> texture.dispose());
-		fonts.forEach((id, font) -> font.dispose());
+		fontGenerators.forEach((id, fontGen) -> fontGen.dispose());
+		fontCache.forEach((id, font) -> font.dispose());
 	}
 
 }
