@@ -47,24 +47,28 @@ public class Logger {
 	}
 	
 	public synchronized static void logException(String message, Exception exception, Object... objects) {
+		logThrowable(ERROR, message, exception, objects);
+	}
+	
+	public synchronized static void logThrowable(int level, String message, Throwable throwable, Object... objects) {
 		if (message != null && !message.isEmpty())
-			logMessage(ERROR, message, objects);
-		logMessage(ERROR, "%s: %s", exception.getClass().getCanonicalName(), exception.getMessage());
-		printStacktrace(exception);
-		printCause(exception);
+			logMessage(level, message, objects);
+		logMessage(level, "%s: %s", throwable.getClass().getCanonicalName(), throwable.getMessage());
+		printStacktrace(level, throwable);
+		printCause(level, throwable);
 	}
 	
-	private synchronized static void printStacktrace(Throwable throwable) {
+	private synchronized static void printStacktrace(int level, Throwable throwable) {
 		for (StackTraceElement ste : throwable.getStackTrace())
-			logMessage(ERROR, "    at %s", ste);
+			logMessage(level, "    at %s", ste);
 	}
 	
-	private synchronized static void printCause(Throwable throwable) {
+	private synchronized static void printCause(int level, Throwable throwable) {
 		Throwable cause = throwable.getCause();
 		if (cause != null) {
-			logMessage(ERROR, "Cause: %s: %s", cause.getClass().getCanonicalName(), cause.getMessage());
-			printStacktrace(cause);
-			printCause(cause);
+			logMessage(level, "Cause: %s: %s", cause.getClass().getCanonicalName(), cause.getMessage());
+			printStacktrace(level, cause);
+			printCause(level, cause);
 		}
 	}
 
