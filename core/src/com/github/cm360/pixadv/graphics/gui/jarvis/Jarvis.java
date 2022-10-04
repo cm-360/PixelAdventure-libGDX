@@ -1,4 +1,4 @@
-package com.github.cm360.pixadv.graphics.gui;
+package com.github.cm360.pixadv.graphics.gui.jarvis;
 
 import java.util.Set;
 import java.util.Stack;
@@ -11,13 +11,13 @@ import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.modules.builtin.events.gui.OpenMenuEvent;
 
-public class GuiManager implements EventListener {
+public class Jarvis implements EventListener {
 
 	private Set<Layer> guiHuds;
 	private Stack<Menu> guiMenus;
 	private Set<Layer> guiOverlays;
 	
-	public GuiManager() {
+	public Jarvis() {
 		ClientApplication.getEventManager().registerHandlers(this);
 		// GUI collections
 		guiHuds = new TreeSet<Layer>();

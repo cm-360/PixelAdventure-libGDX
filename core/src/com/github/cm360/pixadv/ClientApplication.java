@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.github.cm360.pixadv.environment.Universe;
 import com.github.cm360.pixadv.events.EventManager;
-import com.github.cm360.pixadv.graphics.gui.GuiManager;
+import com.github.cm360.pixadv.graphics.gui.jarvis.Jarvis;
 import com.github.cm360.pixadv.graphics.picasso.Picasso;
 import com.github.cm360.pixadv.input.FunctionInputProcessor;
 import com.github.cm360.pixadv.input.GuiInputProcessor;
@@ -17,7 +17,7 @@ public class ClientApplication extends ApplicationAdapter {
 	private static Registry registry;
 	private static Picasso picasso;
 	private static EventManager eventManager;
-	private static GuiManager guiManager;
+	private static Jarvis jarvis;
 
 	private Universe universe;
 
@@ -26,8 +26,8 @@ public class ClientApplication extends ApplicationAdapter {
 		// Create managers
 		registry = new Registry();
 		eventManager = new EventManager();
-		guiManager = new GuiManager();
-		picasso = new Picasso(registry, guiManager);
+		jarvis = new Jarvis();
+		picasso = new Picasso(registry, jarvis);
 		// Create input handlers
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(new FunctionInputProcessor());
@@ -36,7 +36,7 @@ public class ClientApplication extends ApplicationAdapter {
 		// Initialize registry
 		registry.initialize();
 		// Open start menu
-		guiManager.openMenu(new StartMenu());
+		jarvis.openMenu(new StartMenu());
 	}
 
 	@Override
@@ -68,8 +68,8 @@ public class ClientApplication extends ApplicationAdapter {
 		return eventManager;
 	}
 	
-	public static GuiManager getGuiManager() {
-		return guiManager;
+	public static Jarvis getGuiManager() {
+		return jarvis;
 	}
 
 }
