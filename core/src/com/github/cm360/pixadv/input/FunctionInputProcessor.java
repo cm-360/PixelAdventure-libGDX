@@ -35,7 +35,7 @@ public class FunctionInputProcessor extends AbstractInputProcessor {
 		default:
 			return false;
 		}
-		return false;
+		return true;
 	}
 	
 }
