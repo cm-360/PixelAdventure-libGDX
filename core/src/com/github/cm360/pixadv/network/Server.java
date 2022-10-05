@@ -37,8 +37,9 @@ public class Server {
 					.option(ChannelOption.SO_BACKLOG, 128)
 					.childOption(ChannelOption.SO_KEEPALIVE, true);
 			serverChannel = b.bind(address, port).sync().channel();
+			Logger.logMessage(Logger.INFO, "Server hosted on %s:%d", address.getHostAddress(), port);
 		} catch (Exception e) {
-			Logger.logException("Uncaught server exception!", e);
+			Logger.logException("Failed to start server!", e);
 		}
 	}
 	
@@ -46,7 +47,7 @@ public class Server {
 		try {
 			serverChannel.close().sync();
 		} catch (Exception e) {
-			Logger.logException("Uncaught server exception!", e);
+			Logger.logException("Error while stopping server!", e);
 		} finally {
 			workerGroup.shutdownGracefully();
 			bossGroup.shutdownGracefully();
