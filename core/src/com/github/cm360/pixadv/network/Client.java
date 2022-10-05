@@ -42,7 +42,6 @@ public class Client {
 					.option(ChannelOption.SO_KEEPALIVE, true);
 			Logger.logMessage(Logger.INFO, "Connecting to %s:%d...", address.getHostAddress(), port);
 			channel = b.connect(address, port).sync().channel();
-			Logger.logMessage(Logger.INFO, "Connection established");
 			// Send hello
 			channel.writeAndFlush("testing testing uwu").sync();
 			Logger.logMessage(Logger.INFO, "Sent hello");
