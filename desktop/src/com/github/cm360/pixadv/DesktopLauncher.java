@@ -16,7 +16,7 @@ public class DesktopLauncher {
 			// Server
 			try {
 				Server server = new Server();
-				server.run(InetAddress.getLocalHost(), 43234);
+				server.run(InetAddress.getByName("0.0.0.0"), 43234);
 			} catch (UnknownHostException e) {
 				Logger.logException("Unknown host!", e);
 			}
