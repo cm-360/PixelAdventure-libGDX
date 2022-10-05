@@ -1,5 +1,8 @@
 package com.github.cm360.pixadv.modules.builtin.gui.menus;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Rectangle;
@@ -8,7 +11,9 @@ import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.graphics.gui.components.generic.Button;
 import com.github.cm360.pixadv.graphics.gui.components.generic.Image;
 import com.github.cm360.pixadv.input.KeyCombo;
+import com.github.cm360.pixadv.network.Client;
 import com.github.cm360.pixadv.registry.Identifier;
+import com.github.cm360.pixadv.util.Logger;
 
 public class StartMenu extends Menu {
 
@@ -61,7 +66,12 @@ public class StartMenu extends Menu {
 		multiplayerButton.registerEvent(new KeyCombo(Buttons.LEFT), () -> {
 			// TODO load multiplayer menu
 			ClientApplication.getGuiManager().closeMenu();
-			// ClientApplication.connect("127.0.0.1", 43234);
+			try {
+				Client client = new Client();
+				client.connect(InetAddress.getByName("localhost"), 43234);
+			} catch (UnknownHostException e) {
+				Logger.logException("hmm", e);
+			}
 		});
 		children.add(multiplayerButton);
 		// Options button
