@@ -31,9 +31,11 @@ public class Client {
 						}
 					})
 					.option(ChannelOption.SO_KEEPALIVE, true);
+			Logger.logMessage(Logger.INFO, "Connecting to %s:%d...", address.getHostAddress(), port);
 			channel = b.connect(address, port).sync().channel();
+			Logger.logMessage(Logger.INFO, "Connection established");
 		} catch (Exception e) {
-			Logger.logException("Uncaught client exception!", e);
+			Logger.logException("Failed to connect!", e);
 		}
 	}
 	
@@ -41,7 +43,7 @@ public class Client {
 		try {
 			channel.close().sync();
 		}  catch (Exception e) {
-			Logger.logException("Uncaught client exception!", e);
+			Logger.logException("Error during disconnect!", e);
 		} finally {
 			workerGroup.shutdownGracefully();
 		}
