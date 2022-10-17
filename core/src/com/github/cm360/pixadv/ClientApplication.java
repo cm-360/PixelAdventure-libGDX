@@ -19,7 +19,7 @@ public class ClientApplication extends ApplicationAdapter {
 	private static EventManager eventManager;
 	private static Jarvis jarvis;
 
-	private Universe universe;
+	private static Universe universe;
 
 	@Override
 	public void create() {
@@ -70,6 +70,10 @@ public class ClientApplication extends ApplicationAdapter {
 	
 	public static Jarvis getGuiManager() {
 		return jarvis;
+	}
+	
+	public static Universe getUniverse() {
+		return universe;
 	}
 
 }
