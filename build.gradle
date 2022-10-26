@@ -39,6 +39,8 @@ allprojects {
         ashleyVersion = '1.7.4'
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.2.1'
+        // Gson
+        gsonVersion = '2.10'
         // Netty
         nettyVersion = '4.1.82.Final'
     }
@@ -81,6 +83,8 @@ project(":core") {
         api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        // Gson
+        implementation "com.google.code.gson:gson:$gsonVersion"
         // Netty
 		implementation "io.netty:netty-all:$nettyVersion"
     }
