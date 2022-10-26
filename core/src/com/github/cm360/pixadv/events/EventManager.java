@@ -18,6 +18,8 @@ public class EventManager {
 	private Map<SyncType, Queue<Event>> eventQueueMap;
 	private Map<SyncType, Map<Method, EventListener>> eventHandlersMap;
 	
+	private Thread asyncEventThread;
+	
 	public EventManager() {
 		// Create sync type maps
 		eventQueueMap = new HashMap<SyncType, Queue<Event>>();
@@ -29,6 +31,13 @@ public class EventManager {
 				return m1.getAnnotation(EventHandler.class).priority() - m2.getAnnotation(EventHandler.class).priority();
 			}));
 		}
+		// Create async event handling thread
+		asyncEventThread = new Thread(null, () -> {
+			while (!asyncEventThread.isInterrupted()) {
+				tick(SyncType.ASYNC);
+			}
+		}, "events");
+		asyncEventThread.start();
 	}
 	
 	public void registerHandlers(EventListener listener) {
@@ -79,6 +88,10 @@ public class EventManager {
 	
 	private boolean validateEventHandler(Event event, Method handler) {
 		return handler.getParameters()[0].getType().isAssignableFrom(event.getClass());
+	}
+	
+	public void exit() {
+		asyncEventThread.interrupt();
 	}
 
 }

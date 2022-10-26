@@ -53,6 +53,7 @@ public class ClientApplication extends ApplicationAdapter {
 
 	@Override
 	public void dispose() {
+		eventManager.exit();
 		picasso.dispose();
 		registry.dispose();
 	}
