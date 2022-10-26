@@ -1,5 +1,6 @@
 package com.github.cm360.pixadv.modules.builtin.gui.menus;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -12,7 +13,7 @@ import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.graphics.gui.components.generic.Button;
 import com.github.cm360.pixadv.graphics.gui.components.generic.Image;
 import com.github.cm360.pixadv.input.KeyCombo;
-import com.github.cm360.pixadv.modules.builtin.events.system.LoadUniverseEvent;
+import com.github.cm360.pixadv.modules.builtin.events.system.UniverseLoadEvent;
 import com.github.cm360.pixadv.network.Client;
 import com.github.cm360.pixadv.registry.Identifier;
 import com.github.cm360.pixadv.util.Logger;
@@ -47,7 +48,7 @@ public class StartMenu extends Menu {
 		singleplayerButton.registerEvent(new KeyCombo(Buttons.LEFT), () -> {
 			// TODO load singleplayer menu
 			ClientApplication.getGuiManager().closeMenu();
-			ClientApplication.getEventManager().queue(new LoadUniverseEvent("Universe Zero"), SyncType.ASYNC);
+			ClientApplication.getEventManager().queue(new UniverseLoadEvent(new File("universes/Universe Zero")), SyncType.ASYNC);
 //			HumanPlayer player = new HumanPlayer(client.getRegistry().getTexture(Identifier.parse("pixadv:mario")));
 //			client.getCurrentUniverse().getCurrentWorld().addEntity(client.getPlayerId(), player);
 		});

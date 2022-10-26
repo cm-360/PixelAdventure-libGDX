@@ -22,6 +22,10 @@ public class Client {
 	private EventLoopGroup workerGroup;
 	private Channel channel;
 	
+	public void link(Server internalServer) {
+		// TODO link to internal server for singleplayer
+	}
+	
 	public void connect(InetAddress address, int port) {
 		workerGroup = new NioEventLoopGroup();
 		try {
@@ -50,7 +54,7 @@ public class Client {
 		}
 	}
 	
-	public void close() {
+	public void disconnect() {
 		try {
 			channel.close().sync();
 		}  catch (Exception e) {

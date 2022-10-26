@@ -1,8 +1,10 @@
 package com.github.cm360.pixadv.network;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.util.Map;
 
+import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.network.handlers.ObjectDecoder;
 import com.github.cm360.pixadv.network.handlers.ObjectEncoder;
 import com.github.cm360.pixadv.network.handlers.ObjectReadHandler;
@@ -24,6 +26,12 @@ public class Server {
 	private EventLoopGroup workerGroup;
 	private Channel serverChannel;
 	private Map<String, Channel> clientChannels;
+	
+	private Universe universe;
+	
+	public void load(File universeDirectory) {
+		Logger.logMessage(Logger.INFO, "Loading universe from '%s'", universeDirectory);
+	}
 	
 	public void run(InetAddress address, int port) {
 		bossGroup = new NioEventLoopGroup();
