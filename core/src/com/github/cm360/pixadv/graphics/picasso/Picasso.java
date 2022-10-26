@@ -17,6 +17,7 @@ import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.graphics.gui.jarvis.Jarvis;
+import com.github.cm360.pixadv.registry.Identifier;
 import com.github.cm360.pixadv.registry.Registry;
 import com.github.cm360.pixadv.util.Logger;
 
@@ -36,10 +37,10 @@ public class Picasso {
 	private FileHandle screenshotsDir;
 	private DateTimeFormatter screenshotNameFormatter;
 	
+	private Identifier fontId;
 	private BitmapFont font;
 
 	public Picasso(Registry registry, Jarvis guiManager) {
-		font = new BitmapFont();
 		// Important objects
 		this.registry = registry;
 		this.guiManager = guiManager;
@@ -50,7 +51,9 @@ public class Picasso {
 		showDebug = true;
 		// Screenshot directories
 		screenshotsDir = Gdx.files.local("screenshots");
-		screenshotNameFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss.SSS");	
+		screenshotNameFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss.SSS");
+		// Default font
+		fontId = new Identifier("pixadv", "fonts/Style-7/PixelFont7");
 	}
 	
 	public void render(Universe universe) {
@@ -59,6 +62,8 @@ public class Picasso {
 		camera.setToOrtho(false, viewportWidth, viewportHeight);
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		// Grab default font
+		font = registry.getFont(fontId, 16);
 		// Draw
 		if (registry.isInitialized()) {
 			renderWorld(universe);
@@ -154,7 +159,6 @@ public class Picasso {
 	
 	public void dispose() {
 		batch.dispose();
-		font.dispose();
 	}
 
 }
