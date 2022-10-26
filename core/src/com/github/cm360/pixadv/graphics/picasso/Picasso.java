@@ -37,8 +37,9 @@ public class Picasso {
 	private FileHandle screenshotsDir;
 	private DateTimeFormatter screenshotNameFormatter;
 	
-	private Identifier fontId;
-	private BitmapFont font;
+	private Identifier defaultFontId;
+	private int defaultFontSize;
+	private BitmapFont defaultFont;
 
 	public Picasso(Registry registry, Jarvis guiManager) {
 		// Important objects
@@ -53,7 +54,8 @@ public class Picasso {
 		screenshotsDir = Gdx.files.local("screenshots");
 		screenshotNameFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss.SSS");
 		// Default font
-		fontId = new Identifier("pixadv", "fonts/Style-7/PixelFont7");
+		defaultFontId = new Identifier("pixadv", "fonts/Style-7/PixelFont7");
+		defaultFontSize = 16;
 	}
 	
 	public void render(Universe universe) {
@@ -63,7 +65,7 @@ public class Picasso {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		// Grab default font
-		font = registry.getFont(fontId, 16);
+		defaultFont = registry.getFont(defaultFontId, defaultFontSize);
 		// Draw
 		if (registry.isInitialized()) {
 			renderWorld(universe);
@@ -101,8 +103,8 @@ public class Picasso {
 				renderDebugInfo();
 			} else {
 				// Show FPS counter
-				font.setColor(Color.WHITE);
-				font.draw(batch, String.format("%s FPS", Gdx.graphics.getFramesPerSecond()), 5, viewportHeight - 5);
+				defaultFont.setColor(Color.WHITE);
+				defaultFont.draw(batch, String.format("%s FPS", Gdx.graphics.getFramesPerSecond()), 5, viewportHeight - 5);
 			}
 		}
 		
@@ -110,8 +112,8 @@ public class Picasso {
 	
 	private void renderDebugInfo() {
 		// Show FPS counter
-		font.setColor(Color.WHITE);
-		font.draw(batch, String.format("%s FPS", Gdx.graphics.getFramesPerSecond()), 5, viewportHeight - 5);
+		defaultFont.setColor(Color.WHITE);
+		defaultFont.draw(batch, String.format("%s FPS", Gdx.graphics.getFramesPerSecond()), 5, viewportHeight - 5);
 	}
 	
 	public void resize(int width, int height) {
