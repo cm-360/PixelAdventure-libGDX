@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.events.EventHandler;
 import com.github.cm360.pixadv.events.EventListener;
+import com.github.cm360.pixadv.events.EventManager.SyncType;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.modules.builtin.events.gui.OpenMenuEvent;
@@ -25,7 +26,7 @@ public class Jarvis implements EventListener {
 		guiOverlays = new TreeSet<Layer>();
 	}
 	
-	@EventHandler
+	@EventHandler(sync = SyncType.RENDER)
 	public void onOpenMenuEvent(OpenMenuEvent event) {
 		System.out.println("opened menu");
 	}

@@ -7,10 +7,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Rectangle;
 import com.github.cm360.pixadv.ClientApplication;
+import com.github.cm360.pixadv.events.EventManager.SyncType;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.graphics.gui.components.generic.Button;
 import com.github.cm360.pixadv.graphics.gui.components.generic.Image;
 import com.github.cm360.pixadv.input.KeyCombo;
+import com.github.cm360.pixadv.modules.builtin.events.system.LoadUniverseEvent;
 import com.github.cm360.pixadv.network.Client;
 import com.github.cm360.pixadv.registry.Identifier;
 import com.github.cm360.pixadv.util.Logger;
@@ -45,12 +47,9 @@ public class StartMenu extends Menu {
 		singleplayerButton.registerEvent(new KeyCombo(Buttons.LEFT), () -> {
 			// TODO load singleplayer menu
 			ClientApplication.getGuiManager().closeMenu();
-//			client.addTask(() -> {
-//				client.load(new File(".\\data\\saves\\Universe Zero"));
-//				// pixadv:textures/entities/girl
-//				HumanPlayer player = new HumanPlayer(client.getRegistry().getTexture(Identifier.parse("pixadv:mario")));
-//				client.getCurrentUniverse().getCurrentWorld().addEntity(client.getPlayerId(), player);
-//			});
+			ClientApplication.getEventManager().queue(new LoadUniverseEvent("Universe Zero"), SyncType.ASYNC);
+//			HumanPlayer player = new HumanPlayer(client.getRegistry().getTexture(Identifier.parse("pixadv:mario")));
+//			client.getCurrentUniverse().getCurrentWorld().addEntity(client.getPlayerId(), player);
 		});
 		children.add(singleplayerButton);
 		// Multiplayer button

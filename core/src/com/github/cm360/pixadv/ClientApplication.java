@@ -4,8 +4,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.github.cm360.pixadv.environment.storage.Universe;
-import com.github.cm360.pixadv.environment.types.Entity;
 import com.github.cm360.pixadv.events.EventManager;
+import com.github.cm360.pixadv.events.EventManager.SyncType;
 import com.github.cm360.pixadv.graphics.gui.jarvis.Jarvis;
 import com.github.cm360.pixadv.graphics.picasso.Picasso;
 import com.github.cm360.pixadv.input.FunctionInputProcessor;
@@ -42,7 +42,7 @@ public class ClientApplication extends ApplicationAdapter {
 
 	@Override
 	public void render() {
-		eventManager.tick();
+		eventManager.tick(SyncType.RENDER);
 		picasso.render(universe);
 	}
 	
