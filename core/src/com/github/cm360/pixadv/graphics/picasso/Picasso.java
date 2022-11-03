@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
@@ -38,6 +40,10 @@ public class Picasso {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	
+	private float worldCamX;
+	private float worldCamY;
+	private int tileSize;
+	
 	public boolean showUI;
 	public boolean showDebug;
 	
@@ -54,6 +60,10 @@ public class Picasso {
 		this.guiManager = guiManager;
 		camera = new OrthographicCamera();
 		batch = new SpriteBatch();
+		// World camera info
+		worldCamX = 0;
+		worldCamY = 0;
+		tileSize = 8;
 		// Debug toggles
 		showUI = true;
 		showDebug = true;
@@ -85,15 +95,21 @@ public class Picasso {
 	}
 	
 	private void renderWorld(Universe universe) {
-		batch.draw(registry.getTexture(new Identifier("pixadv", "textures/tiles/missing")), 0, 0);
-		if (universe != null) {
+		if (true) { // (universe != null)
+			renderSky(universe);
 			renderTiles(universe);
 			renderEntities(universe);
 		}
 	}
 	
+	private void renderSky(Universe universe) {
+		Texture skyTex = registry.getTexture(new Identifier("pixadv", "textures/environment/terra/sky"));
+		skyTex.setFilter(TextureFilter.Nearest, TextureFilter.Linear);
+		batch.draw(skyTex, 0, (-viewportHeight / 2), viewportWidth, viewportHeight * 2);
+	}
+	
 	private void renderTiles(Universe universe) {
-		
+		batch.draw(registry.getTexture(new Identifier("pixadv", "textures/tiles/missing")), 0, 0);
 	}
 	
 	private void renderEntities(Universe universe) {
