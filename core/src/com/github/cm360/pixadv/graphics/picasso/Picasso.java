@@ -31,6 +31,8 @@ public class Picasso {
 	private Registry registry;
 	private Jarvis guiManager;
 	
+	public static final int defaultWindowWidth = 1280;
+	public static final int defaultWindowHeight = 720;
 	private int viewportWidth;
 	private int viewportHeight;
 	private OrthographicCamera camera;
@@ -123,8 +125,8 @@ public class Picasso {
 		// Rendering info
 		linesLeft.add(String.format("%s FPS", Gdx.graphics.getFramesPerSecond()));
 		linesLeft.add(String.format("%dx%d %dHz",
-				Gdx.graphics.getBackBufferWidth(),
-				Gdx.graphics.getBackBufferHeight(),
+				viewportWidth,
+				viewportHeight,
 				Gdx.graphics.getDisplayMode().refreshRate));
 		GLVersion glVersion = Gdx.graphics.getGLVersion();
 		linesLeft.add(String.format("%s %d.%d.%d (%s)",
@@ -206,7 +208,7 @@ public class Picasso {
 		if (fullscreen) {
 			Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		} else {
-			Gdx.graphics.setWindowedMode(800, 500);
+			Gdx.graphics.setWindowedMode(defaultWindowWidth, defaultWindowHeight);
 		}
 	}
 	

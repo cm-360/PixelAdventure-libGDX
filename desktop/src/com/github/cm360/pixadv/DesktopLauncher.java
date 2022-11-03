@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.github.cm360.pixadv.graphics.picasso.Picasso;
 import com.github.cm360.pixadv.network.Server;
 import com.github.cm360.pixadv.util.Logger;
 
@@ -25,7 +26,7 @@ public class DesktopLauncher {
 			// On macOS the program must be started with the -XstartOnFirstThread JVM argument
 			Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 			config.setForegroundFPS(60);
-			config.setWindowedMode(800, 500);
+			config.setWindowedMode(Picasso.defaultWindowWidth, Picasso.defaultWindowHeight);
 			config.setTitle("PixelAdventure-libGDX");
 			new Lwjgl3Application(new ClientApplication(), config);
 		}
