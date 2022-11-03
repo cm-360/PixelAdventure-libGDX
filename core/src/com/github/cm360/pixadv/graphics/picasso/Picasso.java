@@ -87,8 +87,17 @@ public class Picasso {
 	private void renderWorld(Universe universe) {
 		batch.draw(registry.getTexture(new Identifier("pixadv", "textures/tiles/missing")), 0, 0);
 		if (universe != null) {
-			
+			renderTiles(universe);
+			renderEntities(universe);
 		}
+	}
+	
+	private void renderTiles(Universe universe) {
+		
+	}
+	
+	private void renderEntities(Universe universe) {
+		
 	}
 	
 	private void renderGui() {
@@ -115,7 +124,6 @@ public class Picasso {
 				defaultFont.draw(batch, String.format("%s FPS", Gdx.graphics.getFramesPerSecond()), 5, viewportHeight - 5);
 			}
 		}
-		
 	}
 	
 	private void renderDebugInfo() {
