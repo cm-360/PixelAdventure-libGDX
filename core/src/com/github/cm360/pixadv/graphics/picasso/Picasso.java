@@ -30,9 +30,11 @@ import com.github.cm360.pixadv.util.Logger;
 
 public class Picasso {
 	
+	// Important objects (not that the rest aren't important :P)
 	private Registry registry;
 	private Jarvis guiManager;
 	
+	// Graphics things
 	public static final int defaultWindowWidth = 1280;
 	public static final int defaultWindowHeight = 720;
 	private int viewportWidth;
@@ -40,16 +42,28 @@ public class Picasso {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	
+	// Camera variables
 	private float worldCamX;
 	private float worldCamY;
 	private int tileSize;
+	private float tileScale;
+	private float tileSizeScaled;
+	private int centerX;
+	private int centerY;
+	private int minX;
+	private int minY;
+	private int maxX;
+	private int maxY;
 	
+	// UI rendering flags
 	public boolean showUI;
 	public boolean showDebug;
 	
+	// Screenshot things
 	private FileHandle screenshotsDir;
 	private DateTimeFormatter screenshotNameFormatter;
 	
+	// Default font
 	private Identifier defaultFontId;
 	private int defaultFontSize;
 	private BitmapFont defaultFont;
@@ -64,6 +78,7 @@ public class Picasso {
 		worldCamX = 0;
 		worldCamY = 0;
 		tileSize = 8;
+		tileScale = 4f;
 		// Debug toggles
 		showUI = true;
 		showDebug = true;
@@ -86,7 +101,7 @@ public class Picasso {
 		// Draw
 		if (registry.isInitialized()) {
 			renderWorld(universe);
-			renderGui();
+			renderGui(universe);
 		} else {
 			// TODO draw loading registry message
 		}
@@ -95,6 +110,16 @@ public class Picasso {
 	}
 	
 	private void renderWorld(Universe universe) {
+		// Viewport center
+		centerX = (int) (0 + (viewportWidth / 2) - tileSizeScaled / 2);
+		centerY = (int) (0 + (viewportHeight / 2) - tileSizeScaled / 2);
+		// Calculate world camera bounds
+		tileSizeScaled = tileSize * tileScale;
+		minX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2)) / tileSizeScaled - 0.05);
+		minY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2)) / tileSizeScaled - 0.05);
+		maxX = (int) Math.round(((worldCamX * tileSizeScaled + viewportWidth / 2)) / tileSizeScaled + 1.05);
+		maxY = (int) Math.round(((worldCamY * tileSizeScaled + viewportHeight / 2)) / tileSizeScaled + 1.05);
+		// Render world parts
 		if (true) { // (universe != null)
 			renderSky(universe);
 			renderTiles(universe);
@@ -116,7 +141,7 @@ public class Picasso {
 		
 	}
 	
-	private void renderGui() {
+	private void renderGui(Universe universe) {
 		if (showUI) {
 			// Draw HUD
 			for (Layer hud : guiManager.getHudLayers()) {
@@ -133,7 +158,7 @@ public class Picasso {
 			}
 			// Draw debug info
 			if (showDebug) {
-				renderDebugInfo();
+				renderDebugInfo(universe);
 			} else {
 				// Show FPS counter
 				defaultFont.setColor(Color.WHITE);
@@ -142,7 +167,7 @@ public class Picasso {
 		}
 	}
 	
-	private void renderDebugInfo() {
+	private void renderDebugInfo(Universe universe) {
 		// Generate debug text
 		List<String> linesLeft = new ArrayList<String>();
 		List<String> linesRight = new ArrayList<String>();
@@ -183,8 +208,23 @@ public class Picasso {
 		linesRight.add(String.format("%s v%s",
 				ClientApplication.name,
 				ClientApplication.getVersionString()));
-//		linesRight.add(String.format("", 
-//				registry.));
+		linesRight.add(null);
+		// World info
+		if (universe != null) {
+			linesRight.add(String.format("U: '%s' (%s)",
+					universe.getName(),
+					universe.getClass().getName()));
+			linesRight.add(String.format("W: '%s' (%s)",
+					null,
+					null));
+			linesRight.add(null);
+		}
+		// Camera info
+		linesRight.add(String.format("C: x%.4f y%.4f", worldCamX, worldCamY));
+		linesRight.add(String.format("V: (%d,%d)-(%d,%d)",
+				minX, minY,
+				maxX, maxY));
+		linesRight.add(null);
 		// Draw text
 		int padding = 5;
 		int spacers;
