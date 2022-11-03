@@ -22,6 +22,11 @@ import com.github.cm360.pixadv.registry.Registry;
 
 public class ClientApplication extends ApplicationAdapter implements EventListener {
 
+	public static final String name = "PixelAdventure";
+	public static final int versionMajor = 0;
+	public static final int versionMinor = 0;
+	public static final int versionPatch = 1;
+	
 	private static Registry registry;
 	private static Picasso picasso;
 	private static EventManager eventManager;
@@ -104,6 +109,10 @@ public class ClientApplication extends ApplicationAdapter implements EventListen
 	
 	public static Universe getUniverse() {
 		return universe;
+	}
+	
+	public static String getVersionString() {
+		return String.format("%d.%d.%d", versionMajor, versionMinor, versionPatch);
 	}
 
 }

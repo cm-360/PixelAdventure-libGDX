@@ -2,6 +2,8 @@ package com.github.cm360.pixadv.graphics.picasso;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.Deflater;
 
 import com.badlogic.gdx.Gdx;
@@ -12,7 +14,10 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
@@ -78,8 +83,9 @@ public class Picasso {
 	}
 	
 	private void renderWorld(Universe universe) {
+		batch.draw(registry.getTexture(new Identifier("pixadv", "textures/tiles/missing")), 0, 0);
 		if (universe != null) {
-
+			
 		}
 	}
 	
@@ -111,9 +117,75 @@ public class Picasso {
 	}
 	
 	private void renderDebugInfo() {
-		// Show FPS counter
+		// Generate debug text
+		List<String> linesLeft = new ArrayList<String>();
+		List<String> linesRight = new ArrayList<String>();
+		// Rendering info
+		linesLeft.add(String.format("%s FPS", Gdx.graphics.getFramesPerSecond()));
+		linesLeft.add(String.format("%dx%d %dHz",
+				Gdx.graphics.getBackBufferWidth(),
+				Gdx.graphics.getBackBufferHeight(),
+				Gdx.graphics.getDisplayMode().refreshRate));
+		GLVersion glVersion = Gdx.graphics.getGLVersion();
+		linesLeft.add(String.format("%s %d.%d.%d (%s)",
+				glVersion.getType().toString(),
+				glVersion.getMajorVersion(),
+				glVersion.getMinorVersion(),
+				glVersion.getReleaseVersion(),
+				glVersion.getVendorString()));
+		linesLeft.add(glVersion.getRendererString());
+		linesLeft.add(null);
+		// CPU info
+		linesLeft.add(String.format("%s %s %s",
+				System.getProperty("os.name"),
+				System.getProperty("os.version"),
+				System.getProperty("os.arch")));
+		linesLeft.add(String.format("x%d %s",
+				Runtime.getRuntime().availableProcessors(),
+				"Epic CPU Brand @ 29 GigaLOLs/MegaBruh"));
+		linesLeft.add(null);
+		// Memory usage
+		long totalMem = Runtime.getRuntime().totalMemory() / (1024 * 1024);
+		long freeMem = Runtime.getRuntime().freeMemory() / (1024 * 1024);
+		long usedMem = totalMem - freeMem;
+		linesLeft.add(String.format("%.0f%% %d/%dMiB",
+				((float) usedMem / (float) totalMem) * 100,
+				usedMem,
+				totalMem));
+		// Game info
+		linesRight.add(String.format("%s v%s",
+				ClientApplication.name,
+				ClientApplication.getVersionString()));
+		// Draw text
+		int padding = 5;
+		int spacers;
 		defaultFont.setColor(Color.WHITE);
-		defaultFont.draw(batch, String.format("%s FPS", Gdx.graphics.getFramesPerSecond()), 5, viewportHeight - 5);
+		// Left
+		spacers = 0;
+		for (int i = 0; i < linesLeft.size(); i++) {
+			String line = linesLeft.get(i);
+			if (line != null) {
+				defaultFont.draw(batch, line,
+						padding,
+						(viewportHeight - padding) - (i * defaultFontSize) + (spacers * (defaultFontSize / 2)));
+			} else {
+				spacers++;
+			}
+		}
+		// Right
+		spacers = 0;
+		for (int i = 0; i < linesRight.size(); i++) {
+			String line = linesRight.get(i);
+			if (line != null) {
+				defaultFont.draw(batch, line,
+						padding,
+						(viewportHeight - padding) - (i * defaultFontSize) + (spacers * (defaultFontSize / 2)),
+						viewportWidth - (2 * padding),
+						Align.right, false);
+			} else {
+				spacers++;
+			}
+		}
 	}
 	
 	public void resize(int width, int height) {
