@@ -5,13 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Map;
 
-import com.google.gson.Gson;
+import com.badlogic.gdx.utils.Json;
 
 public class LocalUniverse extends Universe {
 
 	public LocalUniverse(File universeDirectory) throws FileNotFoundException {
-		Gson gson = new Gson();
-		gson.fromJson(new FileReader(new File(universeDirectory, "info.json")), Map.class);
+		Json json = new Json();
+		json.fromJson(Map.class, new FileReader(new File(universeDirectory, "info.json")));
 	}
 	
 }

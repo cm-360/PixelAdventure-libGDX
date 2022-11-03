@@ -39,8 +39,6 @@ allprojects {
         ashleyVersion = '1.7.4'
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.2.1'
-        // Gson
-        gsonVersion = '2.10'
         // Netty
         nettyVersion = '4.1.82.Final'
     }
