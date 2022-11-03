@@ -1,5 +1,6 @@
 package com.github.cm360.pixadv.graphics.gui.components.generic;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
@@ -27,6 +28,16 @@ public class Button extends Image {
 	protected void paintSelf(SpriteBatch batch, Registry registry) {
 		super.paintSelf(batch, registry);
 		BitmapFont font = ClientApplication.getRegistry().getFont(fontId, fontSize);
+		// Draw drop shadow
+		int shadowOffset = 2;
+		font.setColor(Color.DARK_GRAY);
+		font.draw(batch, text,
+				bounds.x + shadowOffset,
+				bounds.y + (bounds.height * 0.75f) - shadowOffset,
+				0, text.length(),
+				bounds.width, Align.center, false);
+		// Draw foreground text
+		font.setColor(Color.WHITE);
 		font.draw(batch, text,
 				bounds.x,
 				bounds.y + (bounds.height * 0.75f),
