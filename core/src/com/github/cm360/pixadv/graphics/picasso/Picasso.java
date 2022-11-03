@@ -123,14 +123,14 @@ public class Picasso {
 		List<String> linesLeft = new ArrayList<String>();
 		List<String> linesRight = new ArrayList<String>();
 		// Rendering info
-		linesLeft.add(String.format("%s FPS", Gdx.graphics.getFramesPerSecond()));
+		linesLeft.add(String.format("%d FPS", Gdx.graphics.getFramesPerSecond()));
 		linesLeft.add(String.format("%dx%d %dHz",
 				viewportWidth,
 				viewportHeight,
 				Gdx.graphics.getDisplayMode().refreshRate));
 		GLVersion glVersion = Gdx.graphics.getGLVersion();
 		linesLeft.add(String.format("%s %d.%d.%d (%s)",
-				glVersion.getType().toString(),
+				glVersion.getType(),
 				glVersion.getMajorVersion(),
 				glVersion.getMinorVersion(),
 				glVersion.getReleaseVersion(),
@@ -146,7 +146,8 @@ public class Picasso {
 				Runtime.getRuntime().availableProcessors(),
 				"Epic CPU Brand @ 29 GigaLOLs/MegaBruh"));
 		linesLeft.add(null);
-		// Memory usage
+		// Runtime info
+		linesLeft.add(String.format("Java %s", Runtime.version()));
 		long totalMem = Runtime.getRuntime().totalMemory() / (1024 * 1024);
 		long freeMem = Runtime.getRuntime().freeMemory() / (1024 * 1024);
 		long usedMem = totalMem - freeMem;
@@ -158,6 +159,8 @@ public class Picasso {
 		linesRight.add(String.format("%s v%s",
 				ClientApplication.name,
 				ClientApplication.getVersionString()));
+//		linesRight.add(String.format("", 
+//				registry.));
 		// Draw text
 		int padding = 5;
 		int spacers;
