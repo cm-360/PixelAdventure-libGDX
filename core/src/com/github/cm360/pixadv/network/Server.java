@@ -1,9 +1,11 @@
 package com.github.cm360.pixadv.network;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.InetAddress;
 import java.util.Map;
 
+import com.github.cm360.pixadv.environment.storage.LocalUniverse;
 import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.network.handlers.ObjectDecoder;
 import com.github.cm360.pixadv.network.handlers.ObjectEncoder;
@@ -31,6 +33,12 @@ public class Server {
 	
 	public void load(File universeDirectory) {
 		Logger.logMessage(Logger.INFO, "Loading universe from '%s'", universeDirectory);
+		try {
+			universe = new LocalUniverse(universeDirectory);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void run(InetAddress address, int port) {
