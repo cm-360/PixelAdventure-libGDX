@@ -43,8 +43,8 @@ public class Picasso {
 	private SpriteBatch batch;
 	
 	// Camera variables
-	private float worldCamX;
-	private float worldCamY;
+	public float worldCamX;
+	public float worldCamY;
 	private int tileSize;
 	private float tileScale;
 	private float tileSizeScaled;
@@ -134,12 +134,16 @@ public class Picasso {
 	}
 	
 	private void renderTiles(Universe universe) {
+		Texture dirt = registry.getTexture(new Identifier("pixadv", "textures/tiles/terra/dirt/dirt/basic"));
 		for (int x = minX; x < maxX; x++) {
 			for (int y = minY; y < maxY; y++) {
-				
+				batch.draw(
+						dirt,
+						centerX - ((worldCamX - x) * tileSizeScaled),
+						centerY - ((worldCamY - y) * tileSizeScaled));
 			}
 		}
-		batch.draw(registry.getTexture(new Identifier("pixadv", "textures/tiles/missing")), 0, 0);
+		
 	}
 	
 	private void renderEntities(Universe universe) {
