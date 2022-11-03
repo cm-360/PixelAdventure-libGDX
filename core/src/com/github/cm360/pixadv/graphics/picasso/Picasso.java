@@ -111,8 +111,8 @@ public class Picasso {
 	
 	private void renderWorld(Universe universe) {
 		// Viewport center
-		centerX = (int) (0 + (viewportWidth / 2) - tileSizeScaled / 2);
-		centerY = (int) (0 + (viewportHeight / 2) - tileSizeScaled / 2);
+		centerX = (int) ((viewportWidth / 2) - tileSizeScaled / 2);
+		centerY = (int) ((viewportHeight / 2) - tileSizeScaled / 2);
 		// Calculate world camera bounds
 		tileSizeScaled = tileSize * tileScale;
 		minX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2)) / tileSizeScaled - 0.05);
@@ -134,6 +134,11 @@ public class Picasso {
 	}
 	
 	private void renderTiles(Universe universe) {
+		for (int x = minX; x < maxX; x++) {
+			for (int y = minY; y < maxY; y++) {
+				
+			}
+		}
 		batch.draw(registry.getTexture(new Identifier("pixadv", "textures/tiles/missing")), 0, 0);
 	}
 	
