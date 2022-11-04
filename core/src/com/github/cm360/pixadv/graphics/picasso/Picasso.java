@@ -127,7 +127,7 @@ public class Picasso {
 		// Render world parts
 		if (true) { // (universe != null)
 			renderSky(universe);
-			renderTiles(universe);
+			renderTileGrid(universe);
 			renderEntities(universe);
 		}
 	}
@@ -138,22 +138,22 @@ public class Picasso {
 		batch.draw(skyTex, 0, (-viewportHeight / 2), viewportWidth, viewportHeight * 2);
 	}
 	
-	private void renderTiles(Universe universe) {
+	private void renderTileGrid(Universe universe) {
 		Texture dirt = registry.getTexture(new Identifier("pixadv", "textures/tiles/terra/dirt/dirt/basic"));
 		for (int x = minX; x < maxX; x++) {
 			for (int y = minY; y < maxY; y++) {
 //				universe.getWorld("Earth").getTile(x, y);
-				batch.draw(
-						dirt,
-						centerX - ((worldCamX - x) * tileSizeScaled),
-						centerY - ((worldCamY - y) * tileSizeScaled),
-						tileSizeScaled, tileSizeScaled);
+				renderTile(dirt, x, y);
 			}
 		}
+		renderTile(registry.getTexture(new Identifier("pixadv", "textures/gui/tile_hover")), 7, 7);
+	}
+	
+	private void renderTile(Texture texture, int x, int y) {
 		batch.draw(
-				registry.getTexture(new Identifier("pixadv", "textures/gui/tile_hover")),
-				centerX - ((worldCamX - 7) * tileSizeScaled),
-				centerY - ((worldCamY - 7) * tileSizeScaled),
+				texture,
+				centerX - ((worldCamX - x) * tileSizeScaled),
+				centerY - ((worldCamY - y) * tileSizeScaled),
 				tileSizeScaled, tileSizeScaled);
 	}
 	
@@ -233,7 +233,7 @@ public class Picasso {
 		if (universe != null) {
 			linesRight.add(String.format("U: '%s' (%s)",
 					universe.getName(),
-					universe.getClass().getName()));
+					universe.getClass().getSimpleName()));
 			linesRight.add(String.format("W: '%s' (%s)",
 					null,
 					null));
