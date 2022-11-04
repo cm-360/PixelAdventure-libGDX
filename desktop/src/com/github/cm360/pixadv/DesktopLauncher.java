@@ -25,9 +25,8 @@ public class DesktopLauncher {
 			// Client
 			// On macOS the program must be started with the -XstartOnFirstThread JVM argument
 			Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-			config.setForegroundFPS(60);
 			config.setWindowedMode(Picasso.defaultWindowWidth, Picasso.defaultWindowHeight);
-			config.setTitle("PixelAdventure-libGDX");
+			config.setTitle(String.format("PixelAdventure v%s", ClientApplication.getVersionString()));
 			new Lwjgl3Application(new ClientApplication(), config);
 		}
 	}

@@ -69,6 +69,9 @@ public class Picasso {
 	private BitmapFont defaultFont;
 
 	public Picasso(Registry registry, Jarvis guiManager) {
+		// Rendering options
+		setTargetFPS(60);
+		setVSync(true);
 		// Important objects
 		this.registry = registry;
 		this.guiManager = guiManager;
@@ -91,6 +94,7 @@ public class Picasso {
 	}
 	
 	public void render(Universe universe) {
+//		Gdx.graphics.setForegroundFPS(0);
 		// Prepare for drawing
 		ScreenUtils.clear(0f, 0f, 0f, 1f);
 		camera.setToOrtho(false, viewportWidth, viewportHeight);
@@ -296,6 +300,18 @@ public class Picasso {
 	
 	public boolean isFullscreen() {
 		return Gdx.graphics.isFullscreen();
+	}
+	
+	public void setTargetFPS(int fps) {
+		Gdx.graphics.setForegroundFPS(fps);
+	}
+	
+	public int getTargetFPS() {
+		return -1; // TODO save target FPS since we can't look it up
+	}
+	
+	public void setVSync(boolean vsync) {
+		Gdx.graphics.setVSync(vsync);
 	}
 	
 	public void takeScreenshot() {
