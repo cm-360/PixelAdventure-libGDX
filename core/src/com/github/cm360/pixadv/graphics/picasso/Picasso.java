@@ -38,6 +38,7 @@ public class Picasso {
 	public static final int defaultWindowWidth = 1280;
 	public static final int defaultWindowHeight = 720;
 	private int targetFPS;
+	private boolean useVSync;
 	private int viewportWidth;
 	private int viewportHeight;
 	private OrthographicCamera camera;
@@ -197,7 +198,10 @@ public class Picasso {
 		List<String> linesLeft = new ArrayList<String>();
 		List<String> linesRight = new ArrayList<String>();
 		// Rendering info
-		linesLeft.add(String.format("%d FPS", Gdx.graphics.getFramesPerSecond()));
+		linesLeft.add(String.format("%d/%d FPS%s",
+				Gdx.graphics.getFramesPerSecond(),
+				targetFPS,
+				(useVSync ? " (VSync)" : "")));
 		linesLeft.add(String.format("%dx%d %dHz",
 				viewportWidth,
 				viewportHeight,
@@ -317,7 +321,11 @@ public class Picasso {
 	}
 	
 	public void setVSync(boolean vsync) {
-		Gdx.graphics.setVSync(vsync);
+		Gdx.graphics.setVSync(useVSync = vsync);
+	}
+	
+	public boolean getVSync() {
+		return useVSync;
 	}
 	
 	public void takeScreenshot() {
