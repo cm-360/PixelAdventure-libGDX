@@ -58,7 +58,6 @@ public class BasicWorldGenerator implements WorldGenerator {
 		world = new LocalWorld(width, height, chunkSize, worldInfo, null);
 		for (int cx = 0; cx < width; cx++) {
 			for (int cy = 0; cy < height; cy++) {
-				System.out.printf("%d %d\n", cx, cy);
 				world.setChunk(new Chunk(chunkSize), cx, cy);
 			}
 		}
