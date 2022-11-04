@@ -144,12 +144,18 @@ public class Picasso {
 	}
 	
 	private void renderTileGrid(Universe universe) {
-//		Texture dirt = registry.getTexture(new Identifier("pixadv", "textures/tiles/terra/dirt/dirt/basic"));
 		World world = universe.getWorld("GENTEST");
-		for (int x = minX; x < maxX; x++) {
-			for (int y = Math.max(0, minY); y < Math.min(world.getHeight() * world.getChunkSize(), maxY); y++) {
-				for (int l = 0; l < 3; l++) {
-					Tile tile = world.getTile(x, y, 0);
+		for (int l = 0; l < 3; l++) {
+			//
+			if (l == 0) {
+				batch.setColor(0.5F, 0.5F, 0.5F, 1F);
+			} else {
+				batch.setColor(1F, 1F, 1F, 1F);
+			}
+			//
+			for (int x = minX; x < maxX; x++) {
+				for (int y = Math.max(0, minY); y < Math.min(world.getHeight() * world.getChunkSize(), maxY); y++) {
+					Tile tile = world.getTile(x, y, l);
 					if (tile != null) {
 						for (Identifier textureId : tile.getTextures()) {
 							renderTile(registry.getTexture(textureId), x, y);
