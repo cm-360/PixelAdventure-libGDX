@@ -2,6 +2,7 @@ fonts/Style-7/PixelFont7.ttf
 textures/environment/terra/sky.png
 textures/gui/entities/missing.png
 textures/gui/icon.png
+textures/gui/tile_hover.png
 textures/gui/inventory/generic/slot.png
 textures/gui/menu/title/logo.png
 textures/gui/menu/title/multiplayer-hover.png
