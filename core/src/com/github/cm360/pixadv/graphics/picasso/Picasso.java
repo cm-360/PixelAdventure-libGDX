@@ -37,6 +37,7 @@ public class Picasso {
 	// Graphics things
 	public static final int defaultWindowWidth = 1280;
 	public static final int defaultWindowHeight = 720;
+	private int targetFPS;
 	private int viewportWidth;
 	private int viewportHeight;
 	private OrthographicCamera camera;
@@ -303,11 +304,11 @@ public class Picasso {
 	}
 	
 	public void setTargetFPS(int fps) {
-		Gdx.graphics.setForegroundFPS(fps);
+		Gdx.graphics.setForegroundFPS(targetFPS = fps);
 	}
 	
 	public int getTargetFPS() {
-		return -1; // TODO save target FPS since we can't look it up
+		return targetFPS;
 	}
 	
 	public void setVSync(boolean vsync) {
