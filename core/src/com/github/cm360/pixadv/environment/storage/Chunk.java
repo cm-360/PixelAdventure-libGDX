@@ -6,6 +6,10 @@ public class Chunk {
 
 	protected Tile[][][] tiles;
 	
+	public Chunk(int size) {
+		tiles = new Tile[size][size][3];
+	}
+	
 	public Tile getTile(int x, int y, int z) {
 		return tiles[x][y][z];
 	}
