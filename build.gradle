@@ -41,6 +41,8 @@ allprojects {
         gdxControllersVersion = '2.2.1'
         // Netty
         nettyVersion = '4.1.82.Final'
+        // JNoise
+        jnoiseVersion = '4.0.0'
     }
 
     repositories {
@@ -83,6 +85,8 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         // Netty
 		implementation "io.netty:netty-all:$nettyVersion"
+		// JNoise
+    	implementation "de.articdive:jnoise-pipeline:$jnoiseVersion"
     }
     
     build.dependsOn writeAllAssetsToFile
