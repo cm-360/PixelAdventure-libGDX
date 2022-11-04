@@ -14,7 +14,7 @@ public class Chunk {
 		return tiles[x][y][z];
 	}
 	
-	public void setTile(int x, int y, int z, Tile tile) {
+	public void setTile(Tile tile, int x, int y, int z) {
 		tiles[x][y][z] = tile;
 	}
 

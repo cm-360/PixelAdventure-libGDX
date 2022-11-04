@@ -83,7 +83,7 @@ public class Picasso {
 		batch = new SpriteBatch();
 		// World camera info
 		worldCamX = 0;
-		worldCamY = 0;
+		worldCamY = 200;
 		tileSize = 8;
 		tileScale = 4f;
 		// Debug toggles
@@ -117,6 +117,7 @@ public class Picasso {
 	}
 	
 	private void renderWorld(Universe universe) {
+		tileScale = 1f;
 		// Viewport center
 		centerX = (int) ((viewportWidth / 2) - tileSizeScaled / 2);
 		centerY = (int) ((viewportHeight / 2) - tileSizeScaled / 2);
@@ -144,7 +145,7 @@ public class Picasso {
 	
 	private void renderTileGrid(Universe universe) {
 //		Texture dirt = registry.getTexture(new Identifier("pixadv", "textures/tiles/terra/dirt/dirt/basic"));
-		World world = universe.getWorld("Earth");
+		World world = universe.getWorld("GENTEST");
 		for (int x = minX; x < maxX; x++) {
 			for (int y = Math.max(0, minY); y < Math.min(world.getHeight() * world.getChunkSize(), maxY); y++) {
 				for (int l = 0; l < 3; l++) {

@@ -42,11 +42,16 @@ public class World {
 		return chunks[xFixed / chunkSize][y / chunkSize].getTile(xFixed % chunkSize, y % chunkSize, l);
 	}
 	
+	public void setTile(Tile tile, int x, int y, int l) {
+		int xFixed = fixCoordinate(x, width * chunkSize);
+		chunks[xFixed / chunkSize][y / chunkSize].setTile(tile, xFixed % chunkSize, y % chunkSize, l);
+	}
+	
 	public Chunk getChunk(int cx, int cy) {
 		return chunks[cx][cy];
 	}
 	
-	public void setChunk(int cx, int cy, Chunk chunk) {
+	public void setChunk(Chunk chunk, int cx, int cy) {
 		chunks[cx][cy] = chunk;
 	}
 	

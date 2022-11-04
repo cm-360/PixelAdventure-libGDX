@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.github.cm360.pixadv.modules.builtin.generators.world.BasicWorldGenerator;
 
 public class LocalUniverse extends Universe {
 
@@ -22,6 +23,8 @@ public class LocalUniverse extends Universe {
 			LocalWorld world = new LocalWorld(worldDir);
 			worlds.put(world.getName(), world);
 		}
+		// World gen debug world
+		worlds.put("GENTEST", new BasicWorldGenerator(1337L).generate());
 	}
 	
 }
