@@ -34,8 +34,6 @@ public class ClientApplication extends ApplicationAdapter implements EventListen
 
 	private static Client client;
 	private static Server internalServer;
-	
-	private static Universe universe;
 
 	@Override
 	public void create() {
@@ -61,7 +59,7 @@ public class ClientApplication extends ApplicationAdapter implements EventListen
 	@Override
 	public void render() {
 		eventManager.tick(SyncType.RENDER);
-		picasso.render(universe);
+		picasso.render(getUniverse());
 	}
 	
 	@Override
@@ -108,7 +106,11 @@ public class ClientApplication extends ApplicationAdapter implements EventListen
 	}
 	
 	public static Universe getUniverse() {
-		return universe;
+		if (client != null) {
+			return client.getUniverse();
+		} else {
+			return null;
+		}
 	}
 	
 	public static String getVersionString() {

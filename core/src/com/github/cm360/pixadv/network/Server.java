@@ -78,5 +78,9 @@ public class Server {
 			bossGroup.shutdownGracefully();
 		}
 	}
+	
+	public Universe getUniverse() {
+		return universe;
+	}
 
 }

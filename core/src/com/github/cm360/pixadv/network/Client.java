@@ -2,6 +2,8 @@ package com.github.cm360.pixadv.network;
 
 import java.net.InetAddress;
 
+import com.github.cm360.pixadv.environment.storage.Universe;
+import com.github.cm360.pixadv.environment.types.Entity;
 import com.github.cm360.pixadv.network.handlers.ObjectDecoder;
 import com.github.cm360.pixadv.network.handlers.ObjectEncoder;
 import com.github.cm360.pixadv.network.handlers.ObjectReadHandler;
@@ -22,8 +24,13 @@ public class Client {
 	private EventLoopGroup workerGroup;
 	private Channel channel;
 	
+	private Universe universe;
+	private String currentWorldName;
+	private Entity player;
+	
 	public void link(Server internalServer) {
 		// TODO link to internal server for singleplayer
+		universe = internalServer.getUniverse();
 	}
 	
 	public void connect(InetAddress address, int port) {
@@ -62,6 +69,18 @@ public class Client {
 		} finally {
 			workerGroup.shutdownGracefully();
 		}
+	}
+	
+	public Universe getUniverse() {
+		return universe;
+	}
+	
+	public String getCurrentWorldName() {
+		return currentWorldName;
+	}
+	
+	public Entity getPlayer() {
+		return player;
 	}
 
 }
