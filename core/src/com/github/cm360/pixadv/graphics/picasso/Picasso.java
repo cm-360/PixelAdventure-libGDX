@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.environment.storage.Universe;
+import com.github.cm360.pixadv.environment.storage.World;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.graphics.gui.jarvis.Jarvis;
@@ -126,7 +127,7 @@ public class Picasso {
 		maxX = (int) Math.round(((worldCamX * tileSizeScaled + viewportWidth / 2)) / tileSizeScaled + (1 + overscan));
 		maxY = (int) Math.round(((worldCamY * tileSizeScaled + viewportHeight / 2)) / tileSizeScaled + (1 + overscan));
 		// Render world parts
-		if (true) { // (universe != null)
+		if (universe != null) {
 			renderSky(universe);
 			renderTileGrid(universe);
 			renderEntities(universe);
@@ -142,9 +143,10 @@ public class Picasso {
 	
 	private void renderTileGrid(Universe universe) {
 		Texture dirt = registry.getTexture(new Identifier("pixadv", "textures/tiles/terra/dirt/dirt/basic"));
+		World world = universe.getWorld("Earth");
 		for (int x = minX; x < maxX; x++) {
-			for (int y = minY; y < maxY; y++) {
-//				universe.getWorld("Earth").getTile(x, y);
+			for (int y = Math.max(0, minY); y < Math.min(world.getHeight() * world.getChunkSize(), maxY); y++) {
+				world.getTile(x, y, 0);
 				renderTile(dirt, x, y);
 			}
 		}

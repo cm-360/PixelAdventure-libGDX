@@ -13,6 +13,9 @@ public class World {
 	protected Identifier type;
 	
 	protected Chunk[][] chunks;
+	protected int width;
+	protected int height;
+	protected int chunkSize;
 	protected Map<UUID, Entity> entities;
 	
 	public String getName() {
@@ -23,8 +26,20 @@ public class World {
 		return type;
 	}
 	
-	public Tile getTile(int x, int y) {
-		return null;
+	public int fixCoordinate(int coord, int max) {
+		int coordNew = coord;
+		if (coord < 0)
+			while (coordNew < 0)
+				coordNew += max;
+		else if (coord >= max)
+			while (coordNew >= max)
+				coordNew -= max;
+		return coordNew;
+	}
+	
+	public Tile getTile(int x, int y, int l) {
+		int xFixed = fixCoordinate(x, width * chunkSize);
+		return chunks[xFixed / chunkSize][y / chunkSize].getTile(xFixed % chunkSize, y % chunkSize, l);
 	}
 	
 	public Chunk getChunk(int cx, int cy) {
@@ -45,6 +60,18 @@ public class World {
 	
 	public void removeEntity(UUID uuid) {
 		entities.remove(uuid);
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
+	
+	public int getChunkSize() {
+		return chunkSize;
 	}
 	
 }
