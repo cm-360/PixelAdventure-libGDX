@@ -40,9 +40,9 @@ allprojects {
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.2.1'
         // Netty
-        nettyVersion = '4.1.82.Final'
+        nettyVersion = '4.1.84.Final'
         // JNoise
-        jnoiseVersion = '4.0.0'
+        jnoiseVersion = '3.0.2'
     }
 
     repositories {
@@ -86,7 +86,7 @@ project(":core") {
         // Netty
 		implementation "io.netty:netty-all:$nettyVersion"
 		// JNoise
-    	implementation "de.articdive:jnoise-pipeline:$jnoiseVersion"
+    	implementation "de.articdive:jnoise:$jnoiseVersion"
     }
     
     build.dependsOn writeAllAssetsToFile
