@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.environment.storage.World;
+import com.github.cm360.pixadv.environment.types.Tile;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.graphics.gui.jarvis.Jarvis;
@@ -142,12 +143,18 @@ public class Picasso {
 	}
 	
 	private void renderTileGrid(Universe universe) {
-		Texture dirt = registry.getTexture(new Identifier("pixadv", "textures/tiles/terra/dirt/dirt/basic"));
+//		Texture dirt = registry.getTexture(new Identifier("pixadv", "textures/tiles/terra/dirt/dirt/basic"));
 		World world = universe.getWorld("Earth");
 		for (int x = minX; x < maxX; x++) {
 			for (int y = Math.max(0, minY); y < Math.min(world.getHeight() * world.getChunkSize(), maxY); y++) {
-				world.getTile(x, y, 0);
-				renderTile(dirt, x, y);
+				for (int l = 0; l < 3; l++) {
+					Tile tile = world.getTile(x, y, 0);
+					if (tile != null) {
+						for (Identifier textureId : tile.getTextures()) {
+							renderTile(registry.getTexture(textureId), x, y);
+						}
+					}
+				}
 			}
 		}
 		renderTile(registry.getTexture(new Identifier("pixadv", "textures/gui/tile_hover")), 7, 7);
