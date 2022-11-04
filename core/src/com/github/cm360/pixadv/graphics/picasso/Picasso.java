@@ -95,7 +95,6 @@ public class Picasso {
 	}
 	
 	public void render(Universe universe) {
-//		Gdx.graphics.setForegroundFPS(0);
 		// Prepare for drawing
 		ScreenUtils.clear(0f, 0f, 0f, 1f);
 		camera.setToOrtho(false, viewportWidth, viewportHeight);
@@ -120,10 +119,11 @@ public class Picasso {
 		centerY = (int) ((viewportHeight / 2) - tileSizeScaled / 2);
 		// Calculate world camera bounds
 		tileSizeScaled = tileSize * tileScale;
-		minX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2)) / tileSizeScaled - 0.05);
-		minY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2)) / tileSizeScaled - 0.05);
-		maxX = (int) Math.round(((worldCamX * tileSizeScaled + viewportWidth / 2)) / tileSizeScaled + 1.05);
-		maxY = (int) Math.round(((worldCamY * tileSizeScaled + viewportHeight / 2)) / tileSizeScaled + 1.05);
+		float overscan = 0.05f;
+		minX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2)) / tileSizeScaled - overscan);
+		minY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2)) / tileSizeScaled - overscan);
+		maxX = (int) Math.round(((worldCamX * tileSizeScaled + viewportWidth / 2)) / tileSizeScaled + (1 + overscan));
+		maxY = (int) Math.round(((worldCamY * tileSizeScaled + viewportHeight / 2)) / tileSizeScaled + (1 + overscan));
 		// Render world parts
 		if (true) { // (universe != null)
 			renderSky(universe);
@@ -135,6 +135,7 @@ public class Picasso {
 	private void renderSky(Universe universe) {
 		Texture skyTex = registry.getTexture(new Identifier("pixadv", "textures/environment/terra/sky"));
 		skyTex.setFilter(TextureFilter.Nearest, TextureFilter.Linear);
+		// Overscan sky texture to let linear filtering make a better gradient
 		batch.draw(skyTex, 0, (-viewportHeight / 2), viewportWidth, viewportHeight * 2);
 	}
 	
@@ -177,17 +178,21 @@ public class Picasso {
 				overlay.paint(batch, registry);
 			}
 			// Draw debug info
+			int overlayTextPadding = 5;
 			if (showDebug) {
-				renderDebugInfo(universe);
+				renderDebugInfo(universe, overlayTextPadding);
 			} else {
 				// Show FPS counter
 				defaultFont.setColor(Color.WHITE);
-				defaultFont.draw(batch, String.format("%s FPS", Gdx.graphics.getFramesPerSecond()), 5, viewportHeight - 5);
+				defaultFont.draw(batch,
+						String.format("%s FPS", Gdx.graphics.getFramesPerSecond()),
+						overlayTextPadding,
+						viewportHeight - overlayTextPadding);
 			}
 		}
 	}
 	
-	private void renderDebugInfo(Universe universe) {
+	private void renderDebugInfo(Universe universe, int padding) {
 		// Generate debug text
 		List<String> linesLeft = new ArrayList<String>();
 		List<String> linesRight = new ArrayList<String>();
@@ -217,8 +222,9 @@ public class Picasso {
 		linesLeft.add(null);
 		// Runtime info
 		linesLeft.add(String.format("Java %s", Runtime.version()));
-		long totalMem = Runtime.getRuntime().totalMemory() / (1024 * 1024);
-		long freeMem = Runtime.getRuntime().freeMemory() / (1024 * 1024);
+		int mibSize = 1024 * 1024;
+		long totalMem = Runtime.getRuntime().totalMemory() / mibSize;
+		long freeMem = Runtime.getRuntime().freeMemory() / mibSize;
 		long usedMem = totalMem - freeMem;
 		linesLeft.add(String.format("%.0f%% %d/%dMiB",
 				((float) usedMem / (float) totalMem) * 100,
@@ -246,7 +252,6 @@ public class Picasso {
 				maxX, maxY));
 		linesRight.add(null);
 		// Draw text
-		int padding = 5;
 		int spacers;
 		defaultFont.setColor(Color.WHITE);
 		// Left
