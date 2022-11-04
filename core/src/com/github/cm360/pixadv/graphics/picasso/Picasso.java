@@ -137,13 +137,19 @@ public class Picasso {
 		Texture dirt = registry.getTexture(new Identifier("pixadv", "textures/tiles/terra/dirt/dirt/basic"));
 		for (int x = minX; x < maxX; x++) {
 			for (int y = minY; y < maxY; y++) {
+//				universe.getWorld("Earth").getTile(x, y);
 				batch.draw(
 						dirt,
 						centerX - ((worldCamX - x) * tileSizeScaled),
-						centerY - ((worldCamY - y) * tileSizeScaled));
+						centerY - ((worldCamY - y) * tileSizeScaled),
+						tileSizeScaled, tileSizeScaled);
 			}
 		}
-		
+		batch.draw(
+				registry.getTexture(new Identifier("pixadv", "textures/gui/tile_hover")),
+				centerX - ((worldCamX - 7) * tileSizeScaled),
+				centerY - ((worldCamY - 7) * tileSizeScaled),
+				tileSizeScaled, tileSizeScaled);
 	}
 	
 	private void renderEntities(Universe universe) {

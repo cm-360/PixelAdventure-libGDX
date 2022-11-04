@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.github.cm360.pixadv.environment.types.Entity;
+import com.github.cm360.pixadv.environment.types.Tile;
 import com.github.cm360.pixadv.registry.Identifier;
 
 public class World {
@@ -20,6 +21,10 @@ public class World {
 	
 	public Identifier getType() {
 		return type;
+	}
+	
+	public Tile getTile(int x, int y) {
+		return null;
 	}
 	
 	public Chunk getChunk(int cx, int cy) {
