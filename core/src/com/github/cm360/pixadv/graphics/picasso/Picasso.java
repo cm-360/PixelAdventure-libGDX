@@ -17,7 +17,6 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.github.cm360.pixadv.ClientApplication;
@@ -30,9 +29,6 @@ import com.github.cm360.pixadv.graphics.gui.jarvis.Jarvis;
 import com.github.cm360.pixadv.registry.Identifier;
 import com.github.cm360.pixadv.registry.Registry;
 import com.github.cm360.pixadv.util.Logger;
-
-import box2dLight.PointLight;
-import box2dLight.RayHandler;
 
 public class Picasso {
 	
@@ -157,7 +153,7 @@ public class Picasso {
 			} else {
 				batch.setColor(1F, 1F, 1F, 1F);
 			}
-			//
+			// Draw tiles
 			for (int x = minX; x < maxX; x++) {
 				for (int y = Math.max(0, minY); y < Math.min(world.getHeight() * world.getChunkSize(), maxY); y++) {
 					Tile tile = world.getTile(x, y, l);
