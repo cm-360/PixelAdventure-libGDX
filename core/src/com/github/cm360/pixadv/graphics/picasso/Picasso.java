@@ -49,6 +49,8 @@ public class Picasso {
 	// Camera variables
 	public float worldCamX;
 	public float worldCamY;
+	public float worldCamXTarget;
+	public float worldCamYTarget;
 	private int tileSize;
 	public float tileScale;
 	private float tileSizeScaled;
@@ -126,14 +128,16 @@ public class Picasso {
 		centerY = (int) ((viewportHeight / 2) - tileSizeScaled / 2);
 		// Calculate world camera bounds
 		tileSizeScaled = tileSize * tileScale;
-		float overscan = 0.05f;
+		float overscan = 1f;
 		minX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2)) / tileSizeScaled - overscan);
 		minY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2)) / tileSizeScaled - overscan);
 		maxX = (int) Math.round(((worldCamX * tileSizeScaled + viewportWidth / 2)) / tileSizeScaled + (1 + overscan));
 		maxY = (int) Math.round(((worldCamY * tileSizeScaled + viewportHeight / 2)) / tileSizeScaled + (1 + overscan));
 		// Update camera
-		worldCamX += worldCamXDelta / targetFPS;
-		worldCamY += worldCamYDelta / targetFPS;
+		worldCamXTarget += worldCamXDelta / targetFPS;
+		worldCamYTarget += worldCamYDelta / targetFPS;
+		worldCamX += (worldCamXTarget - worldCamX) / (targetFPS / 7);
+		worldCamY += (worldCamYTarget - worldCamY) / (targetFPS / 7);
 		// Render world parts
 		if (universe != null) {
 			renderSky(universe);

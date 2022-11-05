@@ -18,7 +18,7 @@ public class MovementInputProcessor extends AbstractInputProcessor {
 	
 	public boolean processKey(int keycode, boolean release) {
 		Picasso p = ClientApplication.getRenderingEngine();
-		float speed = 50f;
+		float speed = 100f;
 		switch(keycode) {
 		// Camera controls
 		case Keys.UP:
