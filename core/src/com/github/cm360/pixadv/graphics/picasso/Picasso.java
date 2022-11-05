@@ -232,6 +232,11 @@ public class Picasso {
 						lightPixmap.setColor(Color.CLEAR);
 						lightPixmap.drawPixel(xp, lightPixmap.getHeight() - yp - 1);
 					}
+					tile = world.getTile((minCX * chunkSize) + xp, y, 0);
+					if (tile == null) {
+						lightPixmap.setColor(Color.CLEAR);
+						lightPixmap.drawPixel(xp, lightPixmap.getHeight() - yp - 1);
+					}
 				}
 			}
 		}
@@ -255,6 +260,15 @@ public class Picasso {
 				prevColor2 = new Color(lightPixmap.getPixel(x + 1, y));
 				thisColor.a = Math.min(thisColor.a, Math.min(prevColor1.a, prevColor2.a));
 				thisColor.a += 0.05f;
+				lightPixmap.setColor(thisColor.clamp());
+				lightPixmap.drawPixel(x, y);
+			}
+		}
+		// Adjust
+		for (int x = 0; x < lightPixmap.getWidth(); x++) {
+			for (int y = 0; y < lightPixmap.getHeight(); y++) {
+				Color thisColor = new Color(lightPixmap.getPixel(x, y));
+				thisColor.a = (thisColor.a - 0.5f) * 2f;
 				lightPixmap.setColor(thisColor.clamp());
 				lightPixmap.drawPixel(x, y);
 			}
