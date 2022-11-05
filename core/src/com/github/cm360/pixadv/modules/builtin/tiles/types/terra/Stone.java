@@ -1,12 +1,18 @@
 package com.github.cm360.pixadv.modules.builtin.tiles.types.terra;
 
-import java.util.List;
-
 import com.github.cm360.pixadv.environment.types.Tile;
 import com.github.cm360.pixadv.registry.Identifier;
 
 public class Stone implements Tile {
 
+	protected Identifier[] textures;
+	
+	public Stone() {
+		textures = new Identifier[] {
+			Identifier.parse("pixadv:textures/tiles/terra/stone/basic")
+		};
+	}
+	
 	@Override
 	public String getID() {
 		return "terra/stone";
@@ -25,8 +31,8 @@ public class Stone implements Tile {
 	}
 
 	@Override
-	public List<Identifier> getTextures() {
-		return List.of(Identifier.parse("pixadv:textures/tiles/terra/stone/basic"));
+	public Identifier[] getTextures() {
+		return textures;
 	}
 	
 	@Override
