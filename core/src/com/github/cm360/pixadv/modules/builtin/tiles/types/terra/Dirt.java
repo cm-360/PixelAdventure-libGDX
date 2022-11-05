@@ -1,6 +1,8 @@
 package com.github.cm360.pixadv.modules.builtin.tiles.types.terra;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
@@ -11,13 +13,6 @@ import com.github.cm360.pixadv.registry.Identifier;
 public class Dirt implements Tile {
 
 	public boolean mud, grass, snow;
-
-	protected Identifier[] textures;
-	
-	public Dirt() {
-		textures = new Identifier[3];
-		updateTextures();
-	}
 	
 	@Override
 	public String getID() {
@@ -31,7 +26,6 @@ public class Dirt implements Tile {
 			mud = dataJson.getBoolean("mud", false);
 			grass = dataJson.getBoolean("grass", false);
 			snow = dataJson.getBoolean("snow", false);
-			updateTextures();
 		} catch (Exception e) {
 			// Do nothing
 		}
@@ -46,17 +40,14 @@ public class Dirt implements Tile {
 		return new Json().toJson(dataMap);
 	}
 	
-	public void updateTextures() {
-		// Update textures
-		textures[0] = Identifier.parse("pixadv:textures/tiles/terra/dirt/" + (mud ? "mud" : "dirt") + "/basic");
-		if (grass)
-			textures[1] = Identifier.parse("pixadv:textures/tiles/terra/dirt/" + (mud ? "mud" : "dirt") + "/grass");
-		if (snow)
-			textures[2] = Identifier.parse("pixadv:textures/tiles/terra/dirt/" + (mud ? "mud" : "dirt") + "/snow");
-	}
-	
 	@Override
-	public Identifier[] getTextures() {
+	public List<Identifier> getTextures() {
+		List<Identifier> textures = new ArrayList<Identifier>();
+		textures.add(Identifier.parse("pixadv:textures/tiles/terra/dirt/" + (mud ? "mud" : "dirt") + "/basic"));
+		if (grass)
+			textures.add(Identifier.parse("pixadv:textures/tiles/terra/dirt/" + (mud ? "mud" : "dirt") + "/grass"));
+		if (snow)
+			textures.add(Identifier.parse("pixadv:textures/tiles/terra/dirt/" + (mud ? "mud" : "dirt") + "/snow"));
 		return textures;
 	}
 	

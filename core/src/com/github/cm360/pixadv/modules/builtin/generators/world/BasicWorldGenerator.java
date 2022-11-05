@@ -69,12 +69,13 @@ public class BasicWorldGenerator implements WorldGenerator {
 			for (int y = 0; y <= heightmap[x]; y++) {
 				Dirt grass = new Dirt();
 				grass.grass = true;
-				grass.updateTextures();
+				Dirt grass2 = new Dirt();
+				grass2.grass = true;
 				world.setTile((heightmap[x] - y) < 15 ? new Dirt() : new Stone(), x, y, 0);
 				Tile otherTile = new Stone();
 				if (random.nextInt(50) == 6)
 					otherTile = new Luminite();
-				world.setTile(heightmap[x] == y ? grass : ((heightmap[x] - y) < 15 ? new Dirt() : otherTile), x, y, 2);
+				world.setTile(heightmap[x] == y ? grass2 : ((heightmap[x] - y) < 15 ? new Dirt() : otherTile), x, y, 2);
 			}
 		}
 		// Carve caves into terrain

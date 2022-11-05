@@ -1,6 +1,7 @@
 package com.github.cm360.pixadv.modules.builtin.tiles.types.luna;
 
 import java.awt.Color;
+import java.util.List;
 
 import com.github.cm360.pixadv.environment.types.Tile;
 import com.github.cm360.pixadv.modules.builtin.tiles.capabilities.LightEmitter;
@@ -8,12 +9,10 @@ import com.github.cm360.pixadv.registry.Identifier;
 
 public class Luminite implements Tile, LightEmitter {
 
-	protected Identifier[] textures;
+	protected Identifier textureId;
 	
 	public Luminite() {
-		textures = new Identifier[] {
-				Identifier.parse("pixadv:textures/tiles/luna/luminite")
-		};
+		textureId = Identifier.parse("pixadv:textures/tiles/luna/luminite");
 	}
 	
 	@Override
@@ -34,8 +33,8 @@ public class Luminite implements Tile, LightEmitter {
 	}
 
 	@Override
-	public Identifier[] getTextures() {
-		return textures;
+	public List<Identifier> getTextures() {
+		return List.of(textureId);
 	}
 
 	@Override
