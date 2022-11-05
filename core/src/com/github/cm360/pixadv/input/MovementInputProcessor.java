@@ -42,7 +42,7 @@ public class MovementInputProcessor extends AbstractInputProcessor {
 	@Override
 	public boolean scrolled(float x, float y) {
 		Picasso p = ClientApplication.getRenderingEngine();
-		p.tileScale = Math.max(1, Math.min(16, p.tileScale - y));
+		p.setTileScale(Math.max(1, Math.min(16, p.getTileScale() - y)));
 		return true;
 	}
 

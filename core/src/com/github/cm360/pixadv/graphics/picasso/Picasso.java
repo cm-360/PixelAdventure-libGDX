@@ -29,6 +29,7 @@ import com.github.cm360.pixadv.environment.types.Tile;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.graphics.gui.jarvis.Jarvis;
+import com.github.cm360.pixadv.modules.builtin.tiles.capabilities.LightEmitter;
 import com.github.cm360.pixadv.registry.Identifier;
 import com.github.cm360.pixadv.registry.Registry;
 import com.github.cm360.pixadv.util.Logger;
@@ -58,7 +59,7 @@ public class Picasso {
 	public float worldCamYTarget;
 	// Tile sizes
 	private int tileSize;
-	public float tileScale;
+	private float tileScale;
 	private float tileSizeScaled;
 	// Screen center
 	private int centerX;
@@ -74,8 +75,8 @@ public class Picasso {
 	public boolean showDebug;
 	
 	// Lighting things
-	public Pixmap lightPixmap;
-	public Texture lightTexture;
+	private Pixmap lightPixmap;
+	private Texture lightTexture;
 	
 	// Screenshot things
 	private FileHandle screenshotsDir;
@@ -99,7 +100,7 @@ public class Picasso {
 		worldCamX = 0;
 		worldCamY = 200;
 		tileSize = 8;
-		tileScale = 4f;
+		setTileScale(2f);
 		// Debug toggles
 		showUI = true;
 		showDebug = true;
@@ -143,7 +144,6 @@ public class Picasso {
 		centerX = (int) ((viewportWidth / 2) - tileSizeScaled / 2);
 		centerY = (int) ((viewportHeight / 2) - tileSizeScaled / 2);
 		// Calculate world camera bounds
-		tileSizeScaled = tileSize * tileScale;
 		float overscan = 1.5f;
 		minCX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2.0)) / (chunkSize * tileSizeScaled) - overscan);
 		minCY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2.0)) / (chunkSize * tileSizeScaled) - overscan);
@@ -158,7 +158,7 @@ public class Picasso {
 		renderSky(world);
 		renderTileGrid(world);
 		renderEntities(world);
-//		renderLightmap(world);
+		renderLightmap(world);
 	}
 	
 	private void renderSky(World world) {
@@ -214,21 +214,25 @@ public class Picasso {
 	}
 	
 	private void renderLightmap(World world) {
-		//
+		// Create new light texture if needed
 		if (lightPixmap == null) {
-			resetLightmap(world);
+			createLightmap(world);
 		}
 		// Draw light sources and propagate forwards
+		int chunkSize = world.getChunkSize();
 		lightPixmap.setColor(Color.BLACK);
 		lightPixmap.fillRectangle(0, 0, lightPixmap.getWidth(), lightPixmap.getHeight());
 		Color prevColor1, prevColor2;
-		for (int x = 0; x < lightPixmap.getWidth(); x++) {
-			for (int y = 0; y < lightPixmap.getHeight(); y++) {
-//				Tile tile = world.getTile(minX + x, minY + y, 2);
-//				if (tile instanceof LightEmitter) {
-//					lightPixmap.setColor(Color.CLEAR);
-//					lightPixmap.drawPixel(x, 99 - y);
-//				}
+		for (int xp = 0; xp < lightPixmap.getWidth(); xp++) {
+			for (int yp = 0; yp < lightPixmap.getHeight(); yp++) {
+				int y = (minCY * chunkSize) + yp;
+				if (y > 0 && y < world.getHeight() * chunkSize) {
+					Tile tile = world.getTile((minCX * chunkSize) + xp, y, 2);
+					if (tile instanceof LightEmitter) {
+						lightPixmap.setColor(Color.CLEAR);
+						lightPixmap.drawPixel(xp, lightPixmap.getHeight() - yp - 1);
+					}
+				}
 			}
 		}
 		// Propagate forwards
@@ -260,21 +264,27 @@ public class Picasso {
 		lightTexture.setFilter(TextureFilter.Nearest, TextureFilter.Linear);
 		batch.draw(
 				lightTexture,
-				centerX - ((worldCamX - 0) * tileSizeScaled),
-				centerY - ((worldCamY - 0) * tileSizeScaled),
-				100 * tileSizeScaled, 100 * tileSizeScaled);
+				centerX - ((worldCamX - (minCX * chunkSize)) * tileSizeScaled),
+				centerY - ((worldCamY - (minCY * chunkSize)) * tileSizeScaled),
+				lightTexture.getWidth() * tileSizeScaled,
+				lightTexture.getHeight() * tileSizeScaled);
 		// TODO implement something like https://www.youtube.com/watch?v=0knk78UYlvc
 	}
 	
-	private void resetLightmap(World world) {
+	private void createLightmap(World world) {
+		int chunkSize = world.getChunkSize();
+		lightPixmap = new Pixmap(
+				(maxCX - minCX) * chunkSize,
+				(maxCY - minCY) * chunkSize,
+				Format.RGBA8888);
+		lightPixmap.setBlending(Blending.None);
+	}
+	
+	private void disposeLightmap() {
 		if (lightPixmap != null) {
 			lightPixmap.dispose();
+			lightPixmap = null;
 		}
-		int chunkSize = world.getChunkSize();
-		int w = (int) Math.ceil(viewportWidth / tileSizeScaled) + (2 * chunkSize);
-		int h = (int) Math.ceil(viewportHeight / tileSizeScaled) + (2 * chunkSize);
-		lightPixmap = new Pixmap(w, h, Format.RGBA8888);
-		lightPixmap.setBlending(Blending.None);
 	}
 	
 	private void renderGui(Universe universe) {
@@ -369,6 +379,11 @@ public class Picasso {
 				minCX, minCY,
 				maxCX, maxCY,
 				maxCX - minCX, maxCY - minCY));
+		if (lightPixmap != null) {
+			linesRight.add(String.format("Lightmap: %dx%d",
+					lightPixmap.getWidth(),
+					lightPixmap.getHeight()));
+		}
 		linesRight.add(null);
 		// Draw text
 		int spacers;
@@ -401,10 +416,21 @@ public class Picasso {
 		}
 	}
 	
+	public float getTileScale() {
+		return tileScale;
+	}
+	
+	public void setTileScale(float newScale) {
+		tileScale = newScale;
+		tileSizeScaled = tileSize * tileScale;
+		disposeLightmap();
+	}
+	
 	public void resize(int width, int height) {
 		this.viewportWidth = width;
 		this.viewportHeight = height;
         Gdx.gl.glViewport(0, 0, width, height);
+        disposeLightmap();
 	}
 	
 	public int getViewportWidth() {
@@ -462,8 +488,7 @@ public class Picasso {
 	
 	public void dispose() {
 		batch.dispose();
-		if (lightPixmap != null)
-			lightPixmap.dispose();
+		disposeLightmap();
 	}
 
 }
