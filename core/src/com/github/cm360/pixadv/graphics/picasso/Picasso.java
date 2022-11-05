@@ -50,7 +50,7 @@ public class Picasso {
 	public float worldCamX;
 	public float worldCamY;
 	private int tileSize;
-	private float tileScale;
+	public float tileScale;
 	private float tileSizeScaled;
 	private int centerX;
 	private int centerY;
@@ -58,6 +58,10 @@ public class Picasso {
 	private int minY;
 	private int maxX;
 	private int maxY;
+	
+	// Camera input variables
+	public float worldCamXDelta;
+	public float worldCamYDelta;
 	
 	// UI rendering flags
 	public boolean showUI;
@@ -117,7 +121,6 @@ public class Picasso {
 	}
 	
 	private void renderWorld(Universe universe) {
-		tileScale = 1f;
 		// Viewport center
 		centerX = (int) ((viewportWidth / 2) - tileSizeScaled / 2);
 		centerY = (int) ((viewportHeight / 2) - tileSizeScaled / 2);
@@ -128,6 +131,9 @@ public class Picasso {
 		minY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2)) / tileSizeScaled - overscan);
 		maxX = (int) Math.round(((worldCamX * tileSizeScaled + viewportWidth / 2)) / tileSizeScaled + (1 + overscan));
 		maxY = (int) Math.round(((worldCamY * tileSizeScaled + viewportHeight / 2)) / tileSizeScaled + (1 + overscan));
+		// Update camera
+		worldCamX += worldCamXDelta / targetFPS;
+		worldCamY += worldCamYDelta / targetFPS;
 		// Render world parts
 		if (universe != null) {
 			renderSky(universe);
