@@ -22,13 +22,13 @@ import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.github.cm360.pixadv.ClientApplication;
+import com.github.cm360.pixadv.environment.storage.Chunk;
 import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.environment.storage.World;
 import com.github.cm360.pixadv.environment.types.Tile;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.graphics.gui.jarvis.Jarvis;
-import com.github.cm360.pixadv.modules.builtin.tiles.capabilities.LightEmitter;
 import com.github.cm360.pixadv.registry.Identifier;
 import com.github.cm360.pixadv.registry.Registry;
 import com.github.cm360.pixadv.util.Logger;
@@ -52,26 +52,28 @@ public class Picasso {
 	// Camera variables
 	public float worldCamX;
 	public float worldCamY;
+	public float worldCamXDelta;
+	public float worldCamYDelta;
 	public float worldCamXTarget;
 	public float worldCamYTarget;
+	// Tile sizes
 	private int tileSize;
 	public float tileScale;
 	private float tileSizeScaled;
+	// Screen center
 	private int centerX;
 	private int centerY;
-	private int minX;
-	private int minY;
-	private int maxX;
-	private int maxY;
-	
-	// Camera input variables
-	public float worldCamXDelta;
-	public float worldCamYDelta;
+	// Visible chunks
+	private int minCX;
+	private int minCY;
+	private int maxCX;
+	private int maxCY;
 	
 	// UI rendering flags
 	public boolean showUI;
 	public boolean showDebug;
 	
+	// Lighting things
 	public Pixmap lightPixmap;
 	public Texture lightTexture;
 	
@@ -85,8 +87,6 @@ public class Picasso {
 	private BitmapFont defaultFont;
 
 	public Picasso(Registry registry, Jarvis guiManager) {
-		lightPixmap = new Pixmap(100, 100, Format.RGBA4444);
-		lightPixmap.setBlending(Blending.None);
 		// Rendering options
 		setTargetFPS(60);
 		setVSync(true);
@@ -121,7 +121,12 @@ public class Picasso {
 		defaultFont = registry.getFont(defaultFontId, defaultFontSize);
 		// Draw
 		if (registry.isInitialized()) {
-			renderWorld(universe);
+			if (universe != null) {
+				World world = universe.getWorld("GENTEST");
+				if (world != null) {
+					renderWorld(world);
+				}
+			}
 			renderGui(universe);
 		} else {
 			// TODO draw loading registry message
@@ -132,40 +137,38 @@ public class Picasso {
 			lightTexture.dispose();
 	}
 	
-	private void renderWorld(Universe universe) {
+	private void renderWorld(World world) {
+		int chunkSize = world.getChunkSize();
 		// Viewport center
 		centerX = (int) ((viewportWidth / 2) - tileSizeScaled / 2);
 		centerY = (int) ((viewportHeight / 2) - tileSizeScaled / 2);
 		// Calculate world camera bounds
 		tileSizeScaled = tileSize * tileScale;
 		float overscan = 1.5f;
-		minX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2)) / tileSizeScaled - overscan);
-		minY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2)) / tileSizeScaled - overscan);
-		maxX = (int) Math.round(((worldCamX * tileSizeScaled + viewportWidth / 2)) / tileSizeScaled + (1 + overscan));
-		maxY = (int) Math.round(((worldCamY * tileSizeScaled + viewportHeight / 2)) / tileSizeScaled + (1 + overscan));
+		minCX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2)) / (chunkSize * tileSizeScaled) - overscan);
+		minCY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2)) / (chunkSize * tileSizeScaled) - overscan);
+		maxCX = (int) Math.round(((worldCamX * tileSizeScaled + viewportWidth / 2)) / (chunkSize * tileSizeScaled) + overscan);
+		maxCY = (int) Math.round(((worldCamY * tileSizeScaled + viewportHeight / 2)) / (chunkSize * tileSizeScaled) + overscan);
 		// Update camera
 		worldCamXTarget += worldCamXDelta / targetFPS;
 		worldCamYTarget += worldCamYDelta / targetFPS;
 		worldCamX += (worldCamXTarget - worldCamX) / (targetFPS / 7);
 		worldCamY += (worldCamYTarget - worldCamY) / (targetFPS / 7);
 		// Render world parts
-		if (universe != null) {
-			renderSky(universe);
-			renderTileGrid(universe);
-			renderEntities(universe);
-			renderLightmap(universe);
-		}
+		renderSky(world);
+		renderTileGrid(world);
+		renderEntities(world);
+//		renderLightmap(world);
 	}
 	
-	private void renderSky(Universe universe) {
+	private void renderSky(World world) {
 		Texture skyTex = registry.getTexture(new Identifier("pixadv", "textures/environment/terra/sky"));
 		skyTex.setFilter(TextureFilter.Nearest, TextureFilter.Linear);
 		// Overscan sky texture to let linear filtering make a better gradient
 		batch.draw(skyTex, 0, (-viewportHeight / 2), viewportWidth, viewportHeight * 2);
 	}
 	
-	private void renderTileGrid(Universe universe) {
-		World world = universe.getWorld("GENTEST");
+	private void renderTileGrid(World world) {
 		for (int l = 0; l < 3; l++) {
 			// Darken background layer
 			if (l == 0) {
@@ -174,13 +177,21 @@ public class Picasso {
 				batch.setColor(1F, 1F, 1F, 1F);
 			}
 			// Draw tiles
-			for (int x = minX; x < maxX; x++) {
-				for (int y = Math.max(0, minY); y < Math.min(world.getHeight() * world.getChunkSize(), maxY); y++) {
-					Tile tile = world.getTile(x, y, l);
-					if (tile != null) {
-						for (Identifier textureId : tile.getTextures()) {
-							if (textureId != null) {
-								renderTile(registry.getTexture(textureId), x, y);
+			for (int cx = minCX; cx < maxCX; cx++) {
+				for (int cy = Math.max(0, minCY); cy < Math.min(world.getHeight(), maxCY); cy++) {
+					Chunk chunk = world.getChunk(cx, cy);
+					int chunkSize = world.getChunkSize();
+					for (int xc = 0; xc < chunkSize; xc++) {
+						for (int yc = 0; yc < chunkSize; yc++) {
+							int x = (cx * chunkSize) + xc;
+							int y = (cy * chunkSize) + yc;
+							Tile tile = chunk.getTile(xc, yc, l);
+							if (tile != null) {
+								for (Identifier textureId : tile.getTextures()) {
+									if (textureId != null) {
+										renderTile(registry.getTexture(textureId), x, y);
+									}
+								}
 							}
 						}
 					}
@@ -198,45 +209,48 @@ public class Picasso {
 				tileSizeScaled, tileSizeScaled);
 	}
 	
-	private void renderEntities(Universe universe) {
+	private void renderEntities(World world) {
 		
 	}
 	
-	private void renderLightmap(Universe universe) {
+	private void renderLightmap(World world) {
+		//
+		if (lightPixmap == null) {
+			resetLightmap(world);
+		}
 		// Draw light sources and propagate forwards
-		World world = universe.getWorld("GENTEST");
 		lightPixmap.setColor(Color.BLACK);
-		lightPixmap.fillRectangle(0, 0, 100, 100);
-		Color prevColorN, prevColorW;
-		for (int x = 0; x < 100; x++) {
-			for (int y = 0; y < 100; y++) {
-				Tile tile = world.getTile(x, y, 2);
-				if (tile instanceof LightEmitter) {
-					lightPixmap.setColor(Color.CLEAR);
-					lightPixmap.drawPixel(x, 99 - y);
-				}
+		lightPixmap.fillRectangle(0, 0, lightPixmap.getWidth(), lightPixmap.getHeight());
+		Color prevColor1, prevColor2;
+		for (int x = 0; x < lightPixmap.getWidth(); x++) {
+			for (int y = 0; y < lightPixmap.getHeight(); y++) {
+//				Tile tile = world.getTile(minX + x, minY + y, 2);
+//				if (tile instanceof LightEmitter) {
+//					lightPixmap.setColor(Color.CLEAR);
+//					lightPixmap.drawPixel(x, 99 - y);
+//				}
 			}
 		}
 		// Propagate forwards
-		for (int x = 1; x < 100; x++) {
-			for (int y = 0; y < 99; y++) {
+		for (int x = 0; x < lightPixmap.getWidth(); x++) {
+			for (int y = 0; y < lightPixmap.getHeight(); y++) {
 				Color thisColor = new Color(lightPixmap.getPixel(x, y));
-				prevColorN = new Color(lightPixmap.getPixel(x, y - 1));
-				prevColorW = new Color(lightPixmap.getPixel(x - 1, y));
-				thisColor.a = Math.min(thisColor.a, Math.min(prevColorN.a, prevColorW.a));
-				thisColor.a += 0.1f;
+				prevColor1 = new Color(lightPixmap.getPixel(x, y - 1));
+				prevColor2 = new Color(lightPixmap.getPixel(x - 1, y));
+				thisColor.a = Math.min(thisColor.a, Math.min(prevColor1.a, prevColor2.a));
+				thisColor.a += 0.05f;
 				lightPixmap.setColor(thisColor.clamp());
 				lightPixmap.drawPixel(x, y);
 			}
 		}
 		// Propagate backwards
-		for (int x = 99; x >= 0; x--) {
-			for (int y = 99; y >= 0; y--) {
+		for (int x = lightPixmap.getWidth(); x >= 0; x--) {
+			for (int y = lightPixmap.getHeight(); y >= 0; y--) {
 				Color thisColor = new Color(lightPixmap.getPixel(x, y));
-				prevColorN = new Color(lightPixmap.getPixel(x, y + 1));
-				prevColorW = new Color(lightPixmap.getPixel(x + 1, y));
-				thisColor.a = Math.min(thisColor.a, Math.min(prevColorN.a, prevColorW.a));
-				thisColor.a += 0.1f;
+				prevColor1 = new Color(lightPixmap.getPixel(x, y + 1));
+				prevColor2 = new Color(lightPixmap.getPixel(x + 1, y));
+				thisColor.a = Math.min(thisColor.a, Math.min(prevColor1.a, prevColor2.a));
+				thisColor.a += 0.05f;
 				lightPixmap.setColor(thisColor.clamp());
 				lightPixmap.drawPixel(x, y);
 			}
@@ -250,6 +264,17 @@ public class Picasso {
 				centerY - ((worldCamY - 0) * tileSizeScaled),
 				100 * tileSizeScaled, 100 * tileSizeScaled);
 		// TODO implement something like https://www.youtube.com/watch?v=0knk78UYlvc
+	}
+	
+	private void resetLightmap(World world) {
+		if (lightPixmap != null) {
+			lightPixmap.dispose();
+		}
+		int chunkSize = world.getChunkSize();
+		int w = (int) Math.ceil(viewportWidth / tileSizeScaled) + (2 * chunkSize);
+		int h = (int) Math.ceil(viewportHeight / tileSizeScaled) + (2 * chunkSize);
+		lightPixmap = new Pixmap(w, h, Format.RGBA8888);
+		lightPixmap.setBlending(Blending.None);
 	}
 	
 	private void renderGui(Universe universe) {
@@ -340,10 +365,13 @@ public class Picasso {
 		}
 		// Camera info
 		linesRight.add(String.format("C: x%.4f y%.4f", worldCamX, worldCamY));
-		linesRight.add(String.format("V: (%d,%d)-(%d,%d)",
-				minX, minY,
-				maxX, maxY));
-		linesRight.add(String.format("%d %d", maxX - minX, maxY - minY));
+		linesRight.add(String.format("Visible: c(%d,%d)-c(%d,%d)",
+				minCX, minCY,
+				maxCX, maxCY));
+		linesRight.add(String.format("%d %d", maxCX - minCX, maxCY - minCY));
+		int w = (int) Math.ceil(viewportWidth / tileSizeScaled);
+		int h = (int) Math.ceil(viewportHeight / tileSizeScaled);
+		linesRight.add(String.format("%d %d", w, h));
 		linesRight.add(null);
 		// Draw text
 		int spacers;
@@ -437,7 +465,8 @@ public class Picasso {
 	
 	public void dispose() {
 		batch.dispose();
-		lightPixmap.dispose();
+		if (lightPixmap != null)
+			lightPixmap.dispose();
 	}
 
 }
