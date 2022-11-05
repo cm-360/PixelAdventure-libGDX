@@ -72,7 +72,7 @@ public class BasicWorldGenerator implements WorldGenerator {
 				grass.updateTextures();
 				world.setTile((heightmap[x] - y) < 15 ? new Dirt() : new Stone(), x, y, 0);
 				Tile otherTile = new Stone();
-				if (random.nextInt(50) == 6)
+				if (random.nextInt(500) == 6)
 					otherTile = new Luminite();
 				world.setTile(heightmap[x] == y ? grass : ((heightmap[x] - y) < 15 ? new Dirt() : otherTile), x, y, 2);
 			}

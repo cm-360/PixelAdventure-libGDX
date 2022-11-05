@@ -72,8 +72,8 @@ public class Picasso {
 	public boolean showUI;
 	public boolean showDebug;
 	
-	public Pixmap lightmap;
-	public Texture lightmapTexture;
+	public Pixmap lightPixmap;
+	public Texture lightTexture;
 	
 	// Screenshot things
 	private FileHandle screenshotsDir;
@@ -85,8 +85,8 @@ public class Picasso {
 	private BitmapFont defaultFont;
 
 	public Picasso(Registry registry, Jarvis guiManager) {
-		lightmap = new Pixmap(100, 100, Format.RGBA4444);
-		lightmap.setBlending(Blending.None);
+		lightPixmap = new Pixmap(100, 100, Format.RGBA4444);
+		lightPixmap.setBlending(Blending.None);
 		// Rendering options
 		setTargetFPS(60);
 		setVSync(true);
@@ -112,8 +112,6 @@ public class Picasso {
 	}
 	
 	public void render(Universe universe) {
-		setTargetFPS(500);
-		setVSync(false);
 		// Prepare for drawing
 		ScreenUtils.clear(0f, 0f, 0f, 1f);
 		camera.setToOrtho(false, viewportWidth, viewportHeight);
@@ -130,8 +128,8 @@ public class Picasso {
 		}
 		// Finalize
 		batch.end();
-		if (lightmapTexture != null)
-			lightmapTexture.dispose();
+		if (lightTexture != null)
+			lightTexture.dispose();
 	}
 	
 	private void renderWorld(Universe universe) {
@@ -140,7 +138,7 @@ public class Picasso {
 		centerY = (int) ((viewportHeight / 2) - tileSizeScaled / 2);
 		// Calculate world camera bounds
 		tileSizeScaled = tileSize * tileScale;
-		float overscan = 1f;
+		float overscan = 1.5f;
 		minX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2)) / tileSizeScaled - overscan);
 		minY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2)) / tileSizeScaled - overscan);
 		maxX = (int) Math.round(((worldCamX * tileSizeScaled + viewportWidth / 2)) / tileSizeScaled + (1 + overscan));
@@ -205,29 +203,49 @@ public class Picasso {
 	}
 	
 	private void renderLightmap(Universe universe) {
-//		batch.end();
-//		com.badlogic.gdx.physics.box2d.World world = new com.badlogic.gdx.physics.box2d.World(new Vector2(0,0),false);
-//		RayHandler rayHandler = new RayHandler(world);
-//		rayHandler.setCombinedMatrix(camera);   //<-- pass your camera combined matrix
-//		new PointLight(rayHandler, 5, Color.WHITE, 1000, viewportWidth / 2, viewportHeight / 2);
-//		rayHandler.updateAndRender();
-//		batch.begin();
+		// Draw light sources and propagate forwards
 		World world = universe.getWorld("GENTEST");
-		lightmap.setColor(Color.BLACK);
-		lightmap.fillRectangle(0, 0, 100, 100);
+		lightPixmap.setColor(Color.BLACK);
+		lightPixmap.fillRectangle(0, 0, 100, 100);
+		Color prevColorN, prevColorW;
 		for (int x = 0; x < 100; x++) {
 			for (int y = 0; y < 100; y++) {
-				Tile tile = world.getTile(x, 99 - y, 2);
+				Tile tile = world.getTile(x, y, 2);
 				if (tile instanceof LightEmitter) {
-					lightmap.setColor(Color.CLEAR);
-					lightmap.drawPixel(x, y);
+					lightPixmap.setColor(Color.CLEAR);
+					lightPixmap.drawPixel(x, 99 - y);
 				}
 			}
 		}
-		Texture lightmapTexture = new Texture(lightmap);
-		lightmapTexture.setFilter(TextureFilter.Nearest, TextureFilter.Linear);
+		// Propagate forwards
+		for (int x = 1; x < 100; x++) {
+			for (int y = 0; y < 99; y++) {
+				Color thisColor = new Color(lightPixmap.getPixel(x, y));
+				prevColorN = new Color(lightPixmap.getPixel(x, y - 1));
+				prevColorW = new Color(lightPixmap.getPixel(x - 1, y));
+				thisColor.a = Math.min(thisColor.a, Math.min(prevColorN.a, prevColorW.a));
+				thisColor.a += 0.1f;
+				lightPixmap.setColor(thisColor.clamp());
+				lightPixmap.drawPixel(x, y);
+			}
+		}
+		// Propagate backwards
+		for (int x = 99; x >= 0; x--) {
+			for (int y = 99; y >= 0; y--) {
+				Color thisColor = new Color(lightPixmap.getPixel(x, y));
+				prevColorN = new Color(lightPixmap.getPixel(x, y + 1));
+				prevColorW = new Color(lightPixmap.getPixel(x + 1, y));
+				thisColor.a = Math.min(thisColor.a, Math.min(prevColorN.a, prevColorW.a));
+				thisColor.a += 0.1f;
+				lightPixmap.setColor(thisColor.clamp());
+				lightPixmap.drawPixel(x, y);
+			}
+		}
+		// Draw light texture
+		lightTexture = new Texture(lightPixmap);
+		lightTexture.setFilter(TextureFilter.Nearest, TextureFilter.Linear);
 		batch.draw(
-				lightmapTexture,
+				lightTexture,
 				centerX - ((worldCamX - 0) * tileSizeScaled),
 				centerY - ((worldCamY - 0) * tileSizeScaled),
 				100 * tileSizeScaled, 100 * tileSizeScaled);
@@ -325,6 +343,7 @@ public class Picasso {
 		linesRight.add(String.format("V: (%d,%d)-(%d,%d)",
 				minX, minY,
 				maxX, maxY));
+		linesRight.add(String.format("%d %d", maxX - minX, maxY - minY));
 		linesRight.add(null);
 		// Draw text
 		int spacers;
@@ -418,7 +437,7 @@ public class Picasso {
 	
 	public void dispose() {
 		batch.dispose();
-		lightmap.dispose();
+		lightPixmap.dispose();
 	}
 
 }
