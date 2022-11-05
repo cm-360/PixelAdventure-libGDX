@@ -145,10 +145,10 @@ public class Picasso {
 		// Calculate world camera bounds
 		tileSizeScaled = tileSize * tileScale;
 		float overscan = 1.5f;
-		minCX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2)) / (chunkSize * tileSizeScaled) - overscan);
-		minCY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2)) / (chunkSize * tileSizeScaled) - overscan);
-		maxCX = (int) Math.round(((worldCamX * tileSizeScaled + viewportWidth / 2)) / (chunkSize * tileSizeScaled) + overscan);
-		maxCY = (int) Math.round(((worldCamY * tileSizeScaled + viewportHeight / 2)) / (chunkSize * tileSizeScaled) + overscan);
+		minCX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2.0)) / (chunkSize * tileSizeScaled) - overscan);
+		minCY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2.0)) / (chunkSize * tileSizeScaled) - overscan);
+		maxCX = minCX + (int) Math.round(viewportWidth / (chunkSize * tileSizeScaled) + (2 * overscan));
+		maxCY = minCY + (int) Math.round(viewportHeight / (chunkSize * tileSizeScaled) + (2 * overscan));
 		// Update camera
 		worldCamXTarget += worldCamXDelta / targetFPS;
 		worldCamYTarget += worldCamYDelta / targetFPS;
@@ -364,14 +364,11 @@ public class Picasso {
 			linesRight.add(null);
 		}
 		// Camera info
-		linesRight.add(String.format("C: x%.4f y%.4f", worldCamX, worldCamY));
-		linesRight.add(String.format("Visible: c(%d,%d)-c(%d,%d)",
+		linesRight.add(String.format("Camera: x%.4f y%.4f", worldCamX, worldCamY));
+		linesRight.add(String.format("Chunks: (%d,%d)-(%d,%d) %dx%d",
 				minCX, minCY,
-				maxCX, maxCY));
-		linesRight.add(String.format("%d %d", maxCX - minCX, maxCY - minCY));
-		int w = (int) Math.ceil(viewportWidth / tileSizeScaled);
-		int h = (int) Math.ceil(viewportHeight / tileSizeScaled);
-		linesRight.add(String.format("%d %d", w, h));
+				maxCX, maxCY,
+				maxCX - minCX, maxCY - minCY));
 		linesRight.add(null);
 		// Draw text
 		int spacers;
