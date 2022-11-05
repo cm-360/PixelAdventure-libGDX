@@ -1,7 +1,5 @@
 package com.github.cm360.pixadv.environment.types;
 
-import java.util.List;
-
 import com.github.cm360.pixadv.registry.Identifier;
 
 public interface Tile {
@@ -12,7 +10,7 @@ public interface Tile {
 	
 	public String getData();
 	
-	public List<Identifier> getTextures();
+	public Identifier[] getTextures();
 	
 	public double getFriction();
 

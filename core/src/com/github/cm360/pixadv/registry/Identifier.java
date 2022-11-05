@@ -4,10 +4,12 @@ public class Identifier {
 
 	private String namespace;
 	private String path;
+	private int hashCode;
 	
 	public Identifier(String namespace, String path) {
 		this.namespace = namespace.replaceAll("[^\\w]", "_").toLowerCase();
 		this.path = path.replaceAll("[^\\w\\/]", "_").toLowerCase();
+		this.hashCode = toString().hashCode();
 	}
 	
 	public static Identifier parse(String string) {
@@ -17,12 +19,12 @@ public class Identifier {
 	
 	@Override
 	public boolean equals(Object other) {
-		return toString().equals(other.toString());
+		return hashCode() == other.hashCode();
 	}
 	
 	@Override
 	public int hashCode() {
-		return toString().hashCode();
+		return hashCode;
 	}
 	
 	public boolean contains(Identifier other) {

@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.github.cm360.pixadv.ClientApplication;
@@ -29,6 +30,9 @@ import com.github.cm360.pixadv.graphics.gui.jarvis.Jarvis;
 import com.github.cm360.pixadv.registry.Identifier;
 import com.github.cm360.pixadv.registry.Registry;
 import com.github.cm360.pixadv.util.Logger;
+
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 public class Picasso {
 	
@@ -133,6 +137,7 @@ public class Picasso {
 			renderSky(universe);
 			renderTileGrid(universe);
 			renderEntities(universe);
+			renderLightmap(universe);
 		}
 	}
 	
@@ -146,7 +151,7 @@ public class Picasso {
 	private void renderTileGrid(Universe universe) {
 		World world = universe.getWorld("GENTEST");
 		for (int l = 0; l < 3; l++) {
-			//
+			// Darken background layer
 			if (l == 0) {
 				batch.setColor(0.5F, 0.5F, 0.5F, 1F);
 			} else {
@@ -158,7 +163,9 @@ public class Picasso {
 					Tile tile = world.getTile(x, y, l);
 					if (tile != null) {
 						for (Identifier textureId : tile.getTextures()) {
-							renderTile(registry.getTexture(textureId), x, y);
+							if (textureId != null) {
+								renderTile(registry.getTexture(textureId), x, y);
+							}
 						}
 					}
 				}
@@ -176,6 +183,17 @@ public class Picasso {
 	}
 	
 	private void renderEntities(Universe universe) {
+		
+	}
+	
+	private void renderLightmap(Universe universe) {
+//		batch.end();
+//		com.badlogic.gdx.physics.box2d.World world = new com.badlogic.gdx.physics.box2d.World(new Vector2(0,0),false);
+//		RayHandler rayHandler = new RayHandler(world);
+//		rayHandler.setCombinedMatrix(camera);   //<-- pass your camera combined matrix
+//		new PointLight(rayHandler, 5, Color.WHITE, 1000, viewportWidth / 2, viewportHeight / 2);
+//		rayHandler.updateAndRender();
+//		batch.begin();
 		
 	}
 	
