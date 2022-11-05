@@ -11,6 +11,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -26,6 +28,7 @@ import com.github.cm360.pixadv.environment.types.Tile;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.graphics.gui.jarvis.Jarvis;
+import com.github.cm360.pixadv.modules.builtin.tiles.capabilities.LightEmitter;
 import com.github.cm360.pixadv.registry.Identifier;
 import com.github.cm360.pixadv.registry.Registry;
 import com.github.cm360.pixadv.util.Logger;
@@ -69,6 +72,9 @@ public class Picasso {
 	public boolean showUI;
 	public boolean showDebug;
 	
+	public Pixmap lightmap;
+	public Texture lightmapTexture;
+	
 	// Screenshot things
 	private FileHandle screenshotsDir;
 	private DateTimeFormatter screenshotNameFormatter;
@@ -79,6 +85,8 @@ public class Picasso {
 	private BitmapFont defaultFont;
 
 	public Picasso(Registry registry, Jarvis guiManager) {
+		lightmap = new Pixmap(100, 100, Format.RGBA4444);
+		lightmap.setBlending(Blending.None);
 		// Rendering options
 		setTargetFPS(60);
 		setVSync(true);
@@ -104,6 +112,8 @@ public class Picasso {
 	}
 	
 	public void render(Universe universe) {
+		setTargetFPS(500);
+		setVSync(false);
 		// Prepare for drawing
 		ScreenUtils.clear(0f, 0f, 0f, 1f);
 		camera.setToOrtho(false, viewportWidth, viewportHeight);
@@ -120,6 +130,8 @@ public class Picasso {
 		}
 		// Finalize
 		batch.end();
+		if (lightmapTexture != null)
+			lightmapTexture.dispose();
 	}
 	
 	private void renderWorld(Universe universe) {
@@ -200,7 +212,26 @@ public class Picasso {
 //		new PointLight(rayHandler, 5, Color.WHITE, 1000, viewportWidth / 2, viewportHeight / 2);
 //		rayHandler.updateAndRender();
 //		batch.begin();
-		
+		World world = universe.getWorld("GENTEST");
+		lightmap.setColor(Color.BLACK);
+		lightmap.fillRectangle(0, 0, 100, 100);
+		for (int x = 0; x < 100; x++) {
+			for (int y = 0; y < 100; y++) {
+				Tile tile = world.getTile(x, 99 - y, 2);
+				if (tile instanceof LightEmitter) {
+					lightmap.setColor(Color.CLEAR);
+					lightmap.drawPixel(x, y);
+				}
+			}
+		}
+		Texture lightmapTexture = new Texture(lightmap);
+		lightmapTexture.setFilter(TextureFilter.Nearest, TextureFilter.Linear);
+		batch.draw(
+				lightmapTexture,
+				centerX - ((worldCamX - 0) * tileSizeScaled),
+				centerY - ((worldCamY - 0) * tileSizeScaled),
+				100 * tileSizeScaled, 100 * tileSizeScaled);
+		// TODO implement something like https://www.youtube.com/watch?v=0knk78UYlvc
 	}
 	
 	private void renderGui(Universe universe) {
@@ -387,6 +418,7 @@ public class Picasso {
 	
 	public void dispose() {
 		batch.dispose();
+		lightmap.dispose();
 	}
 
 }
