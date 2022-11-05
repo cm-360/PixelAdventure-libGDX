@@ -48,7 +48,8 @@ public class World {
 	}
 	
 	public Chunk getChunk(int cx, int cy) {
-		return chunks[cx][cy];
+		int cxFixed = fixCoordinate(cx, width);
+		return chunks[cxFixed][cy];
 	}
 	
 	public void setChunk(Chunk chunk, int cx, int cy) {
