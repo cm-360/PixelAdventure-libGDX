@@ -37,10 +37,15 @@ public class Luminite implements Tile, LightEmitter {
 	public Identifier[] getTextures() {
 		return textures;
 	}
+	
+	@Override
+	public float getTransmittance() {
+		return 0.2f;
+	}
 
 	@Override
-	public double getFriction() {
-		return 0.8;
+	public float getFriction() {
+		return 0.8f;
 	}
 	
 	@Override

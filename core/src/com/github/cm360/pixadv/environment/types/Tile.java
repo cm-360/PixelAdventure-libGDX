@@ -12,6 +12,8 @@ public interface Tile {
 	
 	public Identifier[] getTextures();
 	
-	public double getFriction();
+	public float getTransmittance();
+	
+	public float getFriction();
 
 }

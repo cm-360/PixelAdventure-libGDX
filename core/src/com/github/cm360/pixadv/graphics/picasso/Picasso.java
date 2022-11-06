@@ -298,24 +298,24 @@ public class Picasso {
 			}
 		}
 		// Propagate backwards
-		for (int x = lightPixmap.getWidth(); x >= 0; x--) {
-			for (int y = lightPixmap.getHeight(); y >= 0; y--) {
-				Color.rgba8888ToColor(thisColor, lightPixmap.getPixel(x, y));
-				Color.rgba8888ToColor(prevColor1, lightPixmap.getPixel(x, y + 1));
-				Color.rgba8888ToColor(prevColor2, lightPixmap.getPixel(x + 1, y));
+		for (int xp = lightPixmap.getWidth(); xp >= 0; xp--) {
+			for (int yp = lightPixmap.getHeight(); yp >= 0; yp--) {
+				Color.rgba8888ToColor(thisColor, lightPixmap.getPixel(xp, yp));
+				Color.rgba8888ToColor(prevColor1, lightPixmap.getPixel(xp, yp + 1));
+				Color.rgba8888ToColor(prevColor2, lightPixmap.getPixel(xp + 1, yp));
 				thisColor.a = Math.min(thisColor.a, Math.min(prevColor1.a, prevColor2.a));
 				thisColor.a += 0.05f;
 				lightPixmap.setColor(thisColor.clamp());
-				lightPixmap.drawPixel(x, y);
+				lightPixmap.drawPixel(xp, yp);
 			}
 		}
 		// Adjust
-		for (int x = 0; x < lightPixmap.getWidth(); x++) {
-			for (int y = 0; y < lightPixmap.getHeight(); y++) {
-				Color.rgba8888ToColor(thisColor, lightPixmap.getPixel(x, y));
+		for (int xp = 0; xp < lightPixmap.getWidth(); xp++) {
+			for (int yp = 0; yp < lightPixmap.getHeight(); yp++) {
+				Color.rgba8888ToColor(thisColor, lightPixmap.getPixel(xp, yp));
 				thisColor.a = (thisColor.a - 0.5f) * 2f;
 				lightPixmap.setColor(thisColor.clamp());
-				lightPixmap.drawPixel(x, y);
+				lightPixmap.drawPixel(xp, yp);
 			}
 		}
 		// Draw light texture

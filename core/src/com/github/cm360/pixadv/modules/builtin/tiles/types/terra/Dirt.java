@@ -61,8 +61,13 @@ public class Dirt implements Tile {
 	}
 	
 	@Override
-	public double getFriction() {
-		return 0.5;
+	public float getTransmittance() {
+		return 0.2f;
+	}
+	
+	@Override
+	public float getFriction() {
+		return 0.5f;
 	}
 
 }
