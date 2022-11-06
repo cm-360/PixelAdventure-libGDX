@@ -11,6 +11,7 @@ public class World {
 
 	protected String name;
 	protected Identifier type;
+	protected Identifier skyTextureId;
 	
 	protected Chunk[][] chunks;
 	protected int width;
@@ -24,6 +25,10 @@ public class World {
 	
 	public Identifier getType() {
 		return type;
+	}
+	
+	public Identifier getSkyTexture() {
+		return skyTextureId;
 	}
 	
 	public int fixCoordinate(int coord, int max) {

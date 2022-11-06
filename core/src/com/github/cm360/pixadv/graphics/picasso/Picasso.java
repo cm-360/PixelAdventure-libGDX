@@ -73,6 +73,8 @@ public class Picasso {
 	// UI rendering flags
 	public boolean showUI;
 	public boolean showDebug;
+	private List<String> debugLinesLeft;
+	private List<String> debugLinesRight;
 	
 	// Lighting things
 	private Pixmap lightPixmap;
@@ -101,9 +103,11 @@ public class Picasso {
 		worldCamY = 200;
 		tileSize = 8;
 		setTileScale(2f);
-		// Debug toggles
+		// Debug variables
 		showUI = true;
 		showDebug = true;
+		debugLinesLeft = new ArrayList<String>();
+		debugLinesRight = new ArrayList<String>();
 		// Screenshot directories
 		screenshotsDir = Gdx.files.local("screenshots");
 		screenshotNameFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss.SSS");
@@ -162,10 +166,12 @@ public class Picasso {
 	}
 	
 	private void renderSky(World world) {
-		Texture skyTex = registry.getTexture(new Identifier("pixadv", "textures/environment/terra/sky"));
-		skyTex.setFilter(TextureFilter.Nearest, TextureFilter.Linear);
-		// Overscan sky texture to let linear filtering make a better gradient
-		batch.draw(skyTex, 0, (-viewportHeight / 2), viewportWidth, viewportHeight * 2);
+		Texture skyTex = registry.getTexture(world.getSkyTexture());
+		if (skyTex != null) {
+			skyTex.setFilter(TextureFilter.Nearest, TextureFilter.Linear);
+			// Overscan sky texture to let linear filtering make a better gradient
+			batch.draw(skyTex, 0, (-viewportHeight / 2), viewportWidth, viewportHeight * 2);
+		}
 	}
 	
 	private void renderTileGrid(World world) {
@@ -335,79 +341,79 @@ public class Picasso {
 	
 	private void renderDebugInfo(Universe universe, int padding) {
 		// Generate debug text
-		List<String> linesLeft = new ArrayList<String>();
-		List<String> linesRight = new ArrayList<String>();
+		debugLinesLeft.clear();
+		debugLinesRight.clear();
 		// Rendering info
-		linesLeft.add(String.format("%d/%d FPS%s",
+		debugLinesLeft.add(String.format("%d/%d FPS%s",
 				Gdx.graphics.getFramesPerSecond(),
 				targetFPS,
 				(useVSync ? " (VSync)" : "")));
-		linesLeft.add(String.format("%dx%d %dHz",
+		debugLinesLeft.add(String.format("%dx%d %dHz",
 				viewportWidth,
 				viewportHeight,
 				Gdx.graphics.getDisplayMode().refreshRate));
 		GLVersion glVersion = Gdx.graphics.getGLVersion();
-		linesLeft.add(String.format("%s %d.%d.%d (%s)",
+		debugLinesLeft.add(String.format("%s %d.%d.%d (%s)",
 				glVersion.getType(),
 				glVersion.getMajorVersion(),
 				glVersion.getMinorVersion(),
 				glVersion.getReleaseVersion(),
 				glVersion.getVendorString()));
-		linesLeft.add(glVersion.getRendererString());
-		linesLeft.add(null);
+		debugLinesLeft.add(glVersion.getRendererString());
+		debugLinesLeft.add(null);
 		// CPU info
-		linesLeft.add(String.format("%s %s %s",
+		debugLinesLeft.add(String.format("%s %s %s",
 				System.getProperty("os.name"),
 				System.getProperty("os.version"),
 				System.getProperty("os.arch")));
-		linesLeft.add(String.format("x%d %s",
+		debugLinesLeft.add(String.format("x%d %s",
 				Runtime.getRuntime().availableProcessors(),
 				"Epic CPU Brand @ 29 GigaLOLs/MegaBruh"));
-		linesLeft.add(null);
+		debugLinesLeft.add(null);
 		// Runtime info
-		linesLeft.add(String.format("Java %s", Runtime.version()));
+		debugLinesLeft.add(String.format("Java %s", Runtime.version()));
 		int mibSize = 1024 * 1024;
 		long totalMem = Runtime.getRuntime().totalMemory() / mibSize;
 		long freeMem = Runtime.getRuntime().freeMemory() / mibSize;
 		long usedMem = totalMem - freeMem;
-		linesLeft.add(String.format("%.0f%% %d/%dMiB",
+		debugLinesLeft.add(String.format("%.0f%% %d/%dMiB",
 				((float) usedMem / (float) totalMem) * 100,
 				usedMem,
 				totalMem));
 		// Game info
-		linesRight.add(String.format("%s v%s",
+		debugLinesRight.add(String.format("%s v%s",
 				ClientApplication.name,
 				ClientApplication.getVersionString()));
-		linesRight.add(null);
+		debugLinesRight.add(null);
 		// World info
 		if (universe != null) {
-			linesRight.add(String.format("U: '%s' (%s)",
+			debugLinesRight.add(String.format("U: '%s' (%s)",
 					universe.getName(),
 					universe.getClass().getSimpleName()));
-			linesRight.add(String.format("W: '%s' (%s)",
+			debugLinesRight.add(String.format("W: '%s' (%s)",
 					null,
 					null));
-			linesRight.add(null);
+			debugLinesRight.add(null);
 		}
 		// Camera info
-		linesRight.add(String.format("Camera: x%.4f y%.4f", worldCamX, worldCamY));
-		linesRight.add(String.format("Chunks: (%d,%d)-(%d,%d) %dx%d",
+		debugLinesRight.add(String.format("Camera: x%.4f y%.4f", worldCamX, worldCamY));
+		debugLinesRight.add(String.format("Chunks: (%d,%d)-(%d,%d) %dx%d",
 				minCX, minCY,
 				maxCX, maxCY,
 				maxCX - minCX, maxCY - minCY));
 		if (lightPixmap != null) {
-			linesRight.add(String.format("Lightmap: %dx%d",
+			debugLinesRight.add(String.format("Lightmap: %dx%d",
 					lightPixmap.getWidth(),
 					lightPixmap.getHeight()));
 		}
-		linesRight.add(null);
+		debugLinesRight.add(null);
 		// Draw text
 		int spacers;
 		defaultFont.setColor(Color.WHITE);
 		// Left
 		spacers = 0;
-		for (int i = 0; i < linesLeft.size(); i++) {
-			String line = linesLeft.get(i);
+		for (int i = 0; i < debugLinesLeft.size(); i++) {
+			String line = debugLinesLeft.get(i);
 			if (line != null) {
 				defaultFont.draw(batch, line,
 						padding,
@@ -418,8 +424,8 @@ public class Picasso {
 		}
 		// Right
 		spacers = 0;
-		for (int i = 0; i < linesRight.size(); i++) {
-			String line = linesRight.get(i);
+		for (int i = 0; i < debugLinesRight.size(); i++) {
+			String line = debugLinesRight.get(i);
 			if (line != null) {
 				defaultFont.draw(batch, line,
 						padding,
