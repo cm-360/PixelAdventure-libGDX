@@ -219,6 +219,22 @@ public class Picasso {
 		
 	}
 	
+	/**
+	 * Calculates lighting values and renders the resulting texture to the screen.
+	 * This is the function I would say I am most proud of, it was a challenge for
+	 * me to get it working properly and not make a memory hog :)
+	 * 
+	 * Lighting is calculated in four stages:
+	 * 1. Draw all light sources to the texture
+	 * 2. Propagate in the forward XY directions
+	 * 3. Propagate in the backward XY directions
+	 * 4. Increase contrast to avoid darkness bleeding
+	 * 
+	 * The propagation flood fill algorithm is based entirely off this YouTube
+	 * video: https://www.youtube.com/watch?v=0knk78UYlvc
+	 * 
+	 * @param world The world to render lighting for
+	 */
 	private void renderLightmap(World world) {
 		// Create new light texture if needed
 		if (lightPixmap == null) {
@@ -290,7 +306,6 @@ public class Picasso {
 				centerY - ((worldCamY - (minCY * chunkSize)) * tileSizeScaled),
 				lightTexture.getWidth() * tileSizeScaled,
 				lightTexture.getHeight() * tileSizeScaled);
-		// TODO implement something like https://www.youtube.com/watch?v=0knk78UYlvc
 	}
 	
 	private void createLightmap(World world) {
