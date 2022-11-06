@@ -222,7 +222,7 @@ public class Picasso {
 		int chunkSize = world.getChunkSize();
 		lightPixmap.setColor(Color.BLACK);
 		lightPixmap.fillRectangle(0, 0, lightPixmap.getWidth(), lightPixmap.getHeight());
-		Color prevColor1, prevColor2;
+		Color thisColor, prevColor1, prevColor2;
 		for (int xp = 0; xp < lightPixmap.getWidth(); xp++) {
 			for (int yp = 0; yp < lightPixmap.getHeight(); yp++) {
 				int y = (minCY * chunkSize) + yp;
@@ -243,7 +243,7 @@ public class Picasso {
 		// Propagate forwards
 		for (int x = 0; x < lightPixmap.getWidth(); x++) {
 			for (int y = 0; y < lightPixmap.getHeight(); y++) {
-				Color thisColor = new Color(lightPixmap.getPixel(x, y));
+				thisColor = new Color(lightPixmap.getPixel(x, y));
 				prevColor1 = new Color(lightPixmap.getPixel(x, y - 1));
 				prevColor2 = new Color(lightPixmap.getPixel(x - 1, y));
 				thisColor.a = Math.min(thisColor.a, Math.min(prevColor1.a, prevColor2.a));
@@ -255,7 +255,7 @@ public class Picasso {
 		// Propagate backwards
 		for (int x = lightPixmap.getWidth(); x >= 0; x--) {
 			for (int y = lightPixmap.getHeight(); y >= 0; y--) {
-				Color thisColor = new Color(lightPixmap.getPixel(x, y));
+				thisColor = new Color(lightPixmap.getPixel(x, y));
 				prevColor1 = new Color(lightPixmap.getPixel(x, y + 1));
 				prevColor2 = new Color(lightPixmap.getPixel(x + 1, y));
 				thisColor.a = Math.min(thisColor.a, Math.min(prevColor1.a, prevColor2.a));
@@ -267,7 +267,7 @@ public class Picasso {
 		// Adjust
 		for (int x = 0; x < lightPixmap.getWidth(); x++) {
 			for (int y = 0; y < lightPixmap.getHeight(); y++) {
-				Color thisColor = new Color(lightPixmap.getPixel(x, y));
+				thisColor = new Color(lightPixmap.getPixel(x, y));
 				thisColor.a = (thisColor.a - 0.5f) * 2f;
 				lightPixmap.setColor(thisColor.clamp());
 				lightPixmap.drawPixel(x, y);
