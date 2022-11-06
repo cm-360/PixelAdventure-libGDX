@@ -148,7 +148,7 @@ public class Picasso {
 		centerX = (int) ((viewportWidth / 2) - tileSizeScaled / 2);
 		centerY = (int) ((viewportHeight / 2) - tileSizeScaled / 2);
 		// Calculate world camera bounds
-		float overscan = 1.5f;
+		float overscan = 2f;
 		minCX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2.0)) / (chunkSize * tileSizeScaled) - overscan);
 		minCY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2.0)) / (chunkSize * tileSizeScaled) - overscan);
 		maxCX = minCX + (int) Math.round(viewportWidth / (chunkSize * tileSizeScaled) + (2 * overscan));
@@ -224,11 +224,11 @@ public class Picasso {
 	 * This is the function I would say I am most proud of, it was a challenge for
 	 * me to get it working properly and not make a memory hog :)
 	 * 
-	 * Lighting is calculated in four stages:
-	 * 1. Draw all light sources to the texture
-	 * 2. Propagate in the forward XY directions
-	 * 3. Propagate in the backward XY directions
-	 * 4. Increase contrast to avoid darkness bleeding
+	 * Lighting is calculated in three stages:
+	 * 1. Draw all light sources to the texture and propagate in the forward XY
+	 *    directions
+	 * 2. Propagate in the backward XY directions
+	 * 3. Increase contrast to avoid darkness bleeding
 	 * 
 	 * The propagation flood fill algorithm is based entirely off this YouTube
 	 * video: https://www.youtube.com/watch?v=0knk78UYlvc
@@ -249,31 +249,30 @@ public class Picasso {
 		Color prevColor2 = Color.BLACK.cpy();
 		for (int xp = 0; xp < lightPixmap.getWidth(); xp++) {
 			for (int yp = 0; yp < lightPixmap.getHeight(); yp++) {
-				int y = (minCY * chunkSize) + yp;
+				// Tile coordinates
+				int x = (minCX * chunkSize) + xp;
+				int y = (minCY * chunkSize) + (lightPixmap.getHeight() - yp - 1);
+				// Set color for light emitters
 				if (y > 0 && y < world.getHeight() * chunkSize) {
-					Tile tile = world.getTile((minCX * chunkSize) + xp, y, 2);
+					Tile tile = world.getTile(x, y, 2);
 					if (tile instanceof LightEmitter) {
 						lightPixmap.setColor(Color.CLEAR);
-						lightPixmap.drawPixel(xp, lightPixmap.getHeight() - yp - 1);
+						lightPixmap.drawPixel(xp, yp);
 					}
 					tile = world.getTile((minCX * chunkSize) + xp, y, 0);
 					if (tile == null) {
 						lightPixmap.setColor(Color.CLEAR);
-						lightPixmap.drawPixel(xp, lightPixmap.getHeight() - yp - 1);
+						lightPixmap.drawPixel(xp, yp);
 					}
 				}
-			}
-		}
-		// Propagate forwards
-		for (int x = 0; x < lightPixmap.getWidth(); x++) {
-			for (int y = 0; y < lightPixmap.getHeight(); y++) {
-				Color.rgba8888ToColor(thisColor, lightPixmap.getPixel(x, y));
-				Color.rgba8888ToColor(prevColor1, lightPixmap.getPixel(x, y - 1));
-				Color.rgba8888ToColor(prevColor2, lightPixmap.getPixel(x - 1, y));
+				// Propagate forwards
+				Color.rgba8888ToColor(thisColor, lightPixmap.getPixel(xp, yp));
+				Color.rgba8888ToColor(prevColor1, lightPixmap.getPixel(xp, yp - 1));
+				Color.rgba8888ToColor(prevColor2, lightPixmap.getPixel(xp - 1, yp));
 				thisColor.a = Math.min(thisColor.a, Math.min(prevColor1.a, prevColor2.a));
 				thisColor.a += 0.05f;
 				lightPixmap.setColor(thisColor.clamp());
-				lightPixmap.drawPixel(x, y);
+				lightPixmap.drawPixel(xp, yp);
 			}
 		}
 		// Propagate backwards
