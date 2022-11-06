@@ -71,6 +71,12 @@ public class Picasso {
 	private int maxCX;
 	private int maxCY;
 	
+	// Mouse position
+	private int mouseScreenX;
+	private int mouseScreenY;
+	private int mouseTileX;
+	private int mouseTileY;
+	
 	// UI rendering flags
 	private boolean showUI;
 	private boolean showDebug;
@@ -167,6 +173,9 @@ public class Picasso {
 		worldCamYTarget += worldCamYDelta / targetFPS;
 		worldCamX += (worldCamXTarget - worldCamX) / (targetFPS / 7);
 		worldCamY += (worldCamYTarget - worldCamY) / (targetFPS / 7);
+		//
+		mouseTileX = Math.round((centerX - viewportWidth + mouseScreenX) / tileSizeScaled + worldCamX + 0.5f);
+		mouseTileY = Math.round((viewportHeight - centerY - mouseScreenY) / tileSizeScaled + worldCamY - 0.5f);
 		// Render world parts
 		renderSky(world);
 		renderTileGrid(world);
@@ -187,9 +196,9 @@ public class Picasso {
 		for (int l = 0; l < 3; l++) {
 			// Darken background layer
 			if (l == 0) {
-				batch.setColor(0.5F, 0.5F, 0.5F, 1F);
+				batch.setColor(0.5f, 0.5f, 0.5f, 1f);
 			} else {
-				batch.setColor(1F, 1F, 1F, 1F);
+				batch.setColor(1f, 1f, 1f, 1f);
 			}
 			// Draw tiles
 			for (int cx = minCX; cx < maxCX; cx++) {
@@ -213,7 +222,11 @@ public class Picasso {
 				}
 			}
 		}
-		renderTile(registry.getTexture(new Identifier("pixadv", "textures/gui/tile_hover")), 7, 7);
+		// Draw hover
+		batch.setColor(1f, 1f, 1f, (float) (Math.sin(System.currentTimeMillis() / 200.0) + 1) * 0.5f);
+		Texture hoverTex = registry.getTexture(new Identifier("pixadv", "textures/gui/tile_hover"));
+		renderTile(hoverTex, mouseTileX, mouseTileY);
+		batch.setColor(1f, 1f, 1f, 1f);
 	}
 	
 	private void renderTile(Texture texture, int x, int y) {
@@ -430,6 +443,13 @@ public class Picasso {
 					lightPixmap.getHeight()));
 		}
 		debugLinesRight.add(null);
+		// Mouse info
+		debugLinesRight.add(String.format("Mouse: xs%d ys%d xt%d yt%d",
+				mouseScreenX,
+				mouseScreenY,
+				mouseTileX,
+				mouseTileY));
+		debugLinesRight.add(null);
 		// Draw text
 		int spacers;
 		defaultFont.setColor(Color.WHITE);
@@ -485,6 +505,11 @@ public class Picasso {
 
 	public void setDebugShown(boolean showDebug) {
 		this.showDebug = showDebug;
+	}
+	
+	public void setMouseScreenPos(int screenX, int screenY) {
+		mouseScreenX = screenX;
+		mouseScreenY = screenY;
 	}
 
 	public void resize(int width, int height) {

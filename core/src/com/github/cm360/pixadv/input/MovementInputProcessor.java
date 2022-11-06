@@ -4,6 +4,12 @@ import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.graphics.picasso.Picasso;
 
 public class MovementInputProcessor extends AbstractInputProcessor {
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		ClientApplication.getRenderingEngine().setMouseScreenPos(screenX, screenY);
+		return true;
+	}
 	
 	@Override
 	public boolean scrolled(float x, float y) {
