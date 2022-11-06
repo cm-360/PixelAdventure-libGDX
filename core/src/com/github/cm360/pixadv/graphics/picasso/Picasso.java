@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.zip.Deflater;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -51,12 +52,12 @@ public class Picasso {
 	private SpriteBatch batch;
 	
 	// Camera variables
-	public float worldCamX;
-	public float worldCamY;
-	public float worldCamXDelta;
-	public float worldCamYDelta;
-	public float worldCamXTarget;
-	public float worldCamYTarget;
+	private float worldCamX;
+	private float worldCamY;
+	private float worldCamXDelta;
+	private float worldCamYDelta;
+	private float worldCamXTarget;
+	private float worldCamYTarget;
 	// Tile sizes
 	private int tileSize;
 	private float tileScale;
@@ -71,8 +72,8 @@ public class Picasso {
 	private int maxCY;
 	
 	// UI rendering flags
-	public boolean showUI;
-	public boolean showDebug;
+	private boolean showUI;
+	private boolean showDebug;
 	private List<String> debugLinesLeft;
 	private List<String> debugLinesRight;
 	
@@ -153,7 +154,15 @@ public class Picasso {
 		minCY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2.0)) / (chunkSize * tileSizeScaled) - overscan);
 		maxCX = minCX + (int) Math.round(viewportWidth / (chunkSize * tileSizeScaled) + (2 * overscan));
 		maxCY = minCY + (int) Math.round(viewportHeight / (chunkSize * tileSizeScaled) + (2 * overscan));
-		// Update camera
+		// Get camera movement inputs
+		float speed = 100f;
+		worldCamXDelta = (
+				(Gdx.input.isKeyPressed(Keys.LEFT) ? -speed : 0) + 
+				(Gdx.input.isKeyPressed(Keys.RIGHT) ? speed : 0));
+		worldCamYDelta = (
+				(Gdx.input.isKeyPressed(Keys.UP) ? speed : 0) + 
+				(Gdx.input.isKeyPressed(Keys.DOWN) ? -speed : 0));
+		// Update camera position
 		worldCamXTarget += worldCamXDelta / targetFPS;
 		worldCamYTarget += worldCamYDelta / targetFPS;
 		worldCamX += (worldCamXTarget - worldCamX) / (targetFPS / 7);
@@ -462,6 +471,22 @@ public class Picasso {
 		disposeLightmap();
 	}
 	
+	public boolean isUIShown() {
+		return showUI;
+	}
+
+	public void setUIShown(boolean showUI) {
+		this.showUI = showUI;
+	}
+
+	public boolean isDebugShown() {
+		return showDebug;
+	}
+
+	public void setDebugShown(boolean showDebug) {
+		this.showDebug = showDebug;
+	}
+
 	public void resize(int width, int height) {
 		this.viewportWidth = width;
 		this.viewportHeight = height;

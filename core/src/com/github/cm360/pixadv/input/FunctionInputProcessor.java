@@ -2,6 +2,7 @@ package com.github.cm360.pixadv.input;
 
 import com.badlogic.gdx.Input.Keys;
 import com.github.cm360.pixadv.ClientApplication;
+import com.github.cm360.pixadv.graphics.picasso.Picasso;
 
 public class FunctionInputProcessor extends AbstractInputProcessor {
 
@@ -11,14 +12,15 @@ public class FunctionInputProcessor extends AbstractInputProcessor {
 	
 	@Override
 	public boolean keyDown(int keycode) {
+		Picasso p = ClientApplication.getRenderingEngine();
 		switch(keycode) {
 		// Toggle UI
 		case Keys.F1:
-			ClientApplication.getRenderingEngine().showUI = !ClientApplication.getRenderingEngine().showUI;
+			p.setUIShown(!p.isUIShown());
 			break;
 		// Take screenshot
 		case Keys.F2:
-			ClientApplication.getRenderingEngine().takeScreenshot();
+			p.takeScreenshot();
 			break;
 		// Garbage collect
 		case Keys.F3:
@@ -26,11 +28,11 @@ public class FunctionInputProcessor extends AbstractInputProcessor {
 			break;
 		// Toggle fullscreen
 		case Keys.F11:
-			ClientApplication.getRenderingEngine().setFullscreen(!ClientApplication.getRenderingEngine().isFullscreen());
+			p.setFullscreen(!p.isFullscreen());
 			break;
 		// Toggle debug UI
 		case Keys.F12:
-			ClientApplication.getRenderingEngine().showDebug = !ClientApplication.getRenderingEngine().showDebug;
+			p.setDebugShown(!p.isDebugShown());
 			break;
 		default:
 			return false;
