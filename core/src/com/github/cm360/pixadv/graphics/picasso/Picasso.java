@@ -323,7 +323,7 @@ public class Picasso {
 				int x = (minCX * chunkSize) + xp;
 				int y = (minCY * chunkSize) + (lightPixmap.getHeight() - yp - 1);
 				// Set color for light emitters
-				if (y > 0 && y < world.getHeight() * chunkSize) {
+				if (world.isValid(x, y, 0)) {
 					Tile tile = world.getTile(x, y, Chunk.layers - 1);
 					if (tile instanceof LightEmitter) {
 						lightPixmap.setColor(Color.CLEAR);
@@ -515,9 +515,12 @@ public class Picasso {
 					mouseTileX,
 					mouseTileY));
 			for (int z = 0; z < Chunk.layers; z++) {
-				Tile tile = world.getTile(mouseTileX, mouseTileY, z);
-				if (tile != null)
-					debugLinesRight.add(String.format("%d: %s", z, tile.getClass().getSimpleName()));
+				if (world.isValid(mouseTileX, mouseTileY, z)) {
+					Tile tile = world.getTile(mouseTileX, mouseTileY, z);
+					if (tile != null) {
+						debugLinesRight.add(String.format("%d: %s", z, tile.getClass().getSimpleName()));
+					}
+				}
 			}
 		}
 		debugLinesRight.add(null);

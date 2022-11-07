@@ -42,6 +42,10 @@ public class World {
 		return coordNew;
 	}
 	
+	public boolean isValid(int x, int y, int z) {
+		return ((y >= 0) && (y < (height * chunkSize)) && (z >= 0) && (z < Chunk.layers));
+	}
+	
 	public Tile getTile(int x, int y, int z) {
 		int xFixed = fixCoordinate(x, width * chunkSize);
 		return chunks[xFixed / chunkSize][y / chunkSize].getTile(xFixed % chunkSize, y % chunkSize, z);
