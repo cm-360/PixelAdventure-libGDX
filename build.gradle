@@ -43,6 +43,8 @@ allprojects {
         nettyVersion = '4.1.84.Final'
         // JNoise
         jnoiseVersion = '3.0.2'
+        // OSHI
+        oshiVersion = '6.3.1'
     }
 
     repositories {
@@ -87,6 +89,8 @@ project(":core") {
 		implementation "io.netty:netty-all:$nettyVersion"
 		// JNoise
     	implementation "de.articdive:jnoise:$jnoiseVersion"
+    	// OSHI
+    	implementation "com.github.oshi:oshi-core:$oshiVersion"
     }
     
     build.dependsOn writeAllAssetsToFile

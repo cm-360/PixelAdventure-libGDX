@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.registry.Asset.AssetType;
 import com.github.cm360.pixadv.util.FileUtil;
 import com.github.cm360.pixadv.util.Logger;
@@ -17,12 +18,14 @@ import com.github.cm360.pixadv.util.Logger;
 public class Registry {
 
 	private boolean initialized;
+	private Map<String, String> modules;
 	private Map<Identifier, Texture> textures;
 	private Map<Identifier, FreeTypeFontGenerator> fontGenerators;
 	private Map<String, BitmapFont> fontCache;
 	
 	public void initialize() {
 		initialized = false;
+		modules = new HashMap<String, String>();
 		textures = new HashMap<Identifier, Texture>();
 		fontGenerators = new HashMap<Identifier, FreeTypeFontGenerator>();
 		fontCache = new HashMap<String, BitmapFont>();
@@ -41,6 +44,7 @@ public class Registry {
 				Logger.logException("Failed to load asset! '%s'", e, assetFilename);
 			}
 		}
+		modules.put(builtinModuleId, ClientApplication.getVersionString());
 		// Load external modules
 		for (FileHandle moduleFilename : Gdx.files.local("modules").list())
 			System.out.println(moduleFilename);
@@ -102,6 +106,10 @@ public class Registry {
 	
 	public boolean isInitialized() {
 		return initialized;
+	}
+	
+	public int getModuleCount() {
+		return modules.size();
 	}
 	
 	public void dispose() {

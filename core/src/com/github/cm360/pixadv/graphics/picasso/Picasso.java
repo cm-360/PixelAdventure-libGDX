@@ -42,6 +42,10 @@ import com.github.cm360.pixadv.registry.Registry;
 import com.github.cm360.pixadv.util.Logger;
 import com.github.cm360.pixadv.util.Stopwatch;
 
+import oshi.SystemInfo;
+import oshi.hardware.CentralProcessor;
+import oshi.software.os.OperatingSystem;
+
 public class Picasso {
 	
 	// Important objects (not that the rest aren't important :P)
@@ -88,8 +92,10 @@ public class Picasso {
 	// UI rendering flags
 	private boolean showUI;
 	private boolean showDebug;
+	// Debug things
 	private List<String> debugLinesLeft;
 	private List<String> debugLinesRight;
+	private SystemInfo systemInfo;
 	// Render times
 	private Stopwatch renderTimes;
 	private Map<String, Color> renderTimeChartColors;
@@ -124,11 +130,13 @@ public class Picasso {
 		worldCamY = 0;
 		tileSize = 8;
 		setTileScale(2f);
-		// Debug variables
+		// UI flags
 		showUI = true;
 		showDebug = true;
+		// Debug things
 		debugLinesLeft = new ArrayList<String>();
 		debugLinesRight = new ArrayList<String>();
+		systemInfo = new SystemInfo();
 		// Rendering time chart
 		renderTimes = new Stopwatch();
 		renderTimeChartColors = new HashMap<String, Color>();
@@ -233,9 +241,9 @@ public class Picasso {
 	}
 	
 	private void renderTileGrid(World world) {
-		for (int l = 0; l < 3; l++) {
+		for (int z = 0; z < Chunk.layers; z++) {
 			// Darken background layer
-			if (l == 0) {
+			if (z == 0) {
 				batch.setColor(0.5f, 0.5f, 0.5f, 1f);
 			} else {
 				batch.setColor(1f, 1f, 1f, 1f);
@@ -249,7 +257,7 @@ public class Picasso {
 						for (int yc = 0; yc < chunkSize; yc++) {
 							int x = (cx * chunkSize) + xc;
 							int y = (cy * chunkSize) + yc;
-							Tile tile = chunk.getTile(xc, yc, l);
+							Tile tile = chunk.getTile(xc, yc, z);
 							if (tile != null) {
 								for (Identifier textureId : tile.getTextures()) {
 									if (textureId != null) {
@@ -316,7 +324,7 @@ public class Picasso {
 				int y = (minCY * chunkSize) + (lightPixmap.getHeight() - yp - 1);
 				// Set color for light emitters
 				if (y > 0 && y < world.getHeight() * chunkSize) {
-					Tile tile = world.getTile(x, y, 2);
+					Tile tile = world.getTile(x, y, Chunk.layers - 1);
 					if (tile instanceof LightEmitter) {
 						lightPixmap.setColor(Color.CLEAR);
 						lightPixmap.drawPixel(xp, yp);
@@ -450,13 +458,16 @@ public class Picasso {
 		debugLinesLeft.add(glVersion.getRendererString());
 		debugLinesLeft.add(null);
 		// CPU info
-		debugLinesLeft.add(String.format("%s %s %s",
-				System.getProperty("os.name"),
-				System.getProperty("os.version"),
+		OperatingSystem os = systemInfo.getOperatingSystem();
+		debugLinesLeft.add(String.format("%s %s %s %s",
+				os.getFamily(),
+				os.getVersionInfo().getVersion(),
+				os.getVersionInfo().getBuildNumber(),
 				System.getProperty("os.arch")));
-		debugLinesLeft.add(String.format("x%d %s",
-				Runtime.getRuntime().availableProcessors(),
-				"Epic CPU Brand @ 29 GigaLOLs/MegaBruh"));
+		CentralProcessor cpu = systemInfo.getHardware().getProcessor();
+		debugLinesLeft.add(String.format("%s %dx",
+				cpu.getProcessorIdentifier().getName(),
+				cpu.getLogicalProcessorCount()));
 		debugLinesLeft.add(null);
 		// Runtime info
 		debugLinesLeft.add(String.format("Java %s", Runtime.version()));
@@ -472,9 +483,11 @@ public class Picasso {
 		debugLinesRight.add(String.format("%s v%s",
 				ClientApplication.name,
 				ClientApplication.getVersionString()));
+		debugLinesRight.add(String.format("%d modules", registry.getModuleCount()));
 		debugLinesRight.add(null);
-		// World info
+		// Current universe info
 		if (universe != null) {
+			// World
 			debugLinesRight.add(String.format("U: '%s' (%s)",
 					universe.getName(),
 					universe.getClass().getSimpleName()));
@@ -484,25 +497,29 @@ public class Picasso {
 					worldName,
 					world.getClass().getSimpleName()));
 			debugLinesRight.add(null);
+			// Camera
+			debugLinesRight.add(String.format("Camera: x%.4f y%.4f", worldCamX, worldCamY));
+			debugLinesRight.add(String.format("Chunks: (%d,%d)-(%d,%d) %dx%d",
+					minCX, minCY,
+					maxCX, maxCY,
+					(maxCX - minCX), (maxCY - minCY)));
+			// Lighting
+			if (lightPixmap != null) {
+				debugLinesRight.add(String.format("Lightmap: %dx%d",
+						lightPixmap.getWidth(),
+						lightPixmap.getHeight()));
+			}
+			debugLinesRight.add(null);
+			// Mouse
+			debugLinesRight.add(String.format("Tile: x%d y%d",
+					mouseTileX,
+					mouseTileY));
+			for (int z = 0; z < Chunk.layers; z++) {
+				Tile tile = world.getTile(mouseTileX, mouseTileY, z);
+				if (tile != null)
+					debugLinesRight.add(String.format("%d: %s", z, tile.getClass().getSimpleName()));
+			}
 		}
-		// Camera info
-		debugLinesRight.add(String.format("Camera: x%.4f y%.4f", worldCamX, worldCamY));
-		debugLinesRight.add(String.format("Chunks: (%d,%d)-(%d,%d) %dx%d",
-				minCX, minCY,
-				maxCX, maxCY,
-				maxCX - minCX, maxCY - minCY));
-		if (lightPixmap != null) {
-			debugLinesRight.add(String.format("Lightmap: %dx%d",
-					lightPixmap.getWidth(),
-					lightPixmap.getHeight()));
-		}
-		debugLinesRight.add(null);
-		// Mouse info
-		debugLinesRight.add(String.format("Mouse: xs%d ys%d xt%d yt%d",
-				mouseScreenX,
-				mouseScreenY,
-				mouseTileX,
-				mouseTileY));
 		debugLinesRight.add(null);
 		// Draw text
 		int spacers;

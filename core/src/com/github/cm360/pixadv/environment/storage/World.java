@@ -42,14 +42,14 @@ public class World {
 		return coordNew;
 	}
 	
-	public Tile getTile(int x, int y, int l) {
+	public Tile getTile(int x, int y, int z) {
 		int xFixed = fixCoordinate(x, width * chunkSize);
-		return chunks[xFixed / chunkSize][y / chunkSize].getTile(xFixed % chunkSize, y % chunkSize, l);
+		return chunks[xFixed / chunkSize][y / chunkSize].getTile(xFixed % chunkSize, y % chunkSize, z);
 	}
 	
-	public void setTile(Tile tile, int x, int y, int l) {
+	public void setTile(Tile tile, int x, int y, int z) {
 		int xFixed = fixCoordinate(x, width * chunkSize);
-		chunks[xFixed / chunkSize][y / chunkSize].setTile(tile, xFixed % chunkSize, y % chunkSize, l);
+		chunks[xFixed / chunkSize][y / chunkSize].setTile(tile, xFixed % chunkSize, y % chunkSize, z);
 	}
 	
 	public Chunk getChunk(int cx, int cy) {
