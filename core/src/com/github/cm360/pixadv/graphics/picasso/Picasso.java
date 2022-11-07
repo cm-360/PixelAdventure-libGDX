@@ -433,9 +433,11 @@ public class Picasso {
 			debugLinesRight.add(String.format("U: '%s' (%s)",
 					universe.getName(),
 					universe.getClass().getSimpleName()));
+			String worldName = ClientApplication.getClient().getCurrentWorldName();
+			World world = universe.getWorld(worldName);
 			debugLinesRight.add(String.format("W: '%s' (%s)",
-					null,
-					null));
+					worldName,
+					world.getClass().getSimpleName()));
 			debugLinesRight.add(null);
 		}
 		// Camera info
