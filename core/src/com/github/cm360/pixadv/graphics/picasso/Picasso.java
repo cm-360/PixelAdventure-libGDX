@@ -133,12 +133,14 @@ public class Picasso {
 		defaultFont = registry.getFont(defaultFontId, defaultFontSize);
 		// Draw
 		if (registry.isInitialized()) {
+			// Draw current world (if one is loaded)
 			if (universe != null) {
 				World world = universe.getWorld(ClientApplication.getClient().getCurrentWorldName());
 				if (world != null) {
 					renderWorld(world);
 				}
 			}
+			// Draw GUI
 			renderGui(universe);
 		} else {
 			// TODO draw loading registry message
@@ -150,11 +152,21 @@ public class Picasso {
 	}
 	
 	private void renderWorld(World world) {
-		int chunkSize = world.getChunkSize();
+		// Do some math beforehand
+		precompute(world);
+		// Render world parts
+		renderSky(world);
+		renderTileGrid(world);
+		renderEntities(world);
+		renderLightmap(world);
+	}
+	
+	private void precompute(World world) {
 		// Viewport center
 		centerX = (int) ((viewportWidth / 2) - tileSizeScaled / 2);
 		centerY = (int) ((viewportHeight / 2) - tileSizeScaled / 2);
 		// Calculate world camera bounds
+		int chunkSize = world.getChunkSize();
 		float overscan = 2f;
 		minCX = (int) Math.round(((worldCamX * tileSizeScaled - viewportWidth / 2.0)) / (chunkSize * tileSizeScaled) - overscan);
 		minCY = (int) Math.round(((worldCamY * tileSizeScaled - viewportHeight / 2.0)) / (chunkSize * tileSizeScaled) - overscan);
@@ -173,14 +185,9 @@ public class Picasso {
 		worldCamYTarget += worldCamYDelta / targetFPS;
 		worldCamX += (worldCamXTarget - worldCamX) / (targetFPS / 7);
 		worldCamY += (worldCamYTarget - worldCamY) / (targetFPS / 7);
-		//
+		// Update mouse tile coordinates
 		mouseTileX = Math.round((centerX - viewportWidth + mouseScreenX) / tileSizeScaled + worldCamX + 0.5f);
 		mouseTileY = Math.round((viewportHeight - centerY - mouseScreenY) / tileSizeScaled + worldCamY - 0.5f);
-		// Render world parts
-		renderSky(world);
-		renderTileGrid(world);
-		renderEntities(world);
-		renderLightmap(world);
 	}
 	
 	private void renderSky(World world) {
