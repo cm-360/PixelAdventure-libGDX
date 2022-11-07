@@ -390,7 +390,7 @@ public class Picasso {
 			// Show loading world message
 			if (universe != null) {
 				String worldName = ClientApplication.getClient().getCurrentWorldName();
-				{//if (universe.getWorld(worldName) == null) {
+				if (universe.getWorld(worldName) == null) {
 					BitmapFont font = registry.getFont(defaultFontId, defaultFontSize * 4);
 					font.setColor(1f, 1f, 1f, calcBlink(3));
 					font.draw(batch, "Loading world...",
