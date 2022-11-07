@@ -33,11 +33,9 @@ public class World {
 	
 	public int fixCoordinate(int coord, int max) {
 		if (coord < 0)
-			return (coord % max) + max;
-		else if (coord >= max)
-			return coord % max;
+			return ((coord + 1) % max) + (max - 1);
 		else
-			return coord;
+			return coord % max;
 	}
 	
 	public boolean isValid(int x, int y, int z) {
