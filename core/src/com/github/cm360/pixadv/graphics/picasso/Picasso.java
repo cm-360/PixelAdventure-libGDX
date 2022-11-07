@@ -103,7 +103,7 @@ public class Picasso {
 	private DateTimeFormatter screenshotNameFormatter;
 	
 	// Default font
-	private Identifier defaultFontId;
+	private Identifier gameFontId;
 	private BitmapFont gameFont;
 	private Identifier monoFontId;
 	private BitmapFont monoFont;
@@ -143,7 +143,7 @@ public class Picasso {
 		screenshotsDir = Gdx.files.local("screenshots");
 		screenshotNameFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss.SSS");
 		// Default font
-		defaultFontId = new Identifier("pixadv", "fonts/style_7/pixelfont7");
+		gameFontId = new Identifier("pixadv", "fonts/style_7/pixelfont7");
 		monoFontId = new Identifier("pixadv", "fonts/christopher_simpkins/hack_regular");
 		defaultFontSize = 16;
 	}
@@ -157,7 +157,7 @@ public class Picasso {
 		shapes.setProjectionMatrix(camera.combined);
 		batch.begin();
 		// Grab default fonts
-		gameFont = registry.getFont(defaultFontId, defaultFontSize);
+		gameFont = registry.getFont(gameFontId, defaultFontSize);
 		monoFont = registry.getFont(monoFontId, defaultFontSize);
 		// Draw
 		if (registry.isInitialized()) {
@@ -391,7 +391,7 @@ public class Picasso {
 			if (universe != null) {
 				String worldName = ClientApplication.getClient().getCurrentWorldName();
 				if (universe.getWorld(worldName) == null) {
-					BitmapFont font = registry.getFont(defaultFontId, defaultFontSize * 4);
+					BitmapFont font = registry.getFont(gameFontId, defaultFontSize * 4);
 					font.setColor(1f, 1f, 1f, calcBlink(3));
 					font.draw(batch, "Loading world...",
 							0, (viewportHeight / 2) + (defaultFontSize * 4),
