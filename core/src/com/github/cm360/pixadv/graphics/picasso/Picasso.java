@@ -3,7 +3,10 @@ package com.github.cm360.pixadv.graphics.picasso;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.zip.Deflater;
 
 import com.badlogic.gdx.Gdx;
@@ -20,6 +23,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.github.cm360.pixadv.ClientApplication;
@@ -27,6 +32,7 @@ import com.github.cm360.pixadv.environment.storage.Chunk;
 import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.environment.storage.World;
 import com.github.cm360.pixadv.environment.types.Tile;
+import com.github.cm360.pixadv.graphics.gui.components.Component;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.graphics.gui.jarvis.Jarvis;
@@ -34,6 +40,7 @@ import com.github.cm360.pixadv.modules.builtin.tiles.capabilities.LightEmitter;
 import com.github.cm360.pixadv.registry.Identifier;
 import com.github.cm360.pixadv.registry.Registry;
 import com.github.cm360.pixadv.util.Logger;
+import com.github.cm360.pixadv.util.Stopwatch;
 
 public class Picasso {
 	
@@ -50,6 +57,7 @@ public class Picasso {
 	private int viewportHeight;
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
+	private ShapeRenderer shapes;
 	
 	// Camera variables
 	private float worldCamX;
@@ -82,6 +90,9 @@ public class Picasso {
 	private boolean showDebug;
 	private List<String> debugLinesLeft;
 	private List<String> debugLinesRight;
+	// Render times
+	private Stopwatch renderTimes;
+	private Map<String, Color> renderTimeChartColors;
 	
 	// Lighting things
 	private Pixmap lightPixmap;
@@ -93,8 +104,10 @@ public class Picasso {
 	
 	// Default font
 	private Identifier defaultFontId;
+	private BitmapFont gameFont;
+	private Identifier monoFontId;
+	private BitmapFont monoFont;
 	private int defaultFontSize;
-	private BitmapFont defaultFont;
 
 	public Picasso(Registry registry, Jarvis guiManager) {
 		// Rendering options
@@ -105,6 +118,7 @@ public class Picasso {
 		this.guiManager = guiManager;
 		camera = new OrthographicCamera();
 		batch = new SpriteBatch();
+		shapes = new ShapeRenderer();
 		// World camera info
 		worldCamX = 0;
 		worldCamY = 0;
@@ -115,22 +129,36 @@ public class Picasso {
 		showDebug = true;
 		debugLinesLeft = new ArrayList<String>();
 		debugLinesRight = new ArrayList<String>();
+		// Rendering time chart
+		renderTimes = new Stopwatch();
+		renderTimeChartColors = new HashMap<String, Color>();
+		renderTimeChartColors.put("precompute", Color.MAGENTA);
+		renderTimeChartColors.put("sky", Color.ROYAL);
+		renderTimeChartColors.put("tiles", Color.SALMON);
+		renderTimeChartColors.put("entities", Color.ORANGE);
+		renderTimeChartColors.put("lighting", Color.YELLOW);
+		renderTimeChartColors.put("gui", Color.NAVY);
+		renderTimeChartColors.put("debug", Color.GREEN);
 		// Screenshot directories
 		screenshotsDir = Gdx.files.local("screenshots");
 		screenshotNameFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss.SSS");
 		// Default font
 		defaultFontId = new Identifier("pixadv", "fonts/Style-7/PixelFont7");
+		monoFontId = new Identifier("pixadv", "fonts/Quote-Unquote_Apps/CourierPrime");
 		defaultFontSize = 16;
 	}
 	
 	public void render(Universe universe) {
+		renderTimes.reset();
 		// Prepare for drawing
 		ScreenUtils.clear(0f, 0f, 0f, 1f);
 		camera.setToOrtho(false, viewportWidth, viewportHeight);
 		batch.setProjectionMatrix(camera.combined);
+		shapes.setProjectionMatrix(camera.combined);
 		batch.begin();
-		// Grab default font
-		defaultFont = registry.getFont(defaultFontId, defaultFontSize);
+		// Grab default fonts
+		gameFont = registry.getFont(defaultFontId, defaultFontSize);
+		monoFont = registry.getFont(monoFontId, defaultFontSize);
 		// Draw
 		if (registry.isInitialized()) {
 			// Draw current world (if one is loaded)
@@ -154,11 +182,16 @@ public class Picasso {
 	private void renderWorld(World world) {
 		// Do some math beforehand
 		precompute(world);
+		renderTimes.mark("precompute");
 		// Render world parts
 		renderSky(world);
+		renderTimes.mark("sky");
 		renderTileGrid(world);
+		renderTimes.mark("tiles");
 		renderEntities(world);
+		renderTimes.mark("entities");
 		renderLightmap(world);
+		renderTimes.mark("lighting");
 	}
 	
 	private void precompute(World world) {
@@ -230,7 +263,7 @@ public class Picasso {
 			}
 		}
 		// Draw hover
-		batch.setColor(1f, 1f, 1f, (float) (Math.sin(System.currentTimeMillis() / 200.0) + 1) * 0.5f);
+		batch.setColor(1f, 1f, 1f, calcBlink(1));
 		Texture hoverTex = registry.getTexture(new Identifier("pixadv", "textures/gui/tile_hover"));
 		renderTile(hoverTex, mouseTileX, mouseTileY);
 		batch.setColor(1f, 1f, 1f, 1f);
@@ -354,6 +387,17 @@ public class Picasso {
 	
 	private void renderGui(Universe universe) {
 		if (showUI) {
+			// Show loading world message
+			if (universe != null) {
+				String worldName = ClientApplication.getClient().getCurrentWorldName();
+				{//if (universe.getWorld(worldName) == null) {
+					BitmapFont font = registry.getFont(defaultFontId, defaultFontSize * 4);
+					font.setColor(1f, 1f, 1f, calcBlink(3));
+					font.draw(batch, "Loading world...",
+							0, (viewportHeight / 2) + (defaultFontSize * 4),
+							viewportWidth, Align.center, false);
+				}
+			}
 			// Draw HUD
 			for (Layer hud : guiManager.getHudLayers()) {
 				hud.paint(batch, registry);
@@ -367,14 +411,15 @@ public class Picasso {
 			for (Layer overlay : guiManager.getOverlays()) {
 				overlay.paint(batch, registry);
 			}
+			renderTimes.mark("gui");
 			// Draw debug info
 			int overlayTextPadding = 5;
 			if (showDebug) {
 				renderDebugInfo(universe, overlayTextPadding);
 			} else {
 				// Show FPS counter
-				defaultFont.setColor(Color.WHITE);
-				defaultFont.draw(batch,
+				gameFont.setColor(Color.WHITE);
+				gameFont.draw(batch,
 						String.format("%s FPS", Gdx.graphics.getFramesPerSecond()),
 						overlayTextPadding,
 						viewportHeight - overlayTextPadding);
@@ -461,13 +506,13 @@ public class Picasso {
 		debugLinesRight.add(null);
 		// Draw text
 		int spacers;
-		defaultFont.setColor(Color.WHITE);
+		monoFont.setColor(Color.WHITE);
 		// Left
 		spacers = 0;
 		for (int i = 0; i < debugLinesLeft.size(); i++) {
 			String line = debugLinesLeft.get(i);
 			if (line != null) {
-				defaultFont.draw(batch, line,
+				monoFont.draw(batch, line,
 						padding,
 						(viewportHeight - padding) - (i * defaultFontSize) + (spacers * (defaultFontSize / 2)));
 			} else {
@@ -479,7 +524,7 @@ public class Picasso {
 		for (int i = 0; i < debugLinesRight.size(); i++) {
 			String line = debugLinesRight.get(i);
 			if (line != null) {
-				defaultFont.draw(batch, line,
+				monoFont.draw(batch, line,
 						padding,
 						(viewportHeight - padding) - (i * defaultFontSize) + (spacers * (defaultFontSize / 2)),
 						viewportWidth - (2 * padding),
@@ -487,6 +532,70 @@ public class Picasso {
 			} else {
 				spacers++;
 			}
+		}
+		renderTimes.mark("debug");
+		// Render time pie chart
+		renderDebugPie();
+	}
+	
+	private void renderDebugPie() {
+		// Switch to shape rendering
+		batch.end();
+		shapes.begin(ShapeType.Filled);
+		// Pie chart variables
+		long totalRenderTime = renderTimes.getTotalDuration();
+		int padding = 10;
+		int size = (int) Math.round(100 * Component.scale);
+		int border = 2;
+		double angle = 0;
+		// Render pie chart border
+		shapes.setColor(Color.WHITE);
+		shapes.circle(
+				size + padding + border,
+				size + padding - border,
+				size);
+		// Render pie chart slices
+		for (Entry<String, Long> entry : renderTimes.getTimes()) {
+			// Calculations for this slice
+			double percent = entry.getValue() / (double) totalRenderTime;
+			double angleDelta = percent * (360);
+			// Choose color
+			if (renderTimeChartColors.containsKey(entry.getKey())) {
+				shapes.setColor(renderTimeChartColors.get(entry.getKey()));
+			} else {
+				shapes.setColor(Color.RED);
+			}
+			// Draw slice
+			shapes.arc(
+					size + padding + border,
+					size + padding - border,
+					size - (2 * border),
+					(float) angle, (float) angleDelta, 100);
+			// Update angle
+			angle += angleDelta;
+		}
+		// Switch back to batch rendering and draw labels
+		shapes.end();
+		batch.begin();
+		renderDebugPieLabels();
+	}
+	
+	private void renderDebugPieLabels() {
+		int line = 0;
+		for (Entry<String, Long> entry : renderTimes.getTimes()) {
+			// Choose color for label
+			if (renderTimeChartColors.containsKey(entry.getKey())) {
+				monoFont.setColor(renderTimeChartColors.get(entry.getKey()));
+			} else {
+				monoFont.setColor(Color.RED);
+			}
+			// Draw label
+			String label = String.format("%7.3f%% %9dns  %s",
+					(entry.getValue() / (double) renderTimes.getTotalDuration()) * 100,
+					entry.getValue(),
+					entry.getKey());
+			monoFont.draw(batch, label, 220, 22 + line * defaultFontSize);
+			line++;
 		}
 	}
 	
@@ -581,8 +690,13 @@ public class Picasso {
 		});
 	}
 	
+	public float calcBlink(double duration) {
+		return (float) (Math.sin(((System.currentTimeMillis() / 500.0) * Math.PI) / duration) + 1) * 0.5f;
+	}
+	
 	public void dispose() {
 		batch.dispose();
+		shapes.dispose();
 		disposeLightmap();
 	}
 

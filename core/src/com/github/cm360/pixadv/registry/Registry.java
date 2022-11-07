@@ -42,8 +42,11 @@ public class Registry {
 			}
 		}
 		// TODO manually load font
-		FreeTypeFontGenerator fontGen = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Style-7/PixelFont7.ttf"));
+		FreeTypeFontGenerator fontGen;
+		fontGen = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Style-7/PixelFont7.ttf"));
 		fontGenerators.put(new Identifier("pixadv", "fonts/Style-7/PixelFont7"), fontGen);
+		fontGen = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Quote-Unquote_Apps/CourierPrime.ttf"));
+		fontGenerators.put(new Identifier("pixadv", "fonts/Quote-Unquote_Apps/CourierPrime"), fontGen);
 		// Load external modules
 		for (FileHandle moduleFilename : Gdx.files.local("modules").list())
 			System.out.println(moduleFilename);
