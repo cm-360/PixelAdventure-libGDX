@@ -617,6 +617,13 @@ public class Picasso {
 			monoFont.draw(batch, label, 220, 22 + line * defaultFontSize);
 			line++;
 		}
+		//
+		line++;
+		monoFont.setColor(Color.WHITE);
+		String label = String.format("%6.2fms %9dns  total",
+				renderTimes.getTotalDuration() / 1000000.0,
+				renderTimes.getTotalDuration());
+		monoFont.draw(batch, label, 220, 22 + line * defaultFontSize);
 	}
 	
 	public float getTileScale() {
