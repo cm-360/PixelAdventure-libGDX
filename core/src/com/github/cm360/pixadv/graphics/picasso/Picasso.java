@@ -64,12 +64,12 @@ public class Picasso {
 	private ShapeRenderer shapes;
 	
 	// Camera variables
-	private float worldCamX;
-	private float worldCamY;
-	private float worldCamXDelta;
-	private float worldCamYDelta;
-	private float worldCamXTarget;
-	private float worldCamYTarget;
+	private double worldCamX;
+	private double worldCamY;
+	private double worldCamXDelta;
+	private double worldCamYDelta;
+	private double worldCamXTarget;
+	private double worldCamYTarget;
 	// Tile sizes
 	private int tileSize;
 	private float tileScale;
@@ -227,8 +227,8 @@ public class Picasso {
 		worldCamX += (worldCamXTarget - worldCamX) / (targetFPS / 7);
 		worldCamY += (worldCamYTarget - worldCamY) / (targetFPS / 7);
 		// Update mouse tile coordinates
-		mouseTileX = Math.round((centerX - viewportWidth + mouseScreenX) / tileSizeScaled + worldCamX + 0.5f);
-		mouseTileY = Math.round((viewportHeight - centerY - mouseScreenY) / tileSizeScaled + worldCamY - 0.5f);
+		mouseTileX = (int) Math.round((centerX - viewportWidth + mouseScreenX) / tileSizeScaled + worldCamX + 0.5f);
+		mouseTileY = (int) Math.round((viewportHeight - centerY - mouseScreenY) / tileSizeScaled + worldCamY - 0.5f);
 	}
 	
 	private void renderSky(World world) {
@@ -280,8 +280,8 @@ public class Picasso {
 	private void renderTile(Texture texture, int x, int y) {
 		batch.draw(
 				texture,
-				centerX - ((worldCamX - x) * tileSizeScaled),
-				centerY - ((worldCamY - y) * tileSizeScaled),
+				(float) (centerX - ((worldCamX - x) * tileSizeScaled)),
+				(float) (centerY - ((worldCamY - y) * tileSizeScaled)),
 				tileSizeScaled, tileSizeScaled);
 	}
 	
@@ -371,8 +371,8 @@ public class Picasso {
 		lightTexture.setFilter(TextureFilter.Nearest, TextureFilter.Linear);
 		batch.draw(
 				lightTexture,
-				centerX - ((worldCamX - (minCX * chunkSize)) * tileSizeScaled),
-				centerY - ((worldCamY - (minCY * chunkSize)) * tileSizeScaled),
+				(float) (centerX - ((worldCamX - (minCX * chunkSize)) * tileSizeScaled)),
+				(float) (centerY - ((worldCamY - (minCY * chunkSize)) * tileSizeScaled)),
 				lightTexture.getWidth() * tileSizeScaled,
 				lightTexture.getHeight() * tileSizeScaled);
 	}
@@ -655,6 +655,22 @@ public class Picasso {
 	public void setMouseScreenPos(int screenX, int screenY) {
 		mouseScreenX = screenX;
 		mouseScreenY = screenY;
+	}
+	
+	public int getMouseScreenX() {
+		return mouseScreenX;
+	}
+	
+	public int getMouseScreenY() {
+		return mouseScreenY;
+	}
+	
+	public int getMouseTileX() {
+		return mouseTileX;
+	}
+	
+	public int getMouseTileY() {
+		return mouseTileY;
 	}
 
 	public void resize(int width, int height) {
