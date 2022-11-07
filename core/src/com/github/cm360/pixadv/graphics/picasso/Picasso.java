@@ -143,8 +143,8 @@ public class Picasso {
 		screenshotsDir = Gdx.files.local("screenshots");
 		screenshotNameFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss.SSS");
 		// Default font
-		defaultFontId = new Identifier("pixadv", "fonts/Style-7/PixelFont7");
-		monoFontId = new Identifier("pixadv", "fonts/Quote-Unquote_Apps/CourierPrime");
+		defaultFontId = new Identifier("pixadv", "fonts/style_7/pixelfont7");
+		monoFontId = new Identifier("pixadv", "fonts/christopher_simpkins/hack_regular");
 		defaultFontSize = 16;
 	}
 	

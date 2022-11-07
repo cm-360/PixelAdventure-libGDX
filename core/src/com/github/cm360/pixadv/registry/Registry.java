@@ -35,18 +35,12 @@ public class Registry {
 				Asset asset = new Asset(
 						Asset.getTypeByExtension(FileUtil.getExtension(assetFilename)),
 						assetId,
-						Gdx.files.internal(assetFilename).read());;
+						Gdx.files.internal(assetFilename));
 				loadAsset(asset);
 			} catch (Exception e) {
 				Logger.logException("Failed to load asset! '%s'", e, assetFilename);
 			}
 		}
-		// TODO manually load font
-		FreeTypeFontGenerator fontGen;
-		fontGen = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Style-7/PixelFont7.ttf"));
-		fontGenerators.put(new Identifier("pixadv", "fonts/Style-7/PixelFont7"), fontGen);
-		fontGen = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Quote-Unquote_Apps/CourierPrime.ttf"));
-		fontGenerators.put(new Identifier("pixadv", "fonts/Quote-Unquote_Apps/CourierPrime"), fontGen);
 		// Load external modules
 		for (FileHandle moduleFilename : Gdx.files.local("modules").list())
 			System.out.println(moduleFilename);
@@ -60,12 +54,11 @@ public class Registry {
 			if (type == null) {
 				Logger.logMessage(Logger.WARNING, "Unknown type for asset '%s'!", asset.getId());
 			} else {
-				byte[] assetBytes = asset.getBytes();
 				// Parse bytes by file type
 				switch (type) {
 				case TEXTURE:
 					// Texture
-					Pixmap pixmap = new Pixmap(assetBytes, 0, assetBytes.length);
+					Pixmap pixmap = new Pixmap(asset.getHandle());
 					textures.put(asset.getId(), new Texture(pixmap));
 					pixmap.dispose();
 					break;
@@ -79,8 +72,8 @@ public class Registry {
 					break;
 				case FONT:
 					// Font file
-//					FreeTypeFontGenerator generator = new FreeTypeFontGenerator();
-//					fonts.put(asset.getId(), generator);
+					FreeTypeFontGenerator generator = new FreeTypeFontGenerator(asset.getHandle());
+					fontGenerators.put(asset.getId(), generator);
 					break;
 				}
 				Logger.logMessage(Logger.DEBUG, "Loaded asset '%s'", asset.getId());
