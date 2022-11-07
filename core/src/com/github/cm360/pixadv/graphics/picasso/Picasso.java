@@ -107,7 +107,7 @@ public class Picasso {
 		batch = new SpriteBatch();
 		// World camera info
 		worldCamX = 0;
-		worldCamY = 200;
+		worldCamY = 0;
 		tileSize = 8;
 		setTileScale(2f);
 		// Debug variables
@@ -134,7 +134,7 @@ public class Picasso {
 		// Draw
 		if (registry.isInitialized()) {
 			if (universe != null) {
-				World world = universe.getWorld("GENTEST");
+				World world = universe.getWorld(ClientApplication.getClient().getCurrentWorldName());
 				if (world != null) {
 					renderWorld(world);
 				}

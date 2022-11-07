@@ -31,6 +31,7 @@ public class Client {
 	public void link(Server internalServer) {
 		// TODO link to internal server for singleplayer
 		universe = internalServer.getUniverse();
+		currentWorldName = "GENTEST";
 	}
 	
 	public void connect(InetAddress address, int port) {
