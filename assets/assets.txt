@@ -1,3 +1,5 @@
+fonts/Quote-Unquote_Apps/CourierPrime.ttf
+fonts/Quote-Unquote_Apps/OFL.LICENSE.txt
 fonts/Style-7/PixelFont7.ttf
 textures/environment/terra/sky.png
 textures/gui/entities/missing.png
