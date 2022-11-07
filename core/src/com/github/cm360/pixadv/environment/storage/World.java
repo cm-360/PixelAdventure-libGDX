@@ -32,14 +32,12 @@ public class World {
 	}
 	
 	public int fixCoordinate(int coord, int max) {
-		int coordNew = coord;
 		if (coord < 0)
-			while (coordNew < 0)
-				coordNew += max;
+			return (coord % max) + max;
 		else if (coord >= max)
-			while (coordNew >= max)
-				coordNew -= max;
-		return coordNew;
+			return coord % max;
+		else
+			return coord;
 	}
 	
 	public boolean isValid(int x, int y, int z) {
