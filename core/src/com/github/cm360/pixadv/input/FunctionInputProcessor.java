@@ -1,5 +1,6 @@
 package com.github.cm360.pixadv.input;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.graphics.picasso.Picasso;
@@ -33,6 +34,10 @@ public class FunctionInputProcessor extends AbstractInputProcessor {
 		// Toggle debug UI
 		case Keys.F12:
 			p.setDebugShown(!p.isDebugShown());
+			break;
+		// Quit
+		case Keys.ESCAPE:
+			Gdx.app.exit();
 			break;
 		default:
 			return false;
