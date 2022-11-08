@@ -35,9 +35,12 @@ public class GuiInputProcessor extends AbstractInputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
-		ClientApplication.getGuiManager().getCurrentMenu();
+		Menu menu = ClientApplication.getGuiManager().getCurrentMenu();
+		if (menu != null) {
+			menu.interactType(character, Set.copyOf(heldModifiers));
+		}
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override

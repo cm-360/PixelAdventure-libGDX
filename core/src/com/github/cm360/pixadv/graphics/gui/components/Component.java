@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -85,6 +86,10 @@ public abstract class Component {
 			if (keys.containsAll(combo))
 				events.get(combo).run();
 		// play sound or something?
+	}
+	
+	public void interactType(char character, Set<Integer> modifiers) {
+		
 	}
 	
 	public Component attemptFocus(Vector2 mousePos) {
