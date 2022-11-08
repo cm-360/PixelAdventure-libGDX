@@ -157,17 +157,17 @@ public class Picasso {
 	}
 	
 	public void render(Universe universe) {
-		renderTimes.reset();
 		// Prepare for drawing
+		renderTimes.reset();
 		ScreenUtils.clear(0f, 0f, 0f, 1f);
 		camera.setToOrtho(false, viewportWidth, viewportHeight);
 		batch.setProjectionMatrix(camera.combined);
 		shapes.setProjectionMatrix(camera.combined);
-		batch.begin();
 		// Grab default fonts
 		gameFont = registry.getFont(gameFontId, defaultFontSize);
 		monoFont = registry.getFont(monoFontId, defaultFontSize);
 		// Draw
+		batch.begin();
 		if (registry.isInitialized()) {
 			// Draw current world (if one is loaded)
 			if (universe != null) {
@@ -241,6 +241,7 @@ public class Picasso {
 	}
 	
 	private void renderTileGrid(World world) {
+		// Loop through tile layers
 		for (int z = 0; z < Chunk.layers; z++) {
 			// Darken background layer
 			if (z == 0) {
@@ -248,17 +249,22 @@ public class Picasso {
 			} else {
 				batch.setColor(1f, 1f, 1f, 1f);
 			}
-			// Draw tiles
+			// Loop through visible chunks
 			for (int cx = minCX; cx < maxCX; cx++) {
 				for (int cy = Math.max(0, minCY); cy < Math.min(world.getHeight(), maxCY); cy++) {
+					// Draw current chunk
 					Chunk chunk = world.getChunk(cx, cy);
 					int chunkSize = world.getChunkSize();
+					// Loop through tiles in chunk
 					for (int xc = 0; xc < chunkSize; xc++) {
 						for (int yc = 0; yc < chunkSize; yc++) {
+							// Current tile
 							int x = (cx * chunkSize) + xc;
 							int y = (cy * chunkSize) + yc;
 							Tile tile = chunk.getTile(xc, yc, z);
+							// Draw non-empty tiles only
 							if (tile != null) {
+								// Draw tile textures
 								for (Identifier textureId : tile.getTextures()) {
 									if (textureId != null) {
 										renderTile(registry.getTexture(textureId), x, y);
@@ -378,11 +384,13 @@ public class Picasso {
 	}
 	
 	private void createLightmap(World world) {
+		// Pixmap size equals number of drawn tiles
 		int chunkSize = world.getChunkSize();
 		lightPixmap = new Pixmap(
 				(maxCX - minCX) * chunkSize,
 				(maxCY - minCY) * chunkSize,
 				Format.RGBA8888);
+		// Overwrite instead of blending pixels
 		lightPixmap.setBlending(Blending.None);
 	}
 	
@@ -395,7 +403,7 @@ public class Picasso {
 	
 	private void renderGui(Universe universe) {
 		if (showUI) {
-			// Show loading world message
+			// Loading world message
 			if (universe != null) {
 				String worldName = ClientApplication.getClient().getCurrentWorldName();
 				if (universe.getWorld(worldName) == null) {
@@ -436,18 +444,19 @@ public class Picasso {
 	}
 	
 	private void renderDebugInfo(Universe universe, int padding) {
-		// Generate debug text
 		debugLinesLeft.clear();
 		debugLinesRight.clear();
-		// Rendering info
+		// FPS
 		debugLinesLeft.add(String.format("%d/%d FPS%s",
 				Gdx.graphics.getFramesPerSecond(),
 				targetFPS,
 				(useVSync ? " (VSync)" : "")));
+		// Current monitor
 		debugLinesLeft.add(String.format("%dx%d %dHz",
 				viewportWidth,
 				viewportHeight,
 				Gdx.graphics.getDisplayMode().refreshRate));
+		// Graphics driver and GL version
 		GLVersion glVersion = Gdx.graphics.getGLVersion();
 		debugLinesLeft.add(String.format("%s %d.%d.%d (%s)",
 				glVersion.getType(),
@@ -455,22 +464,27 @@ public class Picasso {
 				glVersion.getMinorVersion(),
 				glVersion.getReleaseVersion(),
 				glVersion.getVendorString()));
+		// GPU name
 		debugLinesLeft.add(glVersion.getRendererString());
+		// Spacer
 		debugLinesLeft.add(null);
-		// CPU info
+		// Operating system
 		OperatingSystem os = systemInfo.getOperatingSystem();
 		debugLinesLeft.add(String.format("%s %s %s %s",
 				os.getFamily(),
 				os.getVersionInfo().getVersion(),
 				os.getVersionInfo().getBuildNumber(),
 				System.getProperty("os.arch")));
+		// CPU info
 		CentralProcessor cpu = systemInfo.getHardware().getProcessor();
 		debugLinesLeft.add(String.format("%s %dx",
 				cpu.getProcessorIdentifier().getName(),
 				cpu.getLogicalProcessorCount()));
+		// spacer
 		debugLinesLeft.add(null);
 		// Runtime info
 		debugLinesLeft.add(String.format("Java %s", Runtime.version()));
+		// Memory usage
 		int mibSize = 1024 * 1024;
 		long totalMem = Runtime.getRuntime().totalMemory() / mibSize;
 		long freeMem = Runtime.getRuntime().freeMemory() / mibSize;
@@ -479,23 +493,27 @@ public class Picasso {
 				((float) usedMem / (float) totalMem) * 100,
 				usedMem,
 				totalMem));
-		// Game info
+		// Game version
 		debugLinesRight.add(String.format("%s v%s",
 				ClientApplication.name,
 				ClientApplication.getVersionString()));
+		// Registry info
 		debugLinesRight.add(String.format("%d modules", registry.getModuleCount()));
+		// Spacer
 		debugLinesRight.add(null);
-		// Current universe info
+		// Current universe
 		if (universe != null) {
-			// World
+			// Universe
 			debugLinesRight.add(String.format("U: '%s' (%s)",
 					universe.getName(),
 					universe.getClass().getSimpleName()));
+			// World
 			String worldName = ClientApplication.getClient().getCurrentWorldName();
 			World world = universe.getWorld(worldName);
 			debugLinesRight.add(String.format("W: '%s' (%s)",
 					worldName,
 					world.getClass().getSimpleName()));
+			// Spacer
 			debugLinesRight.add(null);
 			// Camera
 			debugLinesRight.add(String.format("Camera: x%.4f y%.4f", worldCamX, worldCamY));
@@ -509,8 +527,9 @@ public class Picasso {
 						lightPixmap.getWidth(),
 						lightPixmap.getHeight()));
 			}
+			// Spacer
 			debugLinesRight.add(null);
-			// Mouse
+			// Tiles under mouse
 			debugLinesRight.add(String.format("Tile: x%d y%d",
 					mouseTileX,
 					mouseTileY));
@@ -523,6 +542,7 @@ public class Picasso {
 				}
 			}
 		}
+		// Spacer
 		debugLinesRight.add(null);
 		// Draw text
 		int spacers;
