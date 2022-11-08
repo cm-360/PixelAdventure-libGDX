@@ -692,6 +692,18 @@ public class Picasso {
 	public int getMouseTileY() {
 		return mouseTileY;
 	}
+	
+	public Identifier getGameFontId() {
+		return gameFontId;
+	}
+	
+	public Identifier getMonoFontId() {
+		return monoFontId;
+	}
+	
+	public int getDefaultFontSize() {
+		return defaultFontSize;
+	}
 
 	public void resize(int width, int height) {
 		this.viewportWidth = width;
