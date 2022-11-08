@@ -16,11 +16,13 @@ import com.github.cm360.pixadv.graphics.picasso.Picasso;
 import com.github.cm360.pixadv.input.FunctionInputProcessor;
 import com.github.cm360.pixadv.input.GuiInputProcessor;
 import com.github.cm360.pixadv.input.MovementInputProcessor;
+import com.github.cm360.pixadv.modules.builtin.events.system.ServerConnectEvent;
 import com.github.cm360.pixadv.modules.builtin.events.system.UniverseLoadEvent;
 import com.github.cm360.pixadv.modules.builtin.gui.menus.StartMenu;
 import com.github.cm360.pixadv.network.Server;
 import com.github.cm360.pixadv.network.client.AbstractClient;
 import com.github.cm360.pixadv.network.client.ClientLocal;
+import com.github.cm360.pixadv.network.client.ClientRemote;
 import com.github.cm360.pixadv.registry.Registry;
 
 public class ClientApplication extends ApplicationAdapter implements EventListener {
@@ -88,6 +90,13 @@ public class ClientApplication extends ApplicationAdapter implements EventListen
 		ClientLocal clientLocal = new ClientLocal();
 		clientLocal.connect(internalServer);
 		client = clientLocal;
+	}
+	
+	@EventHandler(sync = SyncType.ASYNC)
+	public void onServerConnectEvent(ServerConnectEvent event) {
+		ClientRemote clientRemote = new ClientRemote();
+		clientRemote.connect(event.getAddress(), event.getPort());
+		client = clientRemote;
 	}
 	
 	public static void connectToServer(InetAddress address, int port) {
