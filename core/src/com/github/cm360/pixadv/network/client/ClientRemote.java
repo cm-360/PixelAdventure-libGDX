@@ -24,6 +24,7 @@ public class ClientRemote extends AbstractClient {
 	private Channel channel;
 	
 	public void connect(InetAddress address, int port) {
+		ClientRemote thisClient = this;
 		workerGroup = new NioEventLoopGroup();
 		try {
 			Bootstrap b = new Bootstrap();
@@ -35,7 +36,7 @@ public class ClientRemote extends AbstractClient {
 							ChannelPipeline pipeline = ch.pipeline();
 							// Decoding/receiving
 							pipeline.addLast(new ObjectDecoder());
-							pipeline.addLast(new ObjectReadHandler());
+							pipeline.addLast(new ObjectReadHandler(thisClient::processServerPacket));
 							// Encoding/sending
 							pipeline.addLast(new ObjectEncoder());
 						}
@@ -64,7 +65,10 @@ public class ClientRemote extends AbstractClient {
 
 	@Override
 	public void send(Packet packet) {
-		// TODO Auto-generated method stub
+		channel.writeAndFlush(packet);
+	}
+	
+	public void processServerPacket(Packet packet) {
 		
 	}
 

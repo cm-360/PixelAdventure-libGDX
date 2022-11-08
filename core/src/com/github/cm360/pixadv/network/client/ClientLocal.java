@@ -22,8 +22,7 @@ public class ClientLocal extends AbstractClient {
 	
 	@Override
 	public void send(Packet packet) {
-		// TODO Auto-generated method stub
-		
+		server.processClientPacket(packet);
 	}
 
 }

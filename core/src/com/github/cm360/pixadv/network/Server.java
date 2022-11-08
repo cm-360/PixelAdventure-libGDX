@@ -11,6 +11,7 @@ import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.network.handlers.ObjectDecoder;
 import com.github.cm360.pixadv.network.handlers.ObjectEncoder;
 import com.github.cm360.pixadv.network.handlers.ObjectReadHandler;
+import com.github.cm360.pixadv.network.packets.Packet;
 import com.github.cm360.pixadv.util.Logger;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -45,6 +46,7 @@ public class Server {
 	}
 	
 	public void run(InetAddress address, int port) {
+		Server thisServer = this;
 		bossGroup = new NioEventLoopGroup();
 		workerGroup = new NioEventLoopGroup();
 		try {
@@ -57,7 +59,7 @@ public class Server {
 							ChannelPipeline pipeline = ch.pipeline();
 							// Decoding/receiving
 							pipeline.addLast(new ObjectDecoder());
-							pipeline.addLast(new ObjectReadHandler());
+							pipeline.addLast(new ObjectReadHandler(thisServer::processClientPacket));
 							// Encoding/sending
 							pipeline.addLast(new ObjectEncoder());
 						}
@@ -80,6 +82,10 @@ public class Server {
 			workerGroup.shutdownGracefully();
 			bossGroup.shutdownGracefully();
 		}
+	}
+	
+	public void processClientPacket(Packet packet) {
+		
 	}
 	
 	public Universe getUniverse() {
