@@ -1,9 +1,10 @@
 package com.github.cm360.pixadv.network;
 
 import java.net.InetAddress;
+import java.util.UUID;
 
 import com.github.cm360.pixadv.environment.storage.Universe;
-import com.github.cm360.pixadv.environment.types.Entity;
+import com.github.cm360.pixadv.environment.types.entity.Entity;
 import com.github.cm360.pixadv.network.handlers.ObjectDecoder;
 import com.github.cm360.pixadv.network.handlers.ObjectEncoder;
 import com.github.cm360.pixadv.network.handlers.ObjectReadHandler;
@@ -78,6 +79,11 @@ public class Client {
 	
 	public String getCurrentWorldName() {
 		return currentWorldName;
+	}
+	
+	public UUID getPlayerId() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	public Entity getPlayer() {

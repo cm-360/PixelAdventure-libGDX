@@ -1,4 +1,4 @@
-package com.github.cm360.pixadv.environment.types;
+package com.github.cm360.pixadv.environment.types.tiles;
 
 import com.github.cm360.pixadv.registry.Identifier;
 

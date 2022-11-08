@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.github.cm360.pixadv.environment.types.Tile;
+import com.github.cm360.pixadv.environment.types.tiles.Tile;
 import com.github.cm360.pixadv.registry.Identifier;
 
 public class Dirt implements Tile {
