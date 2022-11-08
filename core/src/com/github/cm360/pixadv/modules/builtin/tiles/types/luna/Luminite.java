@@ -2,7 +2,7 @@ package com.github.cm360.pixadv.modules.builtin.tiles.types.luna;
 
 import java.awt.Color;
 
-import com.github.cm360.pixadv.environment.types.tiles.Tile;
+import com.github.cm360.pixadv.environment.types.tile.Tile;
 import com.github.cm360.pixadv.modules.builtin.tiles.capabilities.LightEmitter;
 import com.github.cm360.pixadv.registry.Identifier;
 

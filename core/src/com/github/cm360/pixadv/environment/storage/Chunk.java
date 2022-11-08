@@ -1,6 +1,6 @@
 package com.github.cm360.pixadv.environment.storage;
 
-import com.github.cm360.pixadv.environment.types.tiles.Tile;
+import com.github.cm360.pixadv.environment.types.tile.Tile;
 
 public class Chunk {
 

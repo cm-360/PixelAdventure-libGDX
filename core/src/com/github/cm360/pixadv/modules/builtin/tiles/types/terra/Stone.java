@@ -1,6 +1,6 @@
 package com.github.cm360.pixadv.modules.builtin.tiles.types.terra;
 
-import com.github.cm360.pixadv.environment.types.tiles.Tile;
+import com.github.cm360.pixadv.environment.types.tile.Tile;
 import com.github.cm360.pixadv.registry.Identifier;
 
 public class Stone implements Tile {

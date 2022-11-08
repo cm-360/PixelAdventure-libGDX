@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.github.cm360.pixadv.environment.types.entity.Entity;
-import com.github.cm360.pixadv.environment.types.tiles.Tile;
+import com.github.cm360.pixadv.environment.types.tile.Tile;
 import com.github.cm360.pixadv.registry.Identifier;
 
 public class World {
