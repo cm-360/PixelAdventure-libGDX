@@ -34,14 +34,12 @@ public class Button extends Image {
 		font.draw(batch, text,
 				bounds.x + shadowOffset,
 				bounds.y + (bounds.height * 0.75f) - shadowOffset,
-				0, text.length(),
 				bounds.width, Align.center, false);
 		// Draw foreground text
 		font.setColor(Color.WHITE);
 		font.draw(batch, text,
 				bounds.x,
 				bounds.y + (bounds.height * 0.75f),
-				0, text.length(),
 				bounds.width, Align.center, false);
 	}
 	
