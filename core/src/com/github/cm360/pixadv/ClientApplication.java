@@ -1,6 +1,7 @@
 package com.github.cm360.pixadv;
 
 import java.io.File;
+import java.net.InetAddress;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -17,8 +18,9 @@ import com.github.cm360.pixadv.input.GuiInputProcessor;
 import com.github.cm360.pixadv.input.MovementInputProcessor;
 import com.github.cm360.pixadv.modules.builtin.events.system.UniverseLoadEvent;
 import com.github.cm360.pixadv.modules.builtin.gui.menus.StartMenu;
-import com.github.cm360.pixadv.network.Client;
 import com.github.cm360.pixadv.network.Server;
+import com.github.cm360.pixadv.network.client.AbstractClient;
+import com.github.cm360.pixadv.network.client.ClientLocal;
 import com.github.cm360.pixadv.registry.Registry;
 
 public class ClientApplication extends ApplicationAdapter implements EventListener {
@@ -33,7 +35,7 @@ public class ClientApplication extends ApplicationAdapter implements EventListen
 	private static EventManager eventManager;
 	private static Jarvis jarvis;
 
-	private static Client client;
+	private static AbstractClient client;
 	private static Server internalServer;
 
 	@Override
@@ -52,8 +54,6 @@ public class ClientApplication extends ApplicationAdapter implements EventListen
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		// Initialize registry
 		registry.initialize();
-		// Create client
-		client = new Client();
 		// Open start menu
 		jarvis.openMenu(new StartMenu());
 	}
@@ -84,7 +84,14 @@ public class ClientApplication extends ApplicationAdapter implements EventListen
 	public static void loadUniverse(File universeDirectory) {
 		internalServer = new Server();
 		internalServer.load(universeDirectory);
-		client.link(internalServer);
+		// Create client
+		ClientLocal clientLocal = new ClientLocal();
+		clientLocal.connect(internalServer);
+		client = clientLocal;
+	}
+	
+	public static void connectToServer(InetAddress address, int port) {
+		
 	}
 	
 	public static Registry getRegistry() {
@@ -103,7 +110,7 @@ public class ClientApplication extends ApplicationAdapter implements EventListen
 		return jarvis;
 	}
 	
-	public static Client getClient() {
+	public static AbstractClient getClient() {
 		return client;
 	}
 	

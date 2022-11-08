@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.net.InetAddress;
 import java.util.Map;
 
+import com.github.cm360.pixadv.commands.CommandProcessor;
 import com.github.cm360.pixadv.environment.storage.LocalUniverse;
 import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.network.handlers.ObjectDecoder;
@@ -30,11 +31,13 @@ public class Server {
 	private Map<String, Channel> clientChannels;
 	
 	private Universe universe;
+	private CommandProcessor commands;
 	
 	public void load(File universeDirectory) {
 		Logger.logMessage(Logger.INFO, "Loading universe from '%s'", universeDirectory);
 		try {
 			universe = new LocalUniverse(universeDirectory);
+			commands = new CommandProcessor(universe);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

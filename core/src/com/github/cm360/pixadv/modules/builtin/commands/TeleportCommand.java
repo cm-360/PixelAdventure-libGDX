@@ -8,7 +8,7 @@ import com.github.cm360.pixadv.commands.Syntax;
 import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.environment.storage.World;
 import com.github.cm360.pixadv.environment.types.entity.Entity;
-import com.github.cm360.pixadv.network.Client;
+import com.github.cm360.pixadv.network.client.AbstractClient;
 
 public class TeleportCommand extends Command {
 
@@ -19,7 +19,7 @@ public class TeleportCommand extends Command {
 		this.universe = universe;
 		// Teleports self to position
 		addSyntax(new Syntax(args -> {
-			Client client = ClientApplication.getClient();
+			AbstractClient client = ClientApplication.getClient();
 			World world = universe.getWorld(client.getCurrentWorldName());
 			UUID playerId = client.getPlayerId();
 			if (playerId != null) {

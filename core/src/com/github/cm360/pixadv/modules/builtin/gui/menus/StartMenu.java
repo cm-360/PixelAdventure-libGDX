@@ -13,8 +13,8 @@ import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.graphics.gui.components.generic.Button;
 import com.github.cm360.pixadv.graphics.gui.components.generic.Image;
 import com.github.cm360.pixadv.input.KeyCombo;
+import com.github.cm360.pixadv.modules.builtin.events.system.ServerConnectEvent;
 import com.github.cm360.pixadv.modules.builtin.events.system.UniverseLoadEvent;
-import com.github.cm360.pixadv.network.Client;
 import com.github.cm360.pixadv.registry.Identifier;
 import com.github.cm360.pixadv.util.Logger;
 
@@ -49,7 +49,9 @@ public class StartMenu extends Menu {
 			// TODO load singleplayer menu
 			ClientApplication.getGuiManager().closeMenu();
 			ClientApplication.getGuiManager().openMenu(new ChatMenu());
-			ClientApplication.getEventManager().queue(new UniverseLoadEvent(new File("universes/Universe Zero")), SyncType.ASYNC);
+			ClientApplication.getEventManager().queue(
+					new UniverseLoadEvent(new File("universes/Universe Zero")),
+					SyncType.ASYNC);
 //			HumanPlayer player = new HumanPlayer(client.getRegistry().getTexture(Identifier.parse("pixadv:mario")));
 //			client.getCurrentUniverse().getCurrentWorld().addEntity(client.getPlayerId(), player);
 		});
@@ -68,10 +70,11 @@ public class StartMenu extends Menu {
 			// TODO load multiplayer menu
 			ClientApplication.getGuiManager().closeMenu();
 			try {
-				Client client = new Client();
-				client.connect(InetAddress.getByName("localhost"), 43234);
+				ClientApplication.getEventManager().queue(
+						new ServerConnectEvent(InetAddress.getByName("localhost"), 43234),
+						SyncType.ASYNC);
 			} catch (UnknownHostException e) {
-				Logger.logException("hmm", e);
+				Logger.logException("Unknown host", e);
 			}
 		});
 		children.add(multiplayerButton);
