@@ -48,6 +48,7 @@ public class StartMenu extends Menu {
 		singleplayerButton.registerEvent(new KeyCombo(Buttons.LEFT), () -> {
 			// TODO load singleplayer menu
 			ClientApplication.getGuiManager().closeMenu();
+			ClientApplication.getGuiManager().openMenu(new ChatMenu());
 			ClientApplication.getEventManager().queue(new UniverseLoadEvent(new File("universes/Universe Zero")), SyncType.ASYNC);
 //			HumanPlayer player = new HumanPlayer(client.getRegistry().getTexture(Identifier.parse("pixadv:mario")));
 //			client.getCurrentUniverse().getCurrentWorld().addEntity(client.getPlayerId(), player);
