@@ -19,10 +19,10 @@ import com.github.cm360.pixadv.input.MovementInputProcessor;
 import com.github.cm360.pixadv.modules.builtin.events.system.ServerConnectEvent;
 import com.github.cm360.pixadv.modules.builtin.events.system.UniverseLoadEvent;
 import com.github.cm360.pixadv.modules.builtin.gui.menus.StartMenu;
-import com.github.cm360.pixadv.network.Server;
 import com.github.cm360.pixadv.network.client.AbstractClient;
 import com.github.cm360.pixadv.network.client.ClientLocal;
 import com.github.cm360.pixadv.network.client.ClientRemote;
+import com.github.cm360.pixadv.network.server.Server;
 import com.github.cm360.pixadv.registry.Registry;
 
 public class ClientApplication extends ApplicationAdapter implements EventListener {

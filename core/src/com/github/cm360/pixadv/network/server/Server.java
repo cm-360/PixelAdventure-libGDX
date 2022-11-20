@@ -1,4 +1,4 @@
-package com.github.cm360.pixadv.network;
+package com.github.cm360.pixadv.network.server;
 
 import java.io.File;
 import java.io.FileNotFoundException;

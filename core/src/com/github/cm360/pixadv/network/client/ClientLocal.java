@@ -1,7 +1,7 @@
 package com.github.cm360.pixadv.network.client;
 
-import com.github.cm360.pixadv.network.Server;
 import com.github.cm360.pixadv.network.packets.Packet;
+import com.github.cm360.pixadv.network.server.Server;
 
 public class ClientLocal extends AbstractClient {
 

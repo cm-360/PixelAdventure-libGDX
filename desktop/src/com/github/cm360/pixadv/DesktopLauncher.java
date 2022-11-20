@@ -7,7 +7,7 @@ import java.util.Arrays;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.github.cm360.pixadv.graphics.picasso.Picasso;
-import com.github.cm360.pixadv.network.Server;
+import com.github.cm360.pixadv.network.server.Server;
 import com.github.cm360.pixadv.util.Logger;
 
 public class DesktopLauncher {
