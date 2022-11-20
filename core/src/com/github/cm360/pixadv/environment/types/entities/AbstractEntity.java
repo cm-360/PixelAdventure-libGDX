@@ -1,4 +1,4 @@
-package com.github.cm360.pixadv.environment.types.entity;
+package com.github.cm360.pixadv.environment.types.entities;
 
 public abstract class AbstractEntity implements Entity {
 

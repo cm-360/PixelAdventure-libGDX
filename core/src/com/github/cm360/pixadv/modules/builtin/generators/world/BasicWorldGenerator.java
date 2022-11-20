@@ -8,7 +8,7 @@ import com.github.cm360.pixadv.environment.generators.WorldGenerator;
 import com.github.cm360.pixadv.environment.storage.Chunk;
 import com.github.cm360.pixadv.environment.storage.LocalWorld;
 import com.github.cm360.pixadv.environment.storage.World;
-import com.github.cm360.pixadv.environment.types.tile.Tile;
+import com.github.cm360.pixadv.environment.types.tiles.Tile;
 import com.github.cm360.pixadv.modules.builtin.tiles.types.luna.Luminite;
 import com.github.cm360.pixadv.modules.builtin.tiles.types.terra.Dirt;
 import com.github.cm360.pixadv.modules.builtin.tiles.types.terra.Stone;

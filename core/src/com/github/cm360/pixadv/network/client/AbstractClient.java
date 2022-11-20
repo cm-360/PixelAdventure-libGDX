@@ -3,7 +3,7 @@ package com.github.cm360.pixadv.network.client;
 import java.util.UUID;
 
 import com.github.cm360.pixadv.environment.storage.Universe;
-import com.github.cm360.pixadv.environment.types.entity.Entity;
+import com.github.cm360.pixadv.environment.types.entities.Entity;
 import com.github.cm360.pixadv.network.packets.Packet;
 
 public abstract class AbstractClient {

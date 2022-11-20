@@ -1,4 +1,4 @@
-package com.github.cm360.pixadv.environment.types.entity;
+package com.github.cm360.pixadv.environment.types.entities;
 
 import java.awt.image.BufferedImage;
 import java.util.Map;

@@ -6,6 +6,7 @@ import com.github.cm360.pixadv.network.handlers.ObjectDecoder;
 import com.github.cm360.pixadv.network.handlers.ObjectEncoder;
 import com.github.cm360.pixadv.network.handlers.ObjectReadHandler;
 import com.github.cm360.pixadv.network.packets.Packet;
+import com.github.cm360.pixadv.network.packets.StringPacket;
 import com.github.cm360.pixadv.util.Logger;
 
 import io.netty.bootstrap.Bootstrap;
@@ -45,7 +46,8 @@ public class ClientRemote extends AbstractClient {
 			Logger.logMessage(Logger.INFO, "Connecting to %s:%d...", address.getHostAddress(), port);
 			channel = b.connect(address, port).sync().channel();
 			// Send hello
-			channel.writeAndFlush("testing testing uwu").sync();
+			StringPacket stringPacket = new StringPacket("testing testing uwu");
+			channel.writeAndFlush(stringPacket).sync();
 			Logger.logMessage(Logger.INFO, "Sent hello");
 		} catch (Exception e) {
 			Logger.logException("Failed to connect!", e);
@@ -69,7 +71,7 @@ public class ClientRemote extends AbstractClient {
 	}
 	
 	public void processServerPacket(Packet packet) {
-		
+		System.out.println("packet: " + packet);
 	}
 
 }

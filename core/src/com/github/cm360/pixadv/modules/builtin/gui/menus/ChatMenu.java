@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;
 import com.github.cm360.pixadv.graphics.gui.components.generic.TextField;
+import com.github.cm360.pixadv.network.packets.StringPacket;
 import com.github.cm360.pixadv.registry.Identifier;
 
 public class ChatMenu extends Menu {
@@ -38,6 +39,7 @@ public class ChatMenu extends Menu {
 			}
 		} else if (character == '\n') { // Enter
 			String text = inputField.getText();
+			ClientApplication.getClient().send(new StringPacket(text));
 			inputField.setText("");
 			
 		} else {

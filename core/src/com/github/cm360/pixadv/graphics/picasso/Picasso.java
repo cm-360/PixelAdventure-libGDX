@@ -31,7 +31,7 @@ import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.environment.storage.Chunk;
 import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.environment.storage.World;
-import com.github.cm360.pixadv.environment.types.tile.Tile;
+import com.github.cm360.pixadv.environment.types.tiles.Tile;
 import com.github.cm360.pixadv.graphics.gui.components.Component;
 import com.github.cm360.pixadv.graphics.gui.components.Layer;
 import com.github.cm360.pixadv.graphics.gui.components.Menu;

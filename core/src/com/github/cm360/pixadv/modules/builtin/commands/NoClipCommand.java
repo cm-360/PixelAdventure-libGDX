@@ -7,7 +7,7 @@ import com.github.cm360.pixadv.commands.Command;
 import com.github.cm360.pixadv.commands.Syntax;
 import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.environment.storage.World;
-import com.github.cm360.pixadv.environment.types.entity.Entity;
+import com.github.cm360.pixadv.environment.types.entities.Entity;
 import com.github.cm360.pixadv.network.client.AbstractClient;
 
 public class NoClipCommand extends Command {

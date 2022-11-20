@@ -94,13 +94,13 @@ public class ClientApplication extends ApplicationAdapter implements EventListen
 	
 	@EventHandler(sync = SyncType.ASYNC)
 	public void onServerConnectEvent(ServerConnectEvent event) {
-		ClientRemote clientRemote = new ClientRemote();
-		clientRemote.connect(event.getAddress(), event.getPort());
-		client = clientRemote;
+		connectToServer(event.getAddress(), event.getPort());
 	}
 	
 	public static void connectToServer(InetAddress address, int port) {
-		
+		ClientRemote clientRemote = new ClientRemote();
+		clientRemote.connect(address, port);
+		client = clientRemote;
 	}
 	
 	public static Registry getRegistry() {

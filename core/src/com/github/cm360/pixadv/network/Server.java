@@ -85,7 +85,10 @@ public class Server {
 	}
 	
 	public void processClientPacket(Packet packet) {
-		
+		String contents = packet.toString();
+		System.out.println("packet: " + contents);
+		if (contents.startsWith("/"))
+			commands.processCommand(contents.substring(1));
 	}
 	
 	public Universe getUniverse() {

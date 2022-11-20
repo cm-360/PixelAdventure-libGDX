@@ -4,12 +4,13 @@ import java.net.InetSocketAddress;
 import java.util.function.Consumer;
 
 import com.github.cm360.pixadv.network.packets.Packet;
+import com.github.cm360.pixadv.network.packets.StringPacket;
 import com.github.cm360.pixadv.util.Logger;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-public class ObjectReadHandler extends SimpleChannelInboundHandler<String> {
+public class ObjectReadHandler extends SimpleChannelInboundHandler<Packet> {
 
 	private Consumer<Packet> packetHandler;
 	
@@ -24,10 +25,11 @@ public class ObjectReadHandler extends SimpleChannelInboundHandler<String> {
 	}
 	
 	@Override
-	public void channelRead0(ChannelHandlerContext ctx, String msg) throws InterruptedException {
-		System.out.println(msg);
-		ctx.channel().writeAndFlush("reply! " + msg).sync();
-		ctx.close();
+	public void channelRead0(ChannelHandlerContext ctx, Packet packet) throws InterruptedException {
+		packetHandler.accept(packet);
+		if (!packet.toString().contains("reply"))
+			ctx.channel().writeAndFlush(new StringPacket("reply :D")).sync();
+//		ctx.close();
 	}
 
 	@Override

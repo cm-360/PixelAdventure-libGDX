@@ -28,7 +28,11 @@ public class EventManager {
 		for (SyncType sync : SyncType.values()) {
 			eventQueueMap.put(sync, new LinkedList<Event>());
 			eventHandlersMap.put(sync, new TreeMap<Method, EventListener>((m1, m2) -> {
-				return m1.getAnnotation(EventHandler.class).priority() - m2.getAnnotation(EventHandler.class).priority();
+				int diff = m1.getAnnotation(EventHandler.class).priority() - m2.getAnnotation(EventHandler.class).priority();
+				if (diff == 0)
+					return m1.getName().compareTo(m2.getName());
+				else
+					return diff;
 			}));
 		}
 		// Create async event handling thread
