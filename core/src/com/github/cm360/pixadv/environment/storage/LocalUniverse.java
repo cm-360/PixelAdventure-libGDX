@@ -12,10 +12,10 @@ import com.github.cm360.pixadv.modules.builtin.generators.world.BasicWorldGenera
 public class LocalUniverse extends Universe {
 
 	public LocalUniverse(File universeDir) throws FileNotFoundException {
-		name = universeDir.getName();
 		// Parse universe info
 		JsonReader jsonReader = new JsonReader();
 		JsonValue json = jsonReader.parse(new FileReader(new File(universeDir, "info.json")));
+		name =  json.getString("name", universeDir.getName());
 		// Load world folders
 		File worldsDir = new File(universeDir, "worlds");
 		worlds = new HashMap<String, World>();

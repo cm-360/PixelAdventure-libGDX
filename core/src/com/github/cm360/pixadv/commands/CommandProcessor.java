@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.modules.builtin.commands.NoClipCommand;
@@ -26,7 +25,7 @@ public class CommandProcessor {
 	
 	public String processCommand(String commandString) {
 		String result = "Invalid syntax!";
-		Pattern argPattern = Pattern.compile("(?:(?<=\")[^\"]+(?=\"))|(?:[^\\s\"]+)");
+//		Pattern argPattern = Pattern.compile("(?:(?<=\")[^\"]+(?=\"))|(?:[^\\s\"]+)");
 		try (Scanner argumentScanner = new Scanner(commandString)) {
 			List<String> argumentStrings = argumentScanner.tokens().toList();
 			// Lookup command

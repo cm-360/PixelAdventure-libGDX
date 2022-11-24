@@ -1,7 +1,5 @@
 package com.github.cm360.pixadv.modules.builtin.commands;
 
-import java.util.UUID;
-
 import com.github.cm360.pixadv.ClientApplication;
 import com.github.cm360.pixadv.commands.Command;
 import com.github.cm360.pixadv.commands.Syntax;
