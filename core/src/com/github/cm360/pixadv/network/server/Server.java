@@ -3,11 +3,11 @@ package com.github.cm360.pixadv.network.server;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.InetAddress;
-import java.util.Map;
 
 import com.github.cm360.pixadv.commands.CommandProcessor;
 import com.github.cm360.pixadv.environment.storage.LocalUniverse;
 import com.github.cm360.pixadv.environment.storage.Universe;
+import com.github.cm360.pixadv.network.handlers.ChannelManager;
 import com.github.cm360.pixadv.network.handlers.ObjectDecoder;
 import com.github.cm360.pixadv.network.handlers.ObjectEncoder;
 import com.github.cm360.pixadv.network.handlers.ObjectReadHandler;
@@ -29,7 +29,7 @@ public class Server {
 	private EventLoopGroup bossGroup;
 	private EventLoopGroup workerGroup;
 	private Channel serverChannel;
-	private Map<String, Channel> clientChannels;
+	private ChannelManager channelManager;
 	
 	private Universe universe;
 	private CommandProcessor commands;
@@ -49,6 +49,7 @@ public class Server {
 		Server thisServer = this;
 		bossGroup = new NioEventLoopGroup();
 		workerGroup = new NioEventLoopGroup();
+		channelManager = new ChannelManager();
 		try {
 			ServerBootstrap b = new ServerBootstrap();
 			b.group(bossGroup, workerGroup)
@@ -57,6 +58,7 @@ public class Server {
 						@Override
 						public void initChannel(SocketChannel ch) throws Exception {
 							ChannelPipeline pipeline = ch.pipeline();
+							pipeline.addLast(channelManager);
 							// Decoding/receiving
 							pipeline.addLast(new ObjectDecoder());
 							pipeline.addLast(new ObjectReadHandler(thisServer::processClientPacket));
