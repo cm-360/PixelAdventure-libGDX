@@ -73,6 +73,7 @@ public class ClientApplication extends ApplicationAdapter implements EventListen
 
 	@Override
 	public void dispose() {
+		disconnect();
 		eventManager.exit();
 		picasso.dispose();
 		registry.dispose();
@@ -101,6 +102,11 @@ public class ClientApplication extends ApplicationAdapter implements EventListen
 		ClientRemote clientRemote = new ClientRemote();
 		clientRemote.connect(address, port);
 		client = clientRemote;
+	}
+	
+	public static void disconnect() {
+		if (client != null)
+			client.disconnect();
 	}
 	
 	public static Registry getRegistry() {
