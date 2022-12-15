@@ -29,62 +29,87 @@ public class Registry {
 		textures = new HashMap<Identifier, Texture>();
 		fontGenerators = new HashMap<Identifier, FreeTypeFontGenerator>();
 		fontCache = new HashMap<String, BitmapFont>();
-		// Load assets from builtin module
-		String builtinModuleId = "pixadv";
-		String[] assets = new String(Gdx.files.internal("assets.txt").readBytes()).split("\n");
-		for (String assetFilename : assets) {
-			try {
-				Identifier assetId = new Identifier(builtinModuleId, FileUtil.removeExtension(assetFilename));
-				Asset asset = new Asset(
-						Asset.getTypeByExtension(FileUtil.getExtension(assetFilename)),
-						assetId,
-						Gdx.files.internal(assetFilename));
-				loadAsset(asset);
-			} catch (Exception e) {
-				Logger.logException("Failed to load asset! '%s'", e, assetFilename);
-			}
-		}
-		modules.put(builtinModuleId, ClientApplication.getVersionString());
-		// Load external modules
-		for (FileHandle moduleFilename : Gdx.files.local("modules").list())
-			System.out.println(moduleFilename);
+		// Load modules
+		loadBuiltinModule();
+		loadExternalModules();
 		// Done
 		initialized = true;
+	}
+	
+	private void loadBuiltinModule() {
+		String builtinModuleId = "pixadv";
+		// Load assets from builtin module
+		String[] assets = new String(Gdx.files.internal("assets.txt").readBytes()).split("\n");
+		for (String assetFilename : assets)
+			loadBuiltinAsset(builtinModuleId, assetFilename);
+		// Record module version
+		modules.put(builtinModuleId, ClientApplication.getVersionString());
+	}
+	
+	private void loadExternalModules() {
+		for (FileHandle moduleFilename : Gdx.files.local("modules").list())
+			System.out.println(moduleFilename);
+	}
+	
+	private void loadBuiltinAsset(String builtinModuleId, String assetFilename) {
+		try {
+			Identifier assetId = new Identifier(builtinModuleId, FileUtil.removeExtension(assetFilename));
+			Asset asset = new Asset(
+					Asset.getTypeByExtension(FileUtil.getExtension(assetFilename)),
+					assetId,
+					Gdx.files.internal(assetFilename));
+			loadAsset(asset);
+		} catch (Exception e) {
+			Logger.logException("Failed to load asset! '%s'", e, assetFilename);
+		}
 	}
 	
 	private void loadAsset(Asset asset) throws RegistryException {
 		try {
 			AssetType type = asset.getType();
+			// Verify known type
 			if (type == null) {
 				Logger.logMessage(Logger.WARNING, "Unknown type for asset '%s'!", asset.getId());
-			} else {
-				// Parse bytes by file type
-				switch (type) {
-				case TEXTURE:
-					// Texture
-					Pixmap pixmap = new Pixmap(asset.getHandle());
-					textures.put(asset.getId(), new Texture(pixmap));
-					pixmap.dispose();
-					break;
-				case SOUND:
-					// Sound
-					
-					break;
-				case TRANSLATION:
-					// Translations file
-
-					break;
-				case FONT:
-					// Font file
-					FreeTypeFontGenerator generator = new FreeTypeFontGenerator(asset.getHandle());
-					fontGenerators.put(asset.getId(), generator);
-					break;
-				}
-				Logger.logMessage(Logger.DEBUG, "Loaded asset '%s'", asset.getId());
+				return;
 			}
+			// Parse bytes by file type
+			switch (type) {
+			case TEXTURE:
+				loadTexture(asset);
+				break;
+			case SOUND:
+				loadSound(asset);
+				break;
+			case TRANSLATION:
+				loadTranslations(asset);
+				break;
+			case FONT:
+				loadFont(asset);
+				break;
+			}
+			Logger.logMessage(Logger.DEBUG, "Loaded asset '%s'", asset.getId());
 		} catch (Exception e) {
 			throw new RegistryException(String.format("Failed to load asset '%s'!", asset.getId()), e);
 		}
+	}
+	
+	private void loadTexture(Asset asset) {
+		Pixmap pixmap = new Pixmap(asset.getHandle());
+		textures.put(asset.getId(), new Texture(pixmap));
+		pixmap.dispose();
+	}
+	
+	private void loadSound(Asset asset) {
+		// TODO load sound
+	}
+	
+	private void loadTranslations(Asset asset) {
+		// TODO load translations
+	}
+	
+	private void loadFont(Asset asset) {
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(asset.getHandle());
+		fontGenerators.put(asset.getId(), generator);
 	}
 	
 	public Texture getTexture(Identifier id) {
