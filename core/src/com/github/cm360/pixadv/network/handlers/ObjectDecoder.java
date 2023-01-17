@@ -1,10 +1,9 @@
 package com.github.cm360.pixadv.network.handlers;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.List;
 
+import com.github.cm360.pixadv.network.packets.ObjectPacketSerializer;
 import com.github.cm360.pixadv.util.Logger;
 
 import io.netty.buffer.ByteBuf;
@@ -12,6 +11,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
 public class ObjectDecoder extends ByteToMessageDecoder {
+
+	protected ObjectPacketSerializer objSerializer;
+	
+	public ObjectDecoder() {
+		objSerializer = new ObjectPacketSerializer();
+	}
 	
 	/**
 	 * Decodes a packet from.
@@ -23,7 +28,7 @@ public class ObjectDecoder extends ByteToMessageDecoder {
 	 * @throws ClassNotFoundException 
 	 */
 	@Override
-	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws IOException, ClassNotFoundException {
+	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 //		int bufSize = in.readableBytes();
 //		// Check if packet header has been received yet
 //		if (bufSize >= Packet.headerSize) {
@@ -37,12 +42,7 @@ public class ObjectDecoder extends ByteToMessageDecoder {
 //			out.add(message);
 //		}
 		
-		int size = in.readableBytes();
-		byte[] bytes = new byte[size];
-		in.readBytes(bytes);
-		ByteArrayInputStream byteInStream = new ByteArrayInputStream(bytes);
-		ObjectInputStream objInStream = new ObjectInputStream(byteInStream);
-		out.add(objInStream.readObject());
+		out.add(objSerializer.deserialize(in));
 	}
 
 	@Override

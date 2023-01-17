@@ -1,6 +1,6 @@
 package com.github.cm360.pixadv.network.packets;
 
-public class StringPacket extends Packet {
+public class StringPacket extends ObjectPacket {
 
 	private static final long serialVersionUID = 1L;
 	
