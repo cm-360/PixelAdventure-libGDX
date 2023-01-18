@@ -8,20 +8,20 @@ import com.github.cm360.pixadv.commands.CommandProcessor;
 import com.github.cm360.pixadv.environment.storage.LocalUniverse;
 import com.github.cm360.pixadv.environment.storage.Universe;
 import com.github.cm360.pixadv.network.GameChannelInitializer;
-import com.github.cm360.pixadv.network.handlers.old.ChannelManager;
+import com.github.cm360.pixadv.network.handlers.ChannelManager;
 import com.github.cm360.pixadv.network.packets.Packet;
 import com.github.cm360.pixadv.util.Logger;
 
-import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class Server {
 
-//	private EventLoopGroup bossGroup;
+	private EventLoopGroup bossGroup;
 	private EventLoopGroup workerGroup;
 	private Channel serverChannel;
 	private ChannelManager channelManager;
@@ -42,39 +42,22 @@ public class Server {
 	
 	public void run(InetAddress address, int port) {
 		Server thisServer = this;
+		bossGroup = new NioEventLoopGroup();
 		workerGroup = new NioEventLoopGroup();
 		channelManager = new ChannelManager();
 		try {
-			Bootstrap b = new Bootstrap();
-			b.group(workerGroup)
-					.channel(NioDatagramChannel.class)
-					.option(ChannelOption.SO_BROADCAST, true)
-					.handler(new GameChannelInitializer(thisServer::processClientPacket));
+			ServerBootstrap b = new ServerBootstrap();
+			b.group(bossGroup, workerGroup)
+					.channel(NioServerSocketChannel.class)
+					.childHandler(new GameChannelInitializer(thisServer::processClientPacket))
+					.option(ChannelOption.SO_BACKLOG, 128)
+					.childOption(ChannelOption.SO_KEEPALIVE, true);
 			serverChannel = b.bind(address, port).sync().channel();
 			Logger.logMessage(Logger.INFO, "Server hosted on %s:%d", address.getHostAddress(), port);
 		} catch (Exception e) {
 			Logger.logException("Failed to start server!", e);
 		}
 	}
-	
-//	public void runTcp(InetAddress address, int port) {
-//		Server thisServer = this;
-//		bossGroup = new NioEventLoopGroup();
-//		workerGroup = new NioEventLoopGroup();
-//		channelManager = new ChannelManager();
-//		try {
-//			ServerBootstrap b = new ServerBootstrap();
-//			b.group(bossGroup, workerGroup)
-//					.channel(NioServerSocketChannel.class)
-//					.childHandler(new GameChannelInitializer(thisServer::processClientPacket))
-//					.option(ChannelOption.SO_BACKLOG, 128)
-//					.childOption(ChannelOption.SO_KEEPALIVE, true);
-//			serverChannel = b.bind(address, port).sync().channel();
-//			Logger.logMessage(Logger.INFO, "Server hosted on %s:%d", address.getHostAddress(), port);
-//		} catch (Exception e) {
-//			Logger.logException("Failed to start server!", e);
-//		}
-//	}
 	
 	public void close() {
 		try {
@@ -83,7 +66,7 @@ public class Server {
 			Logger.logException("Error while stopping server!", e);
 		} finally {
 			workerGroup.shutdownGracefully();
-//			bossGroup.shutdownGracefully();
+			bossGroup.shutdownGracefully();
 		}
 	}
 	
