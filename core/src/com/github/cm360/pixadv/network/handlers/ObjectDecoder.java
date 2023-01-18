@@ -29,19 +29,6 @@ public class ObjectDecoder extends ByteToMessageDecoder {
 	 */
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-//		int bufSize = in.readableBytes();
-//		// Check if packet header has been received yet
-//		if (bufSize >= Packet.headerSize) {
-//			in.resetReaderIndex();
-//			// Read info from packet header
-//			ByteBuf headerBytes = in.readBytes(bufSize);
-//			
-//			byte[] msgBytes = new byte[bufSize];
-//			in.readBytes(bufSize).readBytes(msgBytes);
-//			String message = new String(msgBytes);
-//			out.add(message);
-//		}
-		
 		out.add(objSerializer.deserialize(in));
 	}
 
