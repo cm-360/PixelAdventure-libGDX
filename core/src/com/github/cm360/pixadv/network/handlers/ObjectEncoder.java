@@ -1,9 +1,9 @@
 package com.github.cm360.pixadv.network.handlers;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
-import com.github.cm360.pixadv.network.packets.ObjectPacket;
-import com.github.cm360.pixadv.network.packets.ObjectPacketSerializer;
 import com.github.cm360.pixadv.network.packets.Packet;
 import com.github.cm360.pixadv.util.Logger;
 
@@ -14,13 +14,6 @@ import io.netty.handler.codec.MessageToByteEncoder;
 // ChannelOutboundHandlerAdapter
 public class ObjectEncoder extends MessageToByteEncoder<Packet> {
 
-	protected ObjectPacketSerializer objSerializer;
-	
-	public ObjectEncoder() {
-		// TODO make a serializer list and use some kind of priority ordering
-		objSerializer = new ObjectPacketSerializer();
-	}
-	
 	@Override
 	public void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) throws IOException {
 //		for (Field packetField : packet.getClass().getDeclaredFields()) {
@@ -45,14 +38,10 @@ public class ObjectEncoder extends MessageToByteEncoder<Packet> {
 //			;
 //		// Return
 //		return packetData;
-		
-//		for (PacketSerializer<? extends Packet> serializer : serializers) {
-//			
-//		}
-		
-		if (ObjectPacket.class.isAssignableFrom(packet.getClass())) {
-			objSerializer.serialize(out, (ObjectPacket) packet);
-		}
+		ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();
+		ObjectOutputStream objOutStream = new ObjectOutputStream(byteOutStream);
+		objOutStream.writeObject(packet);
+		out.writeBytes(byteOutStream.toByteArray());
 	}
 
 	@Override

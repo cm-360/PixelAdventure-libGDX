@@ -1,9 +1,12 @@
 package com.github.cm360.pixadv.network.packets;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
-public abstract class Packet {
+public abstract class Packet implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	public static final byte[] magicNumber;
 	public static int headerSize;
 
