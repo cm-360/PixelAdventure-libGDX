@@ -1,6 +1,5 @@
 package com.github.cm360.pixadv.network.handlers;
 
-import java.net.InetSocketAddress;
 import java.util.function.Consumer;
 
 import com.github.cm360.pixadv.network.packets.Packet;
@@ -10,22 +9,16 @@ import com.github.cm360.pixadv.util.Logger;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-public class ObjectReadHandler extends SimpleChannelInboundHandler<Packet> {
+public class PacketReadHandler extends SimpleChannelInboundHandler<Packet> {
 
 	private Consumer<Packet> packetHandler;
 	
-	public ObjectReadHandler(Consumer<Packet> packetHandler) {
+	public PacketReadHandler(Consumer<Packet> packetHandler) {
 		this.packetHandler = packetHandler;
 	}
 	
 	@Override
-	public void channelActive(ChannelHandlerContext ctx) {
-		InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
-		Logger.logMessage(Logger.INFO, "Connected to %s:%d", address.getAddress().getHostAddress(), address.getPort());
-	}
-	
-	@Override
-	public void channelRead0(ChannelHandlerContext ctx, Packet packet) throws InterruptedException {
+	public void channelRead0(ChannelHandlerContext ctx, Packet packet) throws Exception {
 		packetHandler.accept(packet);
 		if (!packet.toString().contains("reply"))
 			ctx.channel().writeAndFlush(new StringPacket("reply :D")).sync();

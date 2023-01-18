@@ -2,16 +2,15 @@ package com.github.cm360.pixadv.network;
 
 import java.util.function.Consumer;
 
-import com.github.cm360.pixadv.network.handlers.ObjectDecoder;
-import com.github.cm360.pixadv.network.handlers.ObjectEncoder;
-import com.github.cm360.pixadv.network.handlers.ObjectReadHandler;
+import com.github.cm360.pixadv.network.handlers.PacketReadHandler;
+import com.github.cm360.pixadv.network.handlers.PacketUnwrapper;
 import com.github.cm360.pixadv.network.packets.Packet;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 
-public class GameChannelInitializer extends ChannelInitializer<SocketChannel> {
+public class GameChannelInitializer extends ChannelInitializer<NioDatagramChannel> {
 
 	protected Consumer<Packet> packetHandler;
 	
@@ -20,13 +19,13 @@ public class GameChannelInitializer extends ChannelInitializer<SocketChannel> {
 	}
 	
 	@Override
-	public void initChannel(SocketChannel ch) throws Exception {
+	public void initChannel(NioDatagramChannel ch) throws Exception {
 		ChannelPipeline pipeline = ch.pipeline();
 		// Decoding/receiving
-		pipeline.addLast(new ObjectDecoder());
-		pipeline.addLast(new ObjectReadHandler(packetHandler));
+		pipeline.addLast(new PacketUnwrapper());
+		pipeline.addLast(new PacketReadHandler(packetHandler));
 		// Encoding/sending
-		pipeline.addLast(new ObjectEncoder());
+//		pipeline.addLast(new ObjectEncoder());
 	}
 
 }
