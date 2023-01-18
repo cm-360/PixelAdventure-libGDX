@@ -23,6 +23,33 @@ public class ObjectEncoder extends MessageToByteEncoder<Packet> {
 	
 	@Override
 	public void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) throws IOException {
+//		for (Field packetField : packet.getClass().getDeclaredFields()) {
+//			PacketSerializable annotation = packetField.getAnnotation(PacketSerializable.class);
+//			if (annotation != null) {
+//				packetField.get
+//			}
+//		}
+		
+//		// Determine size of packet and allocate byte buffer
+//		int fieldsSize = 0;
+//		for (String fieldName : fields.keySet())
+//			fieldsSize += (maxFieldNameLength + 4) + fields.get(fieldName).capacity();
+//		ByteBuffer packetData = ByteBuffer.allocate(headerSize + fieldsSize);
+//		// Write header
+//		packetData.put(magicNumber);
+//		packetData.put(getClass().getCanonicalName().getBytes(StandardCharsets.UTF_8));
+//		packetData.putInt(headerSize - 5, fieldsSize);
+//		packetData.position(headerSize);
+//		// Write field data
+//		for (String fieldName : fields.keySet())
+//			;
+//		// Return
+//		return packetData;
+		
+//		for (PacketSerializer<? extends Packet> serializer : serializers) {
+//			
+//		}
+		
 		if (ObjectPacket.class.isAssignableFrom(packet.getClass())) {
 			objSerializer.serialize(out, (ObjectPacket) packet);
 		}

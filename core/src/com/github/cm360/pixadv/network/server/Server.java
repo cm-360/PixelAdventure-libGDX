@@ -7,16 +7,21 @@ import java.net.InetAddress;
 import com.github.cm360.pixadv.commands.CommandProcessor;
 import com.github.cm360.pixadv.environment.storage.LocalUniverse;
 import com.github.cm360.pixadv.environment.storage.Universe;
-import com.github.cm360.pixadv.network.GameChannelInitializer;
 import com.github.cm360.pixadv.network.handlers.ChannelManager;
+import com.github.cm360.pixadv.network.handlers.ObjectDecoder;
+import com.github.cm360.pixadv.network.handlers.ObjectEncoder;
+import com.github.cm360.pixadv.network.handlers.ObjectReadHandler;
 import com.github.cm360.pixadv.network.packets.Packet;
 import com.github.cm360.pixadv.util.Logger;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class Server {
@@ -49,7 +54,18 @@ public class Server {
 			ServerBootstrap b = new ServerBootstrap();
 			b.group(bossGroup, workerGroup)
 					.channel(NioServerSocketChannel.class)
-					.childHandler(new GameChannelInitializer(thisServer::processClientPacket))
+					.childHandler(new ChannelInitializer<SocketChannel>() {
+						@Override
+						public void initChannel(SocketChannel ch) throws Exception {
+							ChannelPipeline pipeline = ch.pipeline();
+							pipeline.addLast(channelManager);
+							// Decoding/receiving
+							pipeline.addLast(new ObjectDecoder());
+							pipeline.addLast(new ObjectReadHandler(thisServer::processClientPacket));
+							// Encoding/sending
+							pipeline.addLast(new ObjectEncoder());
+						}
+					})
 					.option(ChannelOption.SO_BACKLOG, 128)
 					.childOption(ChannelOption.SO_KEEPALIVE, true);
 			serverChannel = b.bind(address, port).sync().channel();
