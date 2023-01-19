@@ -1,9 +1,11 @@
 package com.github.cm360.pixadv.network.handlers;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import com.github.cm360.pixadv.network.packets.Packet;
+import com.github.cm360.pixadv.network.packets.StringPacket;
 import com.github.cm360.pixadv.util.Logger;
 
 import io.netty.buffer.ByteBuf;
@@ -30,7 +32,7 @@ public class JsonDecoder extends ByteToMessageDecoder {
 			if (messageSize < 0)
 				throw new Exception("bad magic number"); // TODO come up with a real exception to use here
 			if (bytesReceived >= Packet.headerSize + messageSize) {
-				
+				out.add(new StringPacket(in.readBytes(messageSize).toString(StandardCharsets.UTF_8)));
 			}
 		}
 	}

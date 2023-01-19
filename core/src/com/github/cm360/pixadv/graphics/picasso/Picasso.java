@@ -117,7 +117,7 @@ public class Picasso {
 
 	public Picasso(Registry registry, Jarvis guiManager) {
 		// Rendering options
-		setTargetFPS(60);
+		setTargetFPS(5);
 		setVSync(true);
 		// Important objects
 		this.registry = registry;
