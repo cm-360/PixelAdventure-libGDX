@@ -2,21 +2,16 @@ package com.github.cm360.pixadv.network.client;
 
 import java.net.InetAddress;
 
-import com.github.cm360.pixadv.network.handlers.ObjectDecoder;
-import com.github.cm360.pixadv.network.handlers.ObjectEncoder;
-import com.github.cm360.pixadv.network.handlers.ObjectReadHandler;
+import com.github.cm360.pixadv.network.handlers.GameChannelInitializer;
 import com.github.cm360.pixadv.network.packets.Packet;
 import com.github.cm360.pixadv.network.packets.StringPacket;
 import com.github.cm360.pixadv.util.Logger;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class ClientRemote extends AbstractClient {
@@ -31,18 +26,8 @@ public class ClientRemote extends AbstractClient {
 			Bootstrap b = new Bootstrap();
 			b.group(workerGroup)
 					.channel(NioSocketChannel.class)
-					.handler(new ChannelInitializer<SocketChannel>() {
-						@Override
-						public void initChannel(SocketChannel ch) throws Exception {
-							ChannelPipeline pipeline = ch.pipeline();
-							// Decoding/receiving
-							pipeline.addLast(new ObjectDecoder());
-							pipeline.addLast(new ObjectReadHandler(thisClient::processServerPacket));
-							// Encoding/sending
-							pipeline.addLast(new ObjectEncoder());
-						}
-					})
-					.option(ChannelOption.SO_KEEPALIVE, true);
+					.option(ChannelOption.SO_KEEPALIVE, true)
+					.handler(new GameChannelInitializer(thisClient::processServerPacket));
 			Logger.logMessage(Logger.INFO, "Connecting to %s:%d...", address.getHostAddress(), port);
 			channel = b.connect(address, port).sync().channel();
 			// Send hello

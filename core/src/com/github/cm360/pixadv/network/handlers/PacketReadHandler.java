@@ -10,11 +10,11 @@ import com.github.cm360.pixadv.util.Logger;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-public class ObjectReadHandler extends SimpleChannelInboundHandler<Packet> {
+public class PacketReadHandler extends SimpleChannelInboundHandler<Packet> {
 
 	private Consumer<Packet> packetHandler;
 	
-	public ObjectReadHandler(Consumer<Packet> packetHandler) {
+	public PacketReadHandler(Consumer<Packet> packetHandler) {
 		this.packetHandler = packetHandler;
 	}
 	
