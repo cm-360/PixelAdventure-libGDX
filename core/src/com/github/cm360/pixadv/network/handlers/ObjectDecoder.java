@@ -23,7 +23,7 @@ public class ObjectDecoder extends ByteToMessageDecoder {
 	 * @throws ClassNotFoundException 
 	 */
 	@Override
-	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws IOException, ClassNotFoundException {
+	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 //		int bufSize = in.readableBytes();
 //		// Check if packet header has been received yet
 //		if (bufSize >= Packet.headerSize) {

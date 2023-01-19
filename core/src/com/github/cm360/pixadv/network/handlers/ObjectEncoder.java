@@ -1,7 +1,6 @@
 package com.github.cm360.pixadv.network.handlers;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import com.github.cm360.pixadv.network.packets.Packet;
@@ -15,7 +14,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
 public class ObjectEncoder extends MessageToByteEncoder<Packet> {
 
 	@Override
-	public void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) throws IOException {
+	public void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) throws Exception {
 //		for (Field packetField : packet.getClass().getDeclaredFields()) {
 //			PacketSerializable annotation = packetField.getAnnotation(PacketSerializable.class);
 //			if (annotation != null) {
