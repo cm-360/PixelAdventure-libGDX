@@ -30,7 +30,7 @@ public class JsonDecoder extends ByteToMessageDecoder {
 			in.resetReaderIndex();
 			int messageSize = readHeader(in.readBytes(Packet.headerSize));
 			if (messageSize < 0)
-				throw new Exception("bad magic number"); // TODO come up with a real exception to use here
+				throw new IOException("Invalid packet header!");
 			if (bytesReceived >= Packet.headerSize + messageSize) {
 				out.add(new StringPacket(in.readBytes(messageSize).toString(StandardCharsets.UTF_8)));
 			}
