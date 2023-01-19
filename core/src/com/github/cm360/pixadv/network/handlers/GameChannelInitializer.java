@@ -25,10 +25,10 @@ public class GameChannelInitializer extends ChannelInitializer<SocketChannel> {
 		// Insert pre-handlers first
 		pipeline.addLast(preHandlers);
 		// Decoding/receiving
-		pipeline.addLast(new ObjectDecoder());
+		pipeline.addLast(new JsonDecoder());
 		pipeline.addLast(new PacketReadHandler(packetHandler));
 		// Encoding/sending
-		pipeline.addLast(new ObjectEncoder());
+		pipeline.addLast(new JsonEncoder());
 	}
 
 }

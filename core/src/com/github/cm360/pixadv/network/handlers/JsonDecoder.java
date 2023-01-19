@@ -1,17 +1,16 @@
 package com.github.cm360.pixadv.network.handlers;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.List;
 
+import com.github.cm360.pixadv.network.packets.Packet;
 import com.github.cm360.pixadv.util.Logger;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
-public class ObjectDecoder extends ByteToMessageDecoder {
+public class JsonDecoder extends ByteToMessageDecoder {
 	
 	/**
 	 * Decodes a packet from.
@@ -24,25 +23,23 @@ public class ObjectDecoder extends ByteToMessageDecoder {
 	 */
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-//		int bufSize = in.readableBytes();
-//		// Check if packet header has been received yet
-//		if (bufSize >= Packet.headerSize) {
-//			in.resetReaderIndex();
-//			// Read info from packet header
-//			ByteBuf headerBytes = in.readBytes(bufSize);
-//			
-//			byte[] msgBytes = new byte[bufSize];
-//			in.readBytes(bufSize).readBytes(msgBytes);
-//			String message = new String(msgBytes);
-//			out.add(message);
-//		}
-		
-		int size = in.readableBytes();
-		byte[] bytes = new byte[size];
-		in.readBytes(bytes);
-		ByteArrayInputStream byteInStream = new ByteArrayInputStream(bytes);
-		ObjectInputStream objInStream = new ObjectInputStream(byteInStream);
-		out.add(objInStream.readObject());
+		int bytesReceived = in.readableBytes();
+		if (bytesReceived >= Packet.headerSize) {
+			in.resetReaderIndex();
+			int messageSize = readHeader(in.readBytes(Packet.headerSize));
+			if (messageSize < 0)
+				throw new Exception("bad magic number"); // TODO come up with a real exception to use here
+			if (bytesReceived >= Packet.headerSize + messageSize) {
+				
+			}
+		}
+	}
+	
+	protected int readHeader(ByteBuf headerBytes) {
+		// TODO validate magic number
+		byte[] magicNumber = new byte[Packet.magicNumber.length];
+		headerBytes.readBytes(magicNumber);
+		return headerBytes.readInt();
 	}
 
 	@Override

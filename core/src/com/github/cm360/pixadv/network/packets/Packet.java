@@ -18,7 +18,7 @@ public abstract class Packet implements Serializable {
 	 */
 	static {
 		magicNumber = "pixadv".getBytes(StandardCharsets.UTF_8);
-		headerSize = 16;
+		headerSize = magicNumber.length + Integer.BYTES;
 	}
 
 }
