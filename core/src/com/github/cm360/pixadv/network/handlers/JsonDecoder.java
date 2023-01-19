@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import com.badlogic.gdx.utils.Json;
 import com.github.cm360.pixadv.network.packets.Packet;
-import com.github.cm360.pixadv.network.packets.StringPacket;
 import com.github.cm360.pixadv.util.Logger;
 
 import io.netty.buffer.ByteBuf;
@@ -13,7 +13,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
 public class JsonDecoder extends ByteToMessageDecoder {
+
+	protected Json json;
 	
+	public JsonDecoder() {
+		json = new Json();
+	}
+
 	/**
 	 * Decodes a packet from.
 	 *
@@ -25,23 +31,54 @@ public class JsonDecoder extends ByteToMessageDecoder {
 	 */
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		int bytesReceived = in.readableBytes();
-		if (bytesReceived >= Packet.headerSize) {
+		if (in.readableBytes() >= Packet.magicNumber.length) {
 			in.resetReaderIndex();
-			int messageSize = readHeader(in.readBytes(Packet.headerSize));
-			if (messageSize < 0)
+			// Header
+			if (!validateHeader(in))
 				throw new IOException("Invalid packet header!");
-			if (bytesReceived >= Packet.headerSize + messageSize) {
-				out.add(new StringPacket(in.readBytes(messageSize).toString(StandardCharsets.UTF_8)));
-			}
+			// Class
+			Class<? extends Packet> packetClass = readPacketClass(in);
+			if (packetClass == null)
+				return;
+			// Data
+			Packet packet = readPacketData(packetClass, in);
+			if (packet == null)
+				return;
+			out.add(packet);
 		}
 	}
 	
-	protected int readHeader(ByteBuf headerBytes) {
+	protected boolean validateHeader(ByteBuf data) {
 		// TODO validate magic number
 		byte[] magicNumber = new byte[Packet.magicNumber.length];
-		headerBytes.readBytes(magicNumber);
-		return headerBytes.readInt();
+		data.readBytes(magicNumber);
+		return true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected Class<? extends Packet> readPacketClass(ByteBuf data) throws Exception {
+		if (data.readableBytes() >= Integer.BYTES) {
+			int length = data.readInt();
+			if (data.readableBytes() >= length) {
+				Class<?> packetClassUncast = Class.forName(data.readBytes(length).toString(StandardCharsets.UTF_8));
+				if (Packet.class.isAssignableFrom(packetClassUncast)) {
+					return (Class<? extends Packet>) packetClassUncast;
+				} else {
+					throw new IOException("Attempted to deserialize into a non-packet class!");
+				}
+			}
+		}
+		return null;
+	}
+	
+	protected Packet readPacketData(Class<? extends Packet> packetClass, ByteBuf data) {
+		if (data.readableBytes() >= Integer.BYTES) {
+			int length = data.readInt();
+			if (data.readableBytes() >= length) {
+				return json.fromJson(packetClass, data.readBytes(length).toString(StandardCharsets.UTF_8));
+			}
+		}
+		return null;
 	}
 
 	@Override

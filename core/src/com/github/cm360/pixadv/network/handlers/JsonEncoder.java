@@ -2,6 +2,7 @@ package com.github.cm360.pixadv.network.handlers;
 
 import java.nio.charset.StandardCharsets;
 
+import com.badlogic.gdx.utils.Json;
 import com.github.cm360.pixadv.network.packets.Packet;
 import com.github.cm360.pixadv.util.Logger;
 
@@ -11,12 +12,23 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 public class JsonEncoder extends MessageToByteEncoder<Packet> {
 
+	protected Json json;
+	
+	public JsonEncoder() {
+		json = new Json();
+	}
+	
 	@Override
 	public void encode(ChannelHandlerContext ctx, Packet packet, ByteBuf out) throws Exception {
 		out.writeBytes(Packet.magicNumber);
-		byte[] payload = packet.toString().getBytes(StandardCharsets.UTF_8);
-		out.writeInt(payload.length);
-		out.writeBytes(payload);
+		// Packet class
+		byte[] packetClass = packet.getClass().getCanonicalName().getBytes(StandardCharsets.UTF_8);
+		out.writeInt(packetClass.length);
+		out.writeBytes(packetClass);
+		// Packet data
+		byte[] packetData = json.toJson(packet).getBytes(StandardCharsets.UTF_8);
+		out.writeInt(packetData.length);
+		out.writeBytes(packetData);
 	}
 
 	@Override

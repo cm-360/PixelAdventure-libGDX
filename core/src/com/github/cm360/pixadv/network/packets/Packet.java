@@ -8,7 +8,7 @@ public abstract class Packet implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public static final byte[] magicNumber;
-	public static int headerSize;
+	public static final int headerSize;
 
 	/**
 	 * The bytes of a packet header are split up as follows:
