@@ -4,10 +4,17 @@ public class StringPacket extends Packet {
 
 	private static final long serialVersionUID = 1L;
 
-	protected String contents;
+	public String contents;
 	
-	public StringPacket(String contents) {
-		this.contents = contents;
+	public static StringPacket create(String contents) {
+		StringPacket s = new StringPacket();
+		s.contents = contents;
+		return s;
+	}
+	
+	@Override
+	public String toString() {
+		return contents;
 	}
 
 }

@@ -39,7 +39,7 @@ public class ChatMenu extends Menu {
 			}
 		} else if (character == '\n') { // Enter
 			String text = inputField.getText();
-			ClientApplication.getClient().send(new StringPacket(text));
+			ClientApplication.getClient().send(StringPacket.create(text));
 			inputField.setText("");
 			
 		} else {

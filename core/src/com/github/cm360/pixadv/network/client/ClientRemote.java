@@ -31,7 +31,7 @@ public class ClientRemote extends AbstractClient {
 			Logger.logMessage(Logger.INFO, "Connecting to %s:%d...", address.getHostAddress(), port);
 			channel = b.connect(address, port).sync().channel();
 			// Send hello
-			StringPacket stringPacket = new StringPacket("testing testing uwu");
+			StringPacket stringPacket = StringPacket.create("testing testing uwu");
 			channel.writeAndFlush(stringPacket).sync();
 			Logger.logMessage(Logger.INFO, "Sent hello");
 		} catch (Exception e) {

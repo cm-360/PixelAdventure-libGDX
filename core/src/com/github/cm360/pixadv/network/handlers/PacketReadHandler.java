@@ -28,7 +28,7 @@ public class PacketReadHandler extends SimpleChannelInboundHandler<Packet> {
 	public void channelRead0(ChannelHandlerContext ctx, Packet packet) throws InterruptedException {
 		packetHandler.accept(packet);
 		if (!packet.toString().contains("reply"))
-			ctx.channel().writeAndFlush(new StringPacket("reply :D")).sync();
+			ctx.channel().writeAndFlush(StringPacket.create("reply :D")).sync();
 //		ctx.close();
 	}
 
